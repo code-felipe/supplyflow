@@ -60,50 +60,48 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
   B -- No --> C[Public Registration (/register)]
   C --> C1[Enter invitationCode]
   C1 --> D{Valid and unused?}
-  D -- No --> C2[Show error"\n""Invalid or used code"]
-  D -- Yes --> E[Create User (ROLE_CONCIERGE)]
-  E --> F[Mark invitation_code.used=true"\n"usedBy = new User]
-  F --> G[Redirect to /login]
+  D -- No --> C2["Show error\nInvalid or used code"]
+  D -- Yes --> E["Create User (ROLE_CONCIERGE)"]
+  E --> F["Mark invitation_code.used = true\nusedBy = new User"]
+  F --> G["Redirect to /login"]
 
   B -- Yes --> H[/Login/]
-  H --> I[Spring Security"\n"(JdbcUserDetailsManager)]
+  H --> I["Spring Security\n(JdbcUserDetailsManager)"]
   I --> J{Authentication OK?}
-  J -- No --> H2[Invalid credentials]
+  J -- No --> H2["Invalid credentials"]
   J -- Yes --> K{Authorization}
-  K -- ADMIN/SUPERVISOR --> L[Admin: generate codes,"\n"manage users/sites]
-  K -- CONCIERGE --> M[Ops: view/edit own profile,"\n"create Requests]
-  K -- Otherwise --> N[403 - Access denied]
+  K -- ADMIN/SUPERVISOR --> L["Admin: generate codes\nmanage users/sites"]
+  K -- CONCIERGE --> M["Ops: view/edit own profile\ncreate Requests"]
+  K -- Otherwise --> N["403 - Access denied"]
 
 ```
 # Public Registration (Invitation Code Service)
 ```mermaid
-flowchart LR
-  R1[POST /register<br/>UserForm] --> R2{invitationCode empty?}
-  R2 -- Yes --> R0[Show field error] --> R1
-  R2 -- No --> R3[Normalize (trim + uppercase)]
-  R3 --> R4[findByCode(code)]
+  R1["POST /register\nUserForm"] --> R2{invitationCode empty?}
+  R2 -- Yes --> R0["Show field error"] --> R1
+  R2 -- No --> R3["Normalize (trim + uppercase)"]
+  R3 --> R4["findByCode(code)"]
   R4 --> R5{Found?}
-  R5 -- No --> R0[Error: not found] --> R1
+  R5 -- No --> R0["Error: not found"] --> R1
   R5 -- Yes --> R6{Already used?}
-  R6 -- Yes --> R0[Error: already used] --> R1
-  R6 -- No --> R7[Create User + assign ROLE_CONCIERGE]
-  R7 --> R8[Save User]
-  R8 --> R9[inv.used=true; inv.usedBy=user]
-  R9 --> R10[Save InvitationCode]
-  R10 --> R11[Redirect /login (success)]
+  R6 -- Yes --> R0["Error: already used"] --> R1
+  R6 -- No --> R7["Create User + assign ROLE_CONCIERGE"]
+  R7 --> R8["Save User"]
+  R8 --> R9["inv.used = true\ninv.usedBy = user"]
+  R9 --> R10["Save InvitationCode"]
+  R10 --> R11["Redirect /login (success)"]
 ```
 # Login & Authorization (Spring Security + JDBC)
 ```mermaid
-flowchart TD
-  L1[Login form] --> L2[AuthenticationManager]
-  L2 --> L3[DaoAuthenticationProvider]
-  L3 --> L4[JdbcUserDetailsManager<br/>custom SQL queries]
+  L1["Login form"] --> L2["AuthenticationManager"]
+  L2 --> L3["DaoAuthenticationProvider"]
+  L3 --> L4["JdbcUserDetailsManager\n(custom SQL queries)"]
   L4 --> L5{Enabled & password OK?}
-  L5 -- No --> L6[Login error]
-  L5 -- Yes --> L7[@PreAuthorize / antMatchers rules]
-  L7 -- ADMIN/SUPERVISOR --> L8[Access admin endpoints]
-  L7 -- CONCIERGE --> L9[Limited access + @userSecurity.isSelf(id)]
-  L7 -- No permission --> L10[403]
+  L5 -- No --> L6["Login error"]
+  L5 -- Yes --> L7["@PreAuthorize / antMatchers rules"]
+  L7 -- ADMIN/SUPERVISOR --> L8["Access admin endpoints"]
+  L7 -- CONCIERGE --> L9["Limited access\n@userSecurity.isSelf(id)"]
+  L7 -- No permission --> L10["403"]
 ```
 
 **User** →
