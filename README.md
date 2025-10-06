@@ -54,29 +54,30 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
 ## Domain Model
 ![Domain model](docs/diagrams/domain-model.png)
 
-# Flowchart
+# Flowcharts
+
+## Login
 ```mermaid
 flowchart TD
-  A[Visitor] --> B{Has an account?}
-  B -- No --> C[Public Registration (/register)]
-  C --> C1[Enter invitationCode]
-  C1 --> D{Valid and unused?}
-  D -- No --> C2["Show error\nInvalid or used code"]
-  D -- Yes --> E["Create User (ROLE_CONCIERGE)"]
-  E --> F["Mark invitation_code.used = true\nusedBy = new User"]
-  F --> G["Redirect to /login"]
+  A1["Visitor"] --> B1{Has an account?};
+  B1 -- No --> C1["Public Registration (/register)"];
+  C1 --> C2["Enter invitationCode"];
+  C2 --> D1{Valid and unused?};
+  D1 -- No --> C3["Show error\nInvalid or used code"];
+  D1 -- Yes --> E1["Create User (ROLE_CONCIERGE)"];
+  E1 --> F1["Mark invitation_code.used = true\nusedBy = new User"];
+  F1 --> G1["Redirect to /login"];
 
-  B -- Yes --> H[/Login/]
-  H --> I["Spring Security\n(JdbcUserDetailsManager)"]
-  I --> J{Authentication OK?}
-  J -- No --> H2["Invalid credentials"]
-  J -- Yes --> K{Authorization}
-  K -- ADMIN/SUPERVISOR --> L["Admin: generate codes\nmanage users/sites"]
-  K -- CONCIERGE --> M["Ops: view/edit own profile\ncreate Requests"]
-  K -- Otherwise --> N["403 - Access denied"]
-
+  B1 -- Yes --> H1[/Login/];
+  H1 --> I1["Spring Security\n(JdbcUserDetailsManager)"];
+  I1 --> J1{Authentication OK?};
+  J1 -- No --> H2["Invalid credentials"];
+  J1 -- Yes --> K1{Authorization};
+  K1 -- ADMIN/SUPERVISOR --> L1["Admin: generate codes\nmanage users/sites"];
+  K1 -- CONCIERGE --> M1["Ops: view/edit own profile\ncreate Requests"];
+  K1 -- Otherwise --> N1["403 - Access denied"];
 ```
-# Public Registration (Invitation Code Service)
+## Public Registration (Invitation Code Service)
 ```mermaid
 flowchart LR
   R1["POST /register\nUserForm"] --> R2{invitationCode empty?}
@@ -93,7 +94,7 @@ flowchart LR
   R9 --> R10["Save InvitationCode"]
   R10 --> R11["Redirect /login (success)"]
 ```
-# Login & Authorization (Spring Security + JDBC)
+## Login & Authorization (Spring Security + JDBC)
 ```mermaid
 flowchart TD
   L1["Login form"] --> L2["AuthenticationManager"]
