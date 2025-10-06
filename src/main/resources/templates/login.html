@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body class="bg-light">
+  <header th:replace="~{layout/layout :: header}"></header>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-5">
+        <div class="card shadow border-0">
+          <!-- Header con logo y título -->
+          <div class="card-header bg-white border-0 text-center pt-4">
+            
+            <img th:src="@{/images/first-class-logo.png}" alt="Company Logo" style="height:56px;" class="mb-2">
+            <h5 class="mb-0 text-primary fw-semibold">Please Sign In</h5>
+          </div>
+
+          <div class="card-body px-4 pb-4">
+            <!-- Error messages -->
+            <div th:if="${param.error}" class="alert alert-danger mb-4" role="alert">
+              Invalid email or password.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-info mb-4" role="alert">
+              You have been logged out successfully.
+            </div>
+
+            <form th:action="@{/login}" method="post" class="text-start">
+              <div th:replace="~{layout/_security :: csrf}"></div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email"
+                       name="email" id="email"
+                       class="form-control"
+                       placeholder="you@example.com"
+                       autocomplete="username"
+                       required>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password"
+                       name="password" id="password"
+                       class="form-control"
+                       placeholder="••••••••"
+                       autocomplete="current-password"
+                       required>
+              </div>
+
+              <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">
+                  Sign In
+                </button>
+                
+                <a th:href="@{/register}" class="btn btn-outline-primary">
+                  Create an account
+                </a>
+              </div>
+            </form>
+          </div>
+
+          <!-- Footer opcional del card -->
+          <div class="card-footer bg-white border-0 text-center pb-4">
+            <small class="text-muted">Need help? Contact support.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

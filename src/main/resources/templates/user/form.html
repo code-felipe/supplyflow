@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<div class="container my-4">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<a class="btn btn-outline-secondary btn-sm" th:href="@{/user/list}">← Back</a>
+			<h5 class="mb-0" th:text="${title}">User form</h5>
+		</div>
+
+		<div class="card shadow-sm">
+			<div class="card-body p-4">
+
+				<!-- Errores globales -->
+				<div th:object="${user}" th:remove="tag">
+					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-4">
+						<li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+					</ul>
+				</div>
+
+				<form th:action="@{/user/form}" th:object="${user}" method="post" enctype="multipart/form-data">
+				  <!-- CSRF -->
+				  <div th:replace="~{layout/_security :: csrf}"></div>
+
+				  <!-- === Datos del usuario === -->
+				  <div class="mb-4">
+				    <h6 class="text-muted text-uppercase mb-3">User</h6>
+
+				    <div class="form-row">
+				      <div class="form-group col-md-6">
+				        <label for="first_name">First name</label>
+				        <input type="text" id="first_name" th:field="*{firstName}" class="form-control"
+				               th:errorClass="'form-control is-invalid'">
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
+				        <small class="form-text text-muted">User First Name</small>
+				      </div>
+
+				      <div class="form-group col-md-6">
+				        <label for="last_name">Last name</label>
+				        <input type="text" id="last_name" th:field="*{lastName}" class="form-control"
+				               th:errorClass="'form-control is-invalid'">
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+				        <small class="form-text text-muted">User Last Name</small>
+				      </div>
+				    </div>
+
+				    <div class="form-row">
+				      <div class="form-group col-md-6">
+				        <label for="email">Email</label>
+				        <input type="text" id="email" th:field="*{email}" class="form-control"
+				               th:errorClass="'form-control is-invalid'">
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+				        <small class="form-text text-muted">User Email</small>
+				      </div>
+
+				      <div class="form-group col-md-6">
+				        <label for="phone">Phone</label>
+				        <input type="text" id="phone" th:field="*{phone}" class="form-control"
+				               th:errorClass="'form-control is-invalid'">
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+				        <small class="form-text text-muted">User Phone Number</small>
+				      </div>
+				    </div>
+
+				    <!-- Password + Role + Active -->
+				    <div class="form-row">
+				      <!-- Password -->
+				      <div class="form-group col-md-4">
+				        <label for="password">Password</label>
+				        <input type="password" id="password" th:field="*{password}" class="form-control"
+				               th:errorClass="'form-control is-invalid'"
+				               th:placeholder="${user.id} != null ? 'Leave blank to keep current password' : 'Set a password'">
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+				        <small class="form-text text-muted">Set only when creating or changing password</small>
+				      </div>
+
+				      <!-- Role -->
+				      <div class="form-group col-md-4">
+				        <label for="role">Role</label>
+				        <select id="role" th:field="*{roleId}" class="form-control"
+				                th:errorClass="'form-control is-invalid'">
+				          <option value="">-- select --</option>
+				          <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.authority}"></option>
+				        </select>
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('roleId')}" th:errors="*{roleId}"></small>
+				      </div>
+
+				      <!-- Active -->
+				      <div class="form-group col-md-4">
+				        <label class="d-block">Status</label>
+				        <div class="form-check form-switch">
+				          <input class="form-check-input" type="checkbox" id="isActive" th:field="*{isActive}">
+				          <label class="form-check-label" for="isActive">Active</label>
+				        </div>
+				        <div th:if="${#fields.hasErrors('isActive')}" class="invalid-feedback d-block" th:errors="*{isActive}"></div>
+				        <small class="form-text text-muted">Toggle to enable/disable the user.</small>
+				      </div>
+				    </div>
+				  </div>
+
+				  <!-- === Assignment (Customer · Site) === -->
+				  <div class="mb-4">
+				    <h6 class="text-muted text-uppercase mb-3">Assignment (Customer · Site)</h6>
+
+				    <!-- Radios de modo -->
+				    <div class="form-group">
+				      <div class="custom-control custom-radio custom-control-inline">
+				        <input class="custom-control-input" type="radio" name="assignMode" id="modeExisting"
+				               value="existing" th:checked="*{assignedSiteId} != null">
+				        <label class="custom-control-label" for="modeExisting">Select existing site</label>
+				      </div>
+				      <div class="custom-control custom-radio custom-control-inline">
+				        <input class="custom-control-input" type="radio" name="assignMode" id="modeInline"
+				               value="inline" th:checked="*{assignedSiteId} == null">
+				        <label class="custom-control-label" for="modeInline">Create customer + site</label>
+				      </div>
+				      <small class="form-text text-muted">
+				        Create customer + site: Creates a new record and assigns it to the user; or select an existing site.
+				      </small>
+				    </div>
+
+				    <!-- A) Select de Site existente -->
+				    <div id="sectionExisting">
+				      <div class="form-group">
+				        <label for="c_site">Ship To</label>
+				        <select id="c_site" th:field="*{assignedSiteId}" class="form-control"
+				                th:errorClass="'form-control is-invalid'">
+				          <option value="">-- Select site --</option>
+				          <option th:each="s : ${sites}" th:value="${s.id}"
+				                  th:text="${(s.customer != null ? s.customer.name + ' · ' : '') + s.address + ' (' + s.externalCode + ')'}">
+				          </option>
+				        </select>
+				        <small class="invalid-feedback" th:if="${#fields.hasErrors('assignedSiteId')}" th:errors="*{assignedSiteId}"></small>
+				      </div>
+				    </div>
+
+				    <!-- B) Alta inline de Customer + Site -->
+				    <div id="sectionInline" class="d-none">
+				      <div class="form-row">
+				        <div class="form-group col-md-6">
+				          <label for="customerCode">Customer Code</label>
+				          <input type="text" id="customerCode" class="form-control" th:field="*{assignedCustomerCode}">
+				          <small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerCode')}" th:errors="*{assignedCustomerCode}"></small>
+				        </div>
+				        <div class="form-group col-md-6">
+				          <label for="customerName">Customer Name</label>
+				          <input type="text" id="customerName" class="form-control" th:field="*{assignedCustomerName}">
+				          <small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerName')}" th:errors="*{assignedCustomerName}"></small>
+				        </div>
+				      </div>
+
+				      <div class="form-row">
+				        <div class="form-group col-md-6">
+				          <label for="siteCode">ShipTo Code</label>
+				          <input type="text" id="siteCode" class="form-control" th:field="*{assignedSiteCode}">
+				          <small class="text-danger" th:if="${#fields.hasErrors('assignedSiteCode')}" th:errors="*{assignedSiteCode}"></small>
+				        </div>
+				        <div class="form-group col-md-6">
+				          <label for="siteAddress">ShipTo Address</label>
+				          <input type="text" id="siteAddress" class="form-control" th:field="*{assignedSiteAddress}">
+				          <small class="text-danger" th:if="${#fields.hasErrors('assignedSiteAddress')}" th:errors="*{assignedSiteAddress}"></small>
+				        </div>
+				      </div>
+				    </div>
+				  </div>
+
+				  <!-- Submit -->
+				  <div class="d-flex justify-content-between align-items-center">
+				    <input type="submit" class="btn btn-primary"
+				           th:value="${user.id} != null ? 'Update User' : 'Create User'">
+				    <small class="text-muted">Changes will save on user.</small>
+				  </div>
+
+				  <!-- Hidden id -->
+				  <input type="hidden" th:field="*{id}">
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+
+	<script>
+		(function () {
+			const modeExisting = document.getElementById('modeExisting');
+			const modeInline = document.getElementById('modeInline');
+			const secExisting = document.getElementById('sectionExisting');
+			const secInline = document.getElementById('sectionInline');
+
+			const selectSite = document.getElementById('c_site');
+			const inlineIds = ['customerCode', 'customerName', 'siteCode', 'siteAddress'];
+			const inlineInputs = inlineIds.map(id => document.getElementById(id));
+
+			function notEmpty(v) {return v && v.trim().length > 0;}
+
+			function setRequired(inline) {
+				if (selectSite) selectSite.required = false;
+				inlineInputs.forEach(i => {if (i) i.required = false;});
+			}
+			function clearInline() {inlineInputs.forEach(i => {if (i) i.value = '';});}
+			function clearSelect() {if (selectSite) selectSite.selectedIndex = 0;}
+
+			function toggle() {
+				const inline = modeInline.checked;
+				secExisting.classList.toggle('d-none', inline);
+				secInline.classList.toggle('d-none', !inline);
+				setRequired(inline);
+				if (inline) clearSelect(); else clearInline();
+			}
+
+			// init según valores actuales del form
+			toggle();
+			modeExisting.addEventListener('change', toggle);
+			modeInline.addEventListener('change', toggle);
+		})();
+	</script>
+</body>
+
+</html>

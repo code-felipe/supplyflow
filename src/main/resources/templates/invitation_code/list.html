@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}">
+
+</head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header bg-success text-white" th:text="${title}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<!--<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-sm" th:href="@{/supply_item/form}">Create Invitation</a>-->
+					<form th:action="@{/invitation_code/generate}" method="post" class="d-inline">
+					  <!-- CSRF -->
+					  <div th:replace="~{layout/_security :: csrf}"></div>
+
+					  <!-- (Opcional) switch/checkbox si necesitas un flag -->
+					  <!--
+					  <label class="switch">
+					    <input type="checkbox" name="active">
+					  </label>
+					  -->
+
+					  <button type="submit" class="btn btn-primary">
+					    Generate Invitation Code
+					  </button>
+					</form>
+				</h4>
+				<table class="table table-sm table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Code</th>
+							<th>is in used</th>
+							<th>Create by User</th>
+							<th>Is used by</th>
+							<th>Create At</th>
+							<!--<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>-->
+						</tr>
+					</thead>
+					<tbody>
+						<!--						private Boolean isUsed;// its sets once the new user is succesfully registrate
+							
+							public Long getIdUniqueCodeLabel() {
+								return idUniqueCode;
+							}
+
+							public String getCodeLabel() {
+								return (code == null || code.isBlank())? "No generated" : code;
+							}
+
+							public Boolean getIsUsedLabel() {
+								return isUsed;
+							}
+
+							public String getCreatedByUserFullNameLabel() {
+								return (createdByUserFullName == null || createdByUserFullName.isBlank()) ? "No asigned" : createdByUserFullName;
+							}
+
+							public String getIsUsedByUserFullNameLabel() {
+								return (isUsedByUserFullName == null || isUsedByUserFullName.isBlank()) ? "No asigned": isUsedByUserFullName;
+							}
+-->
+						<tr th:each="inv: ${invitations}">
+							<!--<td><a th:href="@{/supplyItem/view/} + ${user.id}" th:text="${user.id}"
+									class="btn btn-success btn-xs"></a></td>-->
+							<td th:text="${inv.idInvitationCodeLabel}"></td>
+							<td th:text="${inv.codeLabel}"></td>
+							<td th:text="${inv.isUsedLabel}"></td>
+							<td th:text="${inv.createdByUserFullNameLabel}"></td>
+							<td th:text="${inv.isUsedByUserFullNameLabel}"></td>
+							<td th:text="${inv.createAtLabel}"></td>
+							<!--<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-primary btn-sm" th:href="@{/supply_item/form/} + ${item.id}"
+									th:text="'Edit'"></a></td>-->
+							<!--<td><a class="btn btn-danger btn-xs" th:href="@{/supply_item/delete/} + ${item.id}"
+									th:text="'Delete'"
+									onclick="return confirm('Are you sure, you want to delete?');"></a></td>-->
+						</tr>
+					</tbody>
+				</table>
+				<nav th:replace="paginator/paginator-nav :: paginator"></nav>
+			</div>
+		</div>
+
+	</div>
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

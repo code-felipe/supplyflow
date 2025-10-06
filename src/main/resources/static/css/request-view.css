@@ -1,0 +1,26 @@
+@media print {
+
+	header,
+	footer,
+	.no-print {
+		display: none !important;
+	}
+
+	.card {
+		border: 0;
+		box-shadow: none;
+	}
+
+	.container {
+		max-width: 100% !important;
+	}
+
+	.table {
+		page-break-inside: auto;
+	}
+
+	tr {
+		page-break-inside: avoid;
+		page-break-after: auto;
+	}
+}

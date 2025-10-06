@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<div class="container my-4">
+
+		<!-- Acciones -->
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<a sec:authorize="hasAnyRole('ADMIN','SUPERVISOR')" class="btn btn-outline-secondary btn-sm"
+				th:href="@{/user/list}">← Back to Users</a>
+			<div class="btn-group">
+				<a class="btn btn-primary btn-sm" th:href="@{'/request/form/' + ${user.idLabel}}">Create Request</a>
+				<button class="btn btn-outline-primary btn-sm" onclick="window.print()">Print</button>
+			</div>
+		</div>
+
+		<div class="card shadow-sm">
+			<div class="card-body p-4">
+
+				<!-- Encabezado -->
+				<div class="row align-items-center mb-3">
+					<div class="col">
+						<h2 class="mb-0 font-weight-bold">SUPPLY REQUESTS</h2>
+						<div class="text-muted">Request for cleaning products</div>
+					</div>
+					<div class="col-auto">
+						<!-- Logo opcional -->
+						<img th:src="@{/images/first-class-logo.png}" class="img-fluid" style="max-height:60px"
+							alt="first-class-logo">
+					</div>
+				</div>
+
+				<!-- Datos del usuario -->
+				<div class="row mb-4">
+					<div class="col-md-7">
+						<div class="border rounded p-3 h-100">
+							<div class="row">
+								<div class="col-sm-6 mb-2">
+									<div class="small text-muted">Name</div>
+									<div class="font-weight-semibold" th:text="${user.firstNameLabel}">—</div>
+								</div>
+								<div class="col-sm-6 mb-2">
+									<div class="small text-muted">Last Name</div>
+									<div class="font-weight-semibold" th:text="${user.lastNameLabel}">—</div>
+								</div>
+
+								<div class="col-sm-6 mb-2">
+									<div class="small text-muted">Email</div>
+									<div th:text="${user.emailLabel}">—</div>
+								</div>
+								<div class="col-sm-3 mb-2">
+									<div class="small text-muted">Rol</div>
+									<span class="badge badge-secondary" th:text="${user.roleLabel}">—</span>
+								</div>
+								<div class="col-sm-3 mb-2">
+									<div class="small text-muted">Create</div>
+									<div
+										th:text="${user.createAtLabel != null ? #dates.format(user.createAtLabel,'yyyy-MM-dd') : 'No assigned'}">
+										—</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Cliente / ShipTo -->
+					<div class="col-md-5">
+						<div class="border rounded p-3 mb-3">
+							<div class="small text-muted">Client</div>
+							<div class="d-flex justify-content-between">
+								<div class="font-weight-semibold" th:text="${user.assignedCustomerNameLabel}"></div>
+								<span class="badge badge-info" th:text="${user.assignedCustomerCodeLabel}">—</span>
+							</div>
+						</div>
+						<div class="border rounded p-3">
+							<div class="small text-muted">Ship To (Location)</div>
+							<div class="d-flex justify-content-between">
+								<div class="font-weight-semibold" th:text="${user.assignedSiteAddressLabel}">
+								</div>
+								<span class="badge badge-info" th:text="${user.assignedSiteCodeLabel}">—</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Request Table -->
+				<div th:if="${requests == null or requests.empty}" class="alert alert-info my-3"
+					th:text="'There is no request for the user ' + ${user.firstNameLabel} + ' ' + ${user.lastNameLabel}">
+				</div>
+
+				<div th:if="${requests != null and !requests.empty}">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h5 class="mb-0">Requests</h5>				
+					</div>
+
+					<table class="table table-sm table-striped table-bordered table-hover">
+						<thead class="thead-light">
+							<tr class="text-uppercase small text-muted">
+								<th style="width:10%">Page</th>
+								<th>Decription</th>
+								<th style="width:16%">Date</th>
+								<th style="width:12%" class="text-right">Detail</th>
+								<th style="width:12%" class="text-right">Total Products</th>
+								<th sec:authorize="hasRole('ROLE_ADMIN')" style="width:12%" class="text-right">Delete
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- requests es Page<RequestRow/RequestRowView> -->
+							<tr th:each="r : ${requests.content}">
+								<td th:text="${r.id}">—</td>
+								<td th:text="${r.description}">—</td>
+								<td th:text="${#dates.format(r.createAt,'yyyy-MM-dd')}">—</td>
+								<td><a class="btn btn-primary btn-sm" th:href="@{'/request/view/' + ${r.id}}"
+										th:text="'detail'"></a></td>
+								<td class="text-right" th:text="${r.totalQuantity}"></td>
+
+								<td sec:authorize="hasRole('ROLE_ADMIN')">
+									<a class="btn btn-danger btn-sm" th:href="@{'/request/delete/' + ${r.id}}"
+										th:text="'delete'"
+										onclick="return confirm('Are you sure do you want to delete the request?')"></a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- Paginador -->
+					<nav th:replace="paginator/paginator-nav :: paginator"></nav>
+					<div class="border rounded p-3">
+						<div class="small text-muted">Requests Done</div>
+						<div class="d-flex justify-content-between">
+							<div class="font-weight-semibold" th:text="${'Total requests'}">
+							</div>
+							<span class="badge badge-success" th:text="${requests.totalElements}">—</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Notas -->
+				<div class="mt-4">
+					<div class="small text-muted">Notes</div>
+					<div class="border rounded p-3" style="min-height:80px;">&nbsp;</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

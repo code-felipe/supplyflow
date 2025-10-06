@@ -1,0 +1,204 @@
+<!--<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/layout :: head"></head>
+
+<body>
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+
+		<div class="card bg-light">
+			<div class="card-header" th:text="${title}"></div>
+			<div class="card-body">
+
+				<h4 class="card-title">
+					<a th:href="@{'/user/view/' + ${request.user.id}}" class="btn btn-light btn-xs">&laquo; back</a>
+				</h4>
+				<ul class="list-group my-2">
+					<li class="list-group-item list-group-item-primary" th:text="'User Data'"></li>
+					<li class="list-group-item" th:text="${request.user}"></li>
+					<li class="list-group-item" th:text="${request.user.email}"></li>
+				</ul>
+
+				<ul class="list-group">
+					<li class="list-group-item list-group-item-success" th:text="'Request Data'"></li>
+					<li class="list-group-item" th:text="'Page: '+${request.id}"></li>
+					<li class="list-group-item" th:text="'Description: '+${request.description}"></li>
+					<li class="list-group-item" th:text="'Date: '+${request.createAt}"></li>
+				</ul>
+
+				Listing all supply Items
+				<div class="alert alert-info my4" th:if="${#lists.isEmpty(request.requests)}" th:text="'There is not lines for the requests' + ${request.description}"></div>
+				<table th:if="${not #lists.isEmpty(request.requests)}" class="table table-sm table-striped table-bordered table-hover my-3">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Product</th>
+							<th>Quantity</th>									
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="r: ${request.requests}">
+							<td th:text="${r.supplyItem.id}"></td>
+							<td th:text="${r.supplyItem}"></td>
+							<td th:text="${r.quantity}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<h5 class="float-right">Grand Total <span th:text="${request.total}" class="badge badge-secondary"></span></h5>
+			<nav th:replace="paginator/paginator-nav :: paginator"></nav>
+
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+
+</html>-->
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<main class="container py-4">
+
+		<!-- Toolbar acciones -->
+		<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+			<a  th:href="@{'/user/view/' + ${request.user.id}}" class="btn btn-outline-secondary btn-sm">← Back to
+				User</a>
+			<button type="button" class="btn btn-primary btn-sm" onclick="window.print()">Print</button>
+		</div>
+
+		<div class="card shadow-sm">
+			<div class="card-body p-4">
+
+				<!-- Título -->
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<h3 class="mb-0" th:text="${title}">Request</h3>
+					<img th:src="@{/images/first-class-logo.png}" class="img-fluid" style="max-height:56px" alt="logo">
+				</div>
+
+				<!-- Encabezados de datos -->
+				<div class="row mb-4">
+				  <!-- User Data -->
+				  <div class="col-12 col-md-6 mb-3 mb-md-0">
+				    <div class="border rounded p-3 h-100">
+				      <div class="small text-muted mb-2" th:text="'User Data'">User Data</div>
+				      <div class="row">
+				        <div class="col-sm-12 mb-2">
+				          <div class="small text-muted">User</div>
+				          <div class="font-weight-bold" th:text="${request.user}">—</div>
+				        </div>
+						<!-- No importan to show email in the request order
+				        <div class="col-sm-12 mb-2">
+				          <div class="small text-muted">Email</div>
+				          <div th:text="${request.user.email}">—</div>
+				        </div>-->
+				      </div>
+				    </div>
+				  </div>
+
+				  <!-- Ship To (al lado de User Data) -->
+				  <div class="col-12 col-md-6">
+				    <div class="border rounded p-3 h-100">
+				      <div class="small text-muted mb-2">Client / Ship To</div>
+
+				      <div class="mb-3">
+				        <div class="small text-muted">From (Client)</div>
+				        <div class="d-flex justify-content-between align-items-center">
+				          <span class="font-weight-bold" th:text="${request.user.assignedSite.customer.name}">—</span>
+				          <span class="badge badge-info" th:text="${request.user.assignedSite.customer.externalCode}">—</span>
+				        </div>
+				      </div>
+
+				      <div>
+				        <div class="small text-muted">Ship To (Location)</div>
+				        <div class="d-flex justify-content-between align-items-center">
+				          <span class="font-weight-bold" th:text="${request.user.assignedSite.address}">—</span>
+				          <span class="badge badge-info" th:text="${request.user.assignedSite.externalCode}">—</span>
+				        </div>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+
+
+					<!-- Request Data -->
+					<div class="col-md-5">
+						<div class="border rounded p-3 h-100">
+							<div class="small text-muted mb-2" th:text="'Request Data'">Request Data</div>
+							<div class="mb-2 d-flex justify-content-between">
+								<span class="small text-muted">Page</span>
+								<span class="font-weight-bold" th:text="${request.id}">—</span>
+							</div>
+							<div class="mb-2 d-flex justify-content-between">
+								<span class="small text-muted">Description</span>
+								<span th:text="${request.description}">—</span>
+							</div>
+							<div class="mb-2 d-flex justify-content-between">
+								<span class="small text-muted">Date</span>
+								<!-- Conserva la variable original; si quieres formato, puedes usar #dates.format(...) -->
+								<span th:text="${request.createAt}">—</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Mensaje si no hay líneas -->
+				<div class="alert alert-info my-4" th:if="${#lists.isEmpty(request.requests)}"
+					th:text="'There is not lines for the requests' + ${request.description}">
+				</div>
+
+				<!-- Tabla de líneas -->
+				<div th:if="${not #lists.isEmpty(request.requests)}" class="table-responsive">
+					<table class="table table-sm table-striped table-bordered table-hover align-middle mb-2">
+						<thead class="thead-light">
+							<tr class="text-uppercase small text-muted">
+								<th style="width:12%">Id</th>
+								<th>Product</th>
+								<th style="width:14%" class="text-right">Quantity</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="r: ${request.requests}">
+								<td th:text="${r.supplyItem.id}">—</td>
+								<td th:text="${r.supplyItem}">—</td>
+								<td class="text-right" th:text="${r.quantity}">0</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- Total -->
+					<div class="d-flex justify-content-end mt-2">
+						<h5 class="mb-0">
+							Grand Total
+							<span class="badge badge-secondary" th:text="${request.total}">0</span>
+						</h5>
+					</div>
+					<div class="card border-info mb-4" style="max-width: 20rem;">
+						<div class="card-header">Additional Items</div>
+						<div class="card-body">
+							<p class="card-text" th:text="${request.additionalItems}" th:if="${not #strings.isEmpty(request.additionalItems)}"></p>
+							<h4 class="card-title" th:if="${#strings.isEmpty(request.additionalItems)}" th:text="'There is not additional items'"></h4>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+	</main>
+
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

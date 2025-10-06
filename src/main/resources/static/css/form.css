@@ -1,0 +1,45 @@
+/*=== Avatar Container ==*/
+
+.avatar-container {
+	min-width: 500px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	background-color: #ccddff
+}
+
+.avatar-item {
+	flex: 0 0 30%;
+	/* This creates a 3-column layout */
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.button-image {
+	width: 200px;
+	height: 200px;
+}
+
+.myButton input {
+	display: none;
+	/* Hide the radio button */
+	
+}
+
+.myButton img {
+	width: 130px;
+	height: 130px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.myButton input:checked+img {
+	border: 3px solid #007bff;
+	/* Add a border to the selected avatar */
+	
+}
+
+/*
+	=== Modal Avatar ===
+*/
+

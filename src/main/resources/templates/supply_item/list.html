@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}">
+
+</head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header bg-success text-white" th:text="${title}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-sm" th:href="@{/supply_item/form}">Create Product</a>
+				</h4>
+				<table class="table table-sm table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Product Code</th>
+							<th>Name</th>
+							<th>Packaging Code</th>
+							<th>Unit of Measure</th>
+							<th>Specification</th>
+							<th>Create At</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>
+							<!--<th>Is Active</th>-->
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item: ${items}">
+							<!--<td><a th:href="@{/supplyItem/view/} + ${user.id}" th:text="${user.id}"
+									class="btn btn-success btn-xs"></a></td>-->
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.product.code}"></td>
+							<td th:text="${item.product.name}"></td>
+							<td th:text="${item.packagingCode}"></td>
+							<td th:text="${item.unitOfMeasure}"></td>
+							<td th:text="${item.specification}"></td>
+							<td th:text="${item.createAt}"></td>							
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-outline-info btn-sm" th:href="@{/supply_item/form/} + ${item.id}"
+									th:text="'Edit'"></a></td>
+							<!--<td><a class="btn btn-danger btn-xs" th:href="@{/supply_item/delete/} + ${item.id}"
+									th:text="'Delete'"
+									onclick="return confirm('Are you sure, you want to delete?');"></a></td>-->
+						</tr>
+					</tbody>
+				</table>
+				<nav th:replace="paginator/paginator-nav :: paginator"></nav>
+			</div>
+		</div>
+
+	</div>
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

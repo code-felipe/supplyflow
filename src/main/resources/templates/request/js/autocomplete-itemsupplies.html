@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+</head>
+
+<body>
+	<script type="text/javascript" th:fragment="javascript">
+		$(document).ready(function () {
+			$("#search_item").autocomplete({
+				source: function (request, response) {
+					$.ajax({
+						url: "/request/load-items/" + request.term,
+						dataType: "json",
+						data: {
+							term: request.term
+
+						},
+						success: function (data) {
+							response($.map(data, function (item) {
+								return {
+									// Using DTO also works without
+									value: item.id,
+									label: item.product.name,
+									
+								};
+							}));
+						}
+					});
+				},
+				select: function (event, ui) {
+					if(itemsHelper.hasSupplyItem(ui.item.value)){
+						itemsHelper.incrementQuantity(ui.item.value);
+						return false;
+					}
+					
+					var linea = $("#requestItemsTemplate").html();
+					linea = linea.replace(/{ID}/g,ui.item.value);
+					linea = linea.replace(/{NAME}/g,ui.item.label);
+					
+					$("#loadSupplyItems tbody").append(linea);
+					
+					itemsHelper.calcGrandTotal();
+					return false;
+				}
+			});
+			$("form").submit(function(){
+				$("#requestItemsTemplate").remove();
+				return;
+			});
+		});
+		// en vez de $(document)...
+		$('#loadSupplyItems').on('input change', 'input[id^="quantity_"]', function () {
+		  itemsHelper.calcGrandTotal();
+		});
+
+		/* Avoids showing repeated items, 
+		accumulating only their quantity.
+		*/
+		var itemsHelper = {
+			calcTotal: function(id, quantity, value){
+				let qty = parseInt(value) || 0;
+				
+				let total = qty * 2;
+				$("#total_quantity_" + id).html(total);
+				
+				itemsHelper.calcGrandTotal();
+			},
+			hasSupplyItem: function(id){
+				let result = false;
+				
+				$('input[name="item_id[]"]').each(function(){
+					if(parseInt(id) == parseInt($(this).val()) ){
+						result = true;
+					}	
+				});
+				return result;
+			},
+			incrementQuantity: function(id){
+				let quantity = $("#quantity_" + id).val() ? parseInt($("#quantity_" + id).val()) : 0;
+				$("#quantity_" + id).val(++quantity);
+				//$inp.val(next).trigger('change');
+				itemsHelper.calcGrandTotal();
+				
+				
+			},
+			deleteRequestLine: function(id){
+				$("#row_" + id).remove();
+				this.calcGrandTotal();
+			},
+			calcGrandTotal: function(){
+				let sum = 0;
+				   $('#loadSupplyItems tbody input[id^="quantity_"]').each(function(){
+				     const v = parseInt($(this).val(), 10);
+				     sum += v;
+				   });
+				   $('#grand_total').text(sum);
+			}
+		}
+		 
+
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{layout/layout :: head}">
+
+</head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header bg-info text-white" th:text="${title}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-sm" th:href="@{/user/form}">Create User</a>
+				</h4>
+				<table class="table table-sm table-striped table-bordered table-hover">
+					<thead>
+						<tr>
+							<th sec:authorize="hasAnyRole('ADMIN','SUPERVISOR')">Id</th>
+							<th>User Name</th>						
+							<th>Role</th>
+							<th>Create At</th>
+							<th>Create Request Supply</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')">Active</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user : ${users}"
+							th:classappend="${!user.isActiveLabel} ? 'disabled-row table-secondary' : ''">
+
+							<td sec:authorize="hasAnyRole('ADMIN','SUPERVISOR')">
+								<a class="btn btn-primary btn-sm" th:href="@{'/user/view/' + ${user.idLabel}}"
+									th:text="${user.idLabel}"></a>
+							</td>
+
+							<td th:text="${user.firstNameLabel}+' ' +${user.lastNameLabel}"></td>							
+							<td th:text="${user.roleLabel}"></td>
+							<td th:text="${user.createAtLabel}"></td>
+
+							<td>
+								<a class="btn btn-success btn-sm" th:href="@{'/request/form/' + ${user.idLabel}}">Create
+									Request</a>
+							</td>
+
+							<td sec:authorize="hasRole('ROLE_ADMIN')">
+								<a class="btn btn-outline-info btn-sm"
+									th:href="@{'/user/form/' + ${user.idLabel}}">Edit</a>
+							</td>
+
+							<!-- Toggle -->
+							<td sec:authorize="hasRole('ROLE_ADMIN')" class="keep-enabled">
+								<form th:action="@{/user/toggle/{id}(id=${user.idLabel})}" method="post">
+									<!--Security Token-->
+									<div th:replace="~{layout/_security :: csrf}"></div>
+									<label class="switch">
+										<input type="checkbox" name="active" th:checked="${user.isActiveLabel}"
+											onchange="this.form.submit()">
+										<span class="slider round"></span>
+									</label>
+								</form>
+							</td>
+						</tr>
+
+
+					</tbody>
+				</table>
+				<nav th:replace="paginator/paginator-nav :: paginator"></nav>
+			</div>
+		</div>
+
+	</div>
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

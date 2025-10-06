@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout/layout :: head">
+
+</head>
+
+<body>
+	<table th:fragment="requestItems" class="d-none">
+		
+		<tbody id="requestItemsTemplate">
+			<tr id="row_{ID}"><!--Parameter Name {ID}-->
+				<td class="d-none"><input type="hidden" value="{ID}" 
+					name="item_id[]" /></td>
+				<td>{NAME}</td>
+				<td><input type="number" value="1" name="quantity[]" id="quantity_{ID}" class="form-control col-sm4" />
+				</td><!--By the fault the quanitity value is 1 but, that
+				changes in the UI-->
+				<td><a href="#" class="btn  btn-danger btn-xs" onclick="itemsHelper.deleteRequestLine({ID});">x</a></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+
+</html>

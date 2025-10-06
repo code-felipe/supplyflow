@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}">
+
+</head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+	<div class="container py-4">
+		<div class="card bg-dark text-white">
+			<div class="card-header" th:text="${title}"></div>
+			<div class="card-body">
+				<!--Show all erros:
+			1. th:remove="tag" remueve el contenedor, porque no es necesario renderizarlo
+		-->
+				<div th:object="${user}" th:remove="tag">
+					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+					</ul>
+				</div>
+				<!--enctype: to upload any file-->
+				<form th:action="@{/register}" th:object="${user}" method="post" enctype="multipart/form-data">
+					<div class="form-group row">
+						<label for="first_name" class="col-form-label col-sm-2">First name</label>
+						<div class="col-sm-4">
+							<input type="text" id="first_name" th:field="*{firstName}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('firstName')}"
+								th:errors="*{firstName}"></small>
+							<small class="form-text text-muted">User First Name</small>
+
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="last_name" class="col-form-label col-sm-2">Last Name</label>
+						<div class="col-sm-4">
+							<input type="text" id="last_name" th:field="*{lastName}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('lastName')}"
+								th:errors="*{lastName}"></small>
+							<small class="form-text text-muted">User's Last Name</small>
+
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="email" class="col-form-label col-sm-2">Email</label>
+						<div class="col-sm-4">
+							<input type="text" id="email" th:field="*{email}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('email')}"
+								th:errors="*{email}"></small>
+							<small class="form-text text-muted">User's Email</small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="phone" class="col-form-label col-sm-2">Phone Number</label>
+						<div class="col-sm-4">
+							<input type="text" id="phone" th:field="*{phone}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('phone')}"
+								th:errors="*{phone}"></small>
+							<small class="form-text text-muted">User's Phone Number</small>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="password" class="col-form-label col-sm-2">Password</label>
+						<div class="col-sm-4">
+							<input type="password" id="password" th:field="*{password}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('password')}"
+								th:errors="*{password}"></small>
+							<small class="form-text text-muted">User's Password</small>
+
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label for="text" class="col-form-label col-sm-2">Invitation Code</label>
+						<div class="col-sm-4">
+							<input type="text" id="text" th:field="*{invitationCode}" class="form-control"
+								th:errorClass="'form-control alert-danger'" />
+							<small class="form-text text-danger" th:if="${#fields.hasErrors('invitationCode')}"
+								th:errors="*{invitationCode}"></small>
+							<small class="form-text text-muted">Invitation</small>
+
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-4">
+							<input type="submit" th:value="${user.id != null ? 'Edit' : 'Create'}"
+								class="btn btn-secondary" />
+						</div>
+					</div>
+					<!--Also @SessionAttributes can replace the hidden id-->
+					<!-- SupplyItem ID -->
+					<input type="hidden" th:field="*{id}" />
+
+				</form>
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>

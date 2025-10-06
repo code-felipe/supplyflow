@@ -1,0 +1,72 @@
+classDiagram
+  direction LR
+
+  class User {
+    Long id
+    String firstName
+    String lastName
+    String email <<UNIQUE>>
+    String phone
+    Role role
+    String password
+    Date createAt
+    -- Associations --
+    CustomerSite assignedSite
+    List~Request~ requests
+  }
+
+  class CustomerAccount {
+    Long id
+    String externalCode  <<UNIQUE>>
+    String name
+  }
+
+  class CustomerSite {
+    Long id
+    String externalCode  <<UNIQUE per customer>>
+    String name
+    -- FK --
+    CustomerAccount customer
+  }
+
+  class Request {
+    Long id
+    String description
+    String additionalItems
+    Date createAt
+    -- FK --
+    User user
+    CustomerSite shipTo
+    -- Children --
+    List~RequestItem~ items
+  }
+
+  class RequestItem {
+    Long id
+    int quantity  <<CHECK > 0>>
+    -- FK --
+    SupplyItem supplyItem
+  }
+
+  class SupplyItem {
+    Long id
+    String referenceName
+    String referenceNumber
+    String description
+    Date createAt
+    // (opcional) Product product
+  }
+
+  class Role {
+    Long id
+    String authority
+  }
+
+  %% Cardinalities
+  CustomerAccount "1" --> "0..*" CustomerSite : has
+  CustomerSite "1" --> "0..*" User : assigned to
+  User "1" --> "0..*" Request : places
+  CustomerSite "1" --> "0..*" Request : shipTo
+  Request "1" --> "0..*" RequestItem : contains
+  SupplyItem "1" --> "0..*" RequestItem : referenced by
+

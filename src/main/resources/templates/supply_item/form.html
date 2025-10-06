@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/layout :: head}">
+
+</head>
+
+<body>
+	<header th:replace="~{layout/layout :: header}"></header>
+	<div class="container my-4">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<a class="btn btn-outline-secondary btn-sm" th:href="@{/supply_item/list}">← Back</a>
+			<h5 class="mb-0" th:text="${title}">Supply Item Form</h5>
+		</div>
+		<div class="card shadow-sm">
+			<div class="card-body p-4">
+				<!--Show all erros:
+			1. th:remove="tag" remueve el contenedor, porque no es necesario renderizarlo
+		-->
+				<div th:object="${supplyItem}" th:remove="tag">
+					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-4">
+						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+					</ul>
+				</div>
+				<!--enctype: to upload any file-->
+				<form th:action="@{/supply_item/form}" th:object="${supplyItem}" method="post"
+					enctype="multipart/form-data">
+					<!--Security Token-->
+					<div th:replace="~{layout/_security :: csrf}"></div>
+					<!-- === Supply Items data === -->
+					<div class="mb-4">
+						<h6 class="text-muted text-uppercase mb-3">Product</h6>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="code">Code</label>
+								<input type="text" id="code" th:field="*{product.code}" class="form-control"
+									th:errorClass="'form-control is-invalid'">
+								<small class="invalid-feedback" th:if="${#fields.hasErrors('product.code')}"
+									th:errors="*{product.code}"></small>
+								<small class="form-text text-muted">Product Unique Code</small>
+							</div>
+
+							<div class="form-group col-md-6">
+								<label for="name">Name</label>
+								<input type="text" id="name" th:field="*{product.name}" class="form-control"
+									th:errorClass="'form-control is-invalid'">
+								<small class="invalid-feedback" th:if="${#fields.hasErrors('product.name')}"
+									th:errors="*{product.name}"></small>
+								<small class="form-text text-muted">Product Full Name</small>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="packagingCode">Packaging Code</label>
+								<input type="text" id="packagingCode" th:field="*{packagingCode}" class="form-control"
+									th:errorClass="'form-control is-invalid'">
+								<small class="invalid-feedback" th:if="${#fields.hasErrors('packagingCode')}"
+									th:errors="*{packagingCode}"></small>
+								<small class="form-text text-muted">Packaging Product Code</small>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="unitOfMeasure">Unit of Measure</label>
+								<input type="text" id="unitOfMeasure" th:field="*{unitOfMeasure}" class="form-control"
+									th:errorClass="'form-control is-invalid'">
+								<small class="invalid-feedback" th:if="${#fields.hasErrors('unitOfMeasure')}"
+									th:errors="*{unitOfMeasure}"></small>
+								<small class="form-text text-muted">Unite of Measure, e.g: 'Case', 'Bottle'</small>
+							</div>
+
+							<div class="form-group col-md-6">
+								<label for="specification">Specification</label>
+								<input type="text" id="specification" th:field="*{specification}" class="form-control"
+									th:errorClass="'form-control is-invalid'">
+								<small class="invalid-feedback" th:if="${#fields.hasErrors('specification')}"
+									th:errors="*{specification}"></small>
+								<small class="form-text text-muted">Product Specification</small>
+							</div>
+						</div>
+					</div>
+
+					<!-- Submit -->
+					<div class="d-flex justify-content-between align-items-center">
+						<input type="submit" class="btn btn-primary"
+							th:value="${supplyItem.id != null ? 'Update Product' : 'Create Product'}">
+						<small class="text-muted">Changes will save on Product.</small>
+					</div>
+
+					<!-- Hidden id -->
+					<input type="hidden" th:field="*{id}" />
+					<!-- Product ID -->
+					<input type="hidden" th:field="*{product.id}" />
+				</form>
+			</div>
+		</div>
+	</div>
+	</div>
+	<footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+
+</html>
