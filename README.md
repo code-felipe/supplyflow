@@ -60,18 +60,18 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
   B -- No --> C[Public Registration (/register)]
   C --> C1[Enter invitationCode]
   C1 --> D{Valid and unused?}
-  D -- No --> C2[Show error<br/>"Invalid or used code"]
+  D -- No --> C2[Show error"\n""Invalid or used code"]
   D -- Yes --> E[Create User (ROLE_CONCIERGE)]
-  E --> F[Mark invitation_code.used=true<br/>usedBy = new User]
+  E --> F[Mark invitation_code.used=true"\n"usedBy = new User]
   F --> G[Redirect to /login]
 
   B -- Yes --> H[/Login/]
-  H --> I[Spring Security<br/>(JdbcUserDetailsManager)]
+  H --> I[Spring Security"\n"(JdbcUserDetailsManager)]
   I --> J{Authentication OK?}
   J -- No --> H2[Invalid credentials]
   J -- Yes --> K{Authorization}
-  K -- ADMIN/SUPERVISOR --> L[Admin: generate codes,<br/>manage users/sites]
-  K -- CONCIERGE --> M[Ops: view/edit own profile,<br/>create Requests]
+  K -- ADMIN/SUPERVISOR --> L[Admin: generate codes,"\n"manage users/sites]
+  K -- CONCIERGE --> M[Ops: view/edit own profile,"\n"create Requests]
   K -- Otherwise --> N[403 - Access denied]
 
 ```
