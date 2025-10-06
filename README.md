@@ -56,6 +56,7 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
 
 # Flowchart
 ```mermaid
+flowchart TD
   A[Visitor] --> B{Has an account?}
   B -- No --> C[Public Registration (/register)]
   C --> C1[Enter invitationCode]
@@ -77,6 +78,7 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
 ```
 # Public Registration (Invitation Code Service)
 ```mermaid
+flowchart LR
   R1["POST /register\nUserForm"] --> R2{invitationCode empty?}
   R2 -- Yes --> R0["Show field error"] --> R1
   R2 -- No --> R3["Normalize (trim + uppercase)"]
@@ -93,6 +95,7 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
 ```
 # Login & Authorization (Spring Security + JDBC)
 ```mermaid
+flowchart TD
   L1["Login form"] --> L2["AuthenticationManager"]
   L2 --> L3["DaoAuthenticationProvider"]
   L3 --> L4["JdbcUserDetailsManager\n(custom SQL queries)"]
