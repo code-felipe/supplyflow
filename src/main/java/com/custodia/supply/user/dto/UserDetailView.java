@@ -34,6 +34,7 @@ public class UserDetailView {
 	/** Solo lectura para mostrar en pantalla (opcionales) ---- */
 	private String assignedCustomerName; // derivado vía site.customer.name
 	private String assignedCustomerCode;
+	private String assignedCustomerEmail; 
 
 	private String assignedSiteAddress; // site.name (ShipTo name)
 	private String assignedSiteCode; // site.externalCode (ShipTo code)
@@ -89,6 +90,10 @@ public class UserDetailView {
 	public String getAssignedCustomerCodeLabel() {
 		return (assignedCustomerCode == null || assignedCustomerCode.isBlank()) ? "No asigned" : assignedCustomerCode;
 	}
+	
+	public String getAssignedCustomerEmailLabel() {
+		return (assignedCustomerEmail == null || assignedCustomerEmail.isBlank()) ? "No asigned" : assignedCustomerEmail;
+	}
 
 	public String getAssignedSiteAddressLabel() {
 		return (assignedSiteAddress == null || assignedSiteAddress.isBlank()) ? "No asigned" : assignedSiteAddress;
@@ -126,6 +131,7 @@ public class UserDetailView {
 			if (u.getAssignedSite().getCustomer() != null) {
 				row.assignedCustomerCode = c.getCustomer().getExternalCode();
 				row.assignedCustomerName = c.getCustomer().getName();
+				row.assignedCustomerEmail = c.getCustomer().getEmail();
 			}
 		}
 

@@ -65,57 +65,64 @@ public class SpringSecurityConfig {
 //    }
 	// For later
 	// , AuthenticationSuccessHandler loginSuccessHandler
+	//==== Replaced by Anotations ===
+	// ADMIN-only primero (más estricto)
+//      .requestMatchers("/user/form/**", "/user/delete/**").hasRole("ADMIN")
+//      .requestMatchers("/user/toggle/**").hasRole("ADMIN")
+//      .requestMatchers("/request/delete/**").hasRole("ADMIN")
+//      .requestMatchers("/supply_item/form/**").hasRole("ADMIN")
+
+	// USER o ADMIN (más permisivo)
+//      .requestMatchers("/user/view/**", "/user/list").hasAnyRole("USER","ADMIN")
+//      .requestMatchers("/request/form/**").hasAnyRole("USER","ADMIN")
+//      .requestMatchers("/supply_item/list/**").hasAnyRole("USER","ADMIN")
+	//== Other Implementation ==
+	  // ADMIN-only (ejemplos típicos de escritura)
+//      .requestMatchers("/user/form/**", "/user/delete/**", "/user/toggle/**").hasRole("ADMIN")
+//      .requestMatchers("/request/delete/**", "/supply_item/form/**").hasRole("ADMIN")
+
+      // Vistas para USER/ADMIN/SUPERVISOR
+//      .requestMatchers("/user/view/**").hasAnyRole("ADMIN","SUPERVISOR","CONCIERGE")
+//      .requestMatchers("/user/list/**").hasAnyRole("ADMIN","SUPERVISOR")
+//      .requestMatchers("/supply_item/list/**", "/request/form/**").hasAnyRole("ADMIN","SUPERVISOR", "CONCIERGE")
+
+      // Concierge: restringe a SU vista (/user/view/{suId}) con chequeo adicional abajo o @PreAuthorize
+      // Si su vista tiene un patrón general, mantener autenticado y validar en el controlador.
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(auth -> auth
-				// public assets + root + login
-				.requestMatchers("/", "/login", "/error", "/css/**", "/js/**", "/images/**").permitAll()
-				.requestMatchers(HttpMethod.GET,  "/register").permitAll()
-		        .requestMatchers(HttpMethod.POST, "/register").permitAll()
-				//==== Replaced by Anotations ===
-				// ADMIN-only primero (más estricto)
-//			      .requestMatchers("/user/form/**", "/user/delete/**").hasRole("ADMIN")
-//			      .requestMatchers("/user/toggle/**").hasRole("ADMIN")
-//			      .requestMatchers("/request/delete/**").hasRole("ADMIN")
-//			      .requestMatchers("/supply_item/form/**").hasRole("ADMIN")
+	    http
+	      .authorizeHttpRequests(auth -> auth
+	          // públicos (incluye el inicio del flujo OAuth)
+	          .requestMatchers("/", "/login", "/error",
+	                           "/css/**", "/js/**", "/images/**",
+	                           "/webjars/**").permitAll()
+	          .requestMatchers(HttpMethod.GET,  "/register").permitAll()
+	          .requestMatchers(HttpMethod.POST, "/register").permitAll()
+	          // todo lo demás requiere auth
+	          .anyRequest().authenticated()
+	      )
 
-				// USER o ADMIN (más permisivo)
-//			      .requestMatchers("/user/view/**", "/user/list").hasAnyRole("USER","ADMIN")
-//			      .requestMatchers("/request/form/**").hasAnyRole("USER","ADMIN")
-//			      .requestMatchers("/supply_item/list/**").hasAnyRole("USER","ADMIN")
-				//== Other Implementation ==
-				  // ADMIN-only (ejemplos típicos de escritura)
-//	              .requestMatchers("/user/form/**", "/user/delete/**", "/user/toggle/**").hasRole("ADMIN")
-//	              .requestMatchers("/request/delete/**", "/supply_item/form/**").hasRole("ADMIN")
+	      // Login local (tu formulario)
+	      .formLogin(login -> login
+	          .loginPage("/login")
+	          .usernameParameter("email")      // <input name="email">
+	          .passwordParameter("password")
+	          .successHandler(successHandler)  // tu handler existente
+	          .failureUrl("/login?error")
+	          .permitAll()
+	      )
+	      // Logout (una sola vez; quitamos el duplicado)
+	      .logout(logout -> logout
+	          .logoutUrl("/logout")
+	          .logoutSuccessUrl("/login?logout")
+	          .permitAll()
+	      )
 
-	              // Vistas para USER/ADMIN/SUPERVISOR
-//	              .requestMatchers("/user/view/**").hasAnyRole("ADMIN","SUPERVISOR","CONCIERGE")
-//	              .requestMatchers("/user/list/**").hasAnyRole("ADMIN","SUPERVISOR")
-//	              .requestMatchers("/supply_item/list/**", "/request/form/**").hasAnyRole("ADMIN","SUPERVISOR", "CONCIERGE")
+	      .exceptionHandling(ex -> ex.accessDeniedPage("/error_403"));
 
-	              // Concierge: restringe a SU vista (/user/view/{suId}) con chequeo adicional abajo o @PreAuthorize
-	              // Si su vista tiene un patrón general, mantener autenticado y validar en el controlador.
-
-				// everything else requires auth
-				.anyRequest().authenticated())
-				// This implementation for latter
-				.formLogin(login -> login
-						.loginPage("/login")
-						.usernameParameter("email")      // <input name="email">
-					    .passwordParameter("password") 
-						.successHandler(successHandler)
-					    .failureUrl("/login?error")   // ⟵ ESTA// Needs correction is not working -> LoginSuccessHandler
-						
-						
-//					.defaultSuccessUrl("/user/list", false) //is now part of successHandler
-						// .successHandler(loginSuccessHandler) // <<<< aquí
-						.permitAll())
-				.logout(logout -> logout.permitAll())
-				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/login?logout").permitAll())
-				.exceptionHandling(ex -> ex.accessDeniedPage("/error_403"));
-
-		return http.build();
+	    return http.build();
 	}
+
 	
 	
 	// Reemplace el autenticationManager por este, debido a un ciclo infinito con el proxy

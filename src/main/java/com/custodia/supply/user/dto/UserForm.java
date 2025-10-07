@@ -58,6 +58,7 @@ public class UserForm {
 	/** Solo lectura para mostrar en pantalla (opcionales) ---- */
 	private String assignedCustomerName; // derivado vía site.customer.name
 	private String assignedCustomerCode;
+	private String assginedCustomerEmail;
 
 	private String assignedSiteAddress; // site.name (ShipTo name)
 	private String assignedSiteCode; // site.externalCode (ShipTo code)
@@ -103,14 +104,6 @@ public class UserForm {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-
-//	public Role getRole() {
-//		return role;
-//	}
-//
-//	public void setRole(Role role) {
-//		this.role = role;
-//	}
 
 	public String getPassword() {
 		return password;
@@ -175,6 +168,13 @@ public class UserForm {
 	public void setAssignedCustomerCode(String assignedCustomerCode) {
 		this.assignedCustomerCode = assignedCustomerCode;
 	}
+	
+	public String getAssignedCustomerEmail() {
+		return assginedCustomerEmail;
+	}
+	public void setAssignedCustomerEmail(String assignedCustomerEmail) {
+		this.assginedCustomerEmail = assignedCustomerEmail;
+	}
 
 	public String getAssignedSiteAddress() {
 		return assignedSiteAddress;
@@ -223,6 +223,7 @@ public class UserForm {
 			if (u.getAssignedSite().getCustomer() != null) {
 				form.setAssignedCustomerCode(c.getCustomer().getExternalCode());
 				form.setAssignedCustomerName(c.getCustomer().getName());
+				form.setAssignedCustomerEmail(c.getCustomer().getEmail());
 			}
 		}
 		

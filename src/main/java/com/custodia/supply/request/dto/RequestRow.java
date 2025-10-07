@@ -12,10 +12,12 @@ public class RequestRow {
 	private Long id;
     private String description;
     private String additionalItems;
-    private Date createAt;       // usa Date si tu entidad Request usa Date
-    private String siteAddress;     // puede venir null (LEFT JOIN)
+    private Date createAt;       
+    
+    private String siteAddress;     
     private String siteCode;
-    private Long itemsCount;// puede venir null
+    
+    private Long itemsCount;
     private Long totalQuantity;   // <-- NUEVO
     
 

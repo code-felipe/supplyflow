@@ -154,6 +154,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 			// Alta en línea: crear/buscar Customer y luego Site por código
 			String custCode = trimOrNull(form.getAssignedCustomerCode());
 			String custName = trimOrNull(form.getAssignedCustomerName());
+			String custEmail = trimOrNull(form.getAssignedCustomerEmail());
 			String siteCode = trimOrNull(form.getAssignedSiteCode());
 			String siteAddress = trimOrNull(form.getAssignedSiteAddress());
 
@@ -161,6 +162,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 				CustomerAccount n = new CustomerAccount();
 				n.setExternalCode(custCode);
 				n.setName(custName);
+				n.setEmail(custEmail);
 				return customerAccountDao.save(n);
 			});
 
@@ -169,6 +171,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 				s.setCustomer(acc);
 				s.setExternalCode(siteCode);
 				s.setAddress(siteAddress);
+				
 				return customerSiteDao.save(s);
 			});
 

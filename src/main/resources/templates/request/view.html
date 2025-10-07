@@ -1,66 +1,3 @@
-<!--<!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="layout/layout :: head"></head>
-
-<body>
-	<header th:replace="layout/layout :: header"></header>
-
-	<div class="container py-4">
-
-		<div class="card bg-light">
-			<div class="card-header" th:text="${title}"></div>
-			<div class="card-body">
-
-				<h4 class="card-title">
-					<a th:href="@{'/user/view/' + ${request.user.id}}" class="btn btn-light btn-xs">&laquo; back</a>
-				</h4>
-				<ul class="list-group my-2">
-					<li class="list-group-item list-group-item-primary" th:text="'User Data'"></li>
-					<li class="list-group-item" th:text="${request.user}"></li>
-					<li class="list-group-item" th:text="${request.user.email}"></li>
-				</ul>
-
-				<ul class="list-group">
-					<li class="list-group-item list-group-item-success" th:text="'Request Data'"></li>
-					<li class="list-group-item" th:text="'Page: '+${request.id}"></li>
-					<li class="list-group-item" th:text="'Description: '+${request.description}"></li>
-					<li class="list-group-item" th:text="'Date: '+${request.createAt}"></li>
-				</ul>
-
-				Listing all supply Items
-				<div class="alert alert-info my4" th:if="${#lists.isEmpty(request.requests)}" th:text="'There is not lines for the requests' + ${request.description}"></div>
-				<table th:if="${not #lists.isEmpty(request.requests)}" class="table table-sm table-striped table-bordered table-hover my-3">
-					<thead>
-						<tr>
-							<th>Id</th>
-							<th>Product</th>
-							<th>Quantity</th>									
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="r: ${request.requests}">
-							<td th:text="${r.supplyItem.id}"></td>
-							<td th:text="${r.supplyItem}"></td>
-							<td th:text="${r.quantity}"></td>
-						</tr>
-					</tbody>
-				</table>
-				<h5 class="float-right">Grand Total <span th:text="${request.total}" class="badge badge-secondary"></span></h5>
-			<nav th:replace="paginator/paginator-nav :: paginator"></nav>
-
-			</div>
-		</div>
-
-	</div>
-
-
-
-	<footer th:replace="layout/layout :: footer"></footer>
-</body>
-
-</html>-->
-
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
@@ -114,10 +51,11 @@
 
 				      <div class="mb-3">
 				        <div class="small text-muted">From (Client)</div>
-				        <div class="d-flex justify-content-between align-items-center">
-				          <span class="font-weight-bold" th:text="${request.user.assignedSite.customer.name}">—</span>
-				          <span class="badge badge-info" th:text="${request.user.assignedSite.customer.externalCode}">—</span>
-				        </div>
+				        <ul class="d-flex justify-content-between align-items-center list-unstyled">
+				          <li class="font-weight-bold" th:text="${request.user.assignedSite.customer.name}">—</li>
+						  <li class="font-weight-bold" th:text="${request.user.assignedSite.customer.email}">—</li>
+				          <li class="badge badge-info" th:text="${request.user.assignedSite.customer.externalCode}">—</li>
+				        </ul>
 				      </div>
 
 				      <div>

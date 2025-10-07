@@ -46,8 +46,10 @@ public class RequestForm {
     private Long assignedSiteId;   // from Request.shipTo.id
     private String siteAddress;       // from Request.shipTo.name
     private String siteCode;       // from Request.shipTo.externalCode
+    
     private String customerName;   // from Request.shipTo.customer.name
     private String customerCode;   // from Request.shipTo.customer.externalCode
+    private String customerEmail;   // from Request.shipTo.customer.email
 
     public RequestForm() {}
 
@@ -67,7 +69,8 @@ public class RequestForm {
             String siteAddress,
             String siteCode,
             String customerName,
-            String customerCode
+            String customerCode,
+            String customerEmail
     ) {
         this.id = id;
         this.description = description;
@@ -85,6 +88,7 @@ public class RequestForm {
         this.siteCode = siteCode;
         this.customerName = customerName;
         this.customerCode = customerCode;
+        this.customerEmail = customerEmail;
     }
 
     // Getters & Setters
@@ -135,6 +139,9 @@ public class RequestForm {
 
     public String getCustomerCode() { return customerCode; }
     public void setCustomerCode(String customerCode) { this.customerCode = customerCode; }
+    
+    public String getCustomerEmail() {return customerEmail;};
+    public void setCustomerEmail(String customerEmail) {this.customerEmail = customerEmail;}
 
     // Factory: map from entity -> DTO
     public static RequestForm of(Request re) {
@@ -169,6 +176,7 @@ public class RequestForm {
             if (site.getCustomer() != null) {
                 r.setCustomerName(site.getCustomer().getName());
                 r.setCustomerCode(site.getCustomer().getExternalCode());
+                r.setCustomerEmail(site.getCustomer().getEmail());
             }
         }
 
