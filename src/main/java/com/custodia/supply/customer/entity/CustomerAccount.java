@@ -24,7 +24,7 @@ public class CustomerAccount implements Serializable {
 	@Column(length = 150)
 	private String name;
 	
-	@Column(unique = true, length = 30)
+	@Column(unique = true, length = 60)
 	private String email;
 
 	public Long getId() {
