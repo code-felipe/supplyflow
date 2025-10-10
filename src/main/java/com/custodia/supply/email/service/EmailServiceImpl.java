@@ -48,14 +48,13 @@ public class EmailServiceImpl implements IEmailService{
 	
 	
 	@Override
-	 /** templateName = "email/email" (sin /templates ni .html) */
     public Boolean sendEmailWithHtml(String to, String subject, String templateName, Long requestId) {
         try {
             // 1) Render Thymeleaf
             Context ctx = new Context();
             ctx.setVariable("title", "Actualización");   // <h1 th:text="${title}">
             ctx.setVariable("year", Year.now().getValue());
-            // si quieres usar request.user.firstName en la vista:
+            // i can use de object with request.user.firstName en la vista:
             // ctx.setVariable("request", requestService.findOne(requestId));
 
             String html = templateEngine.process(templateName, ctx);

@@ -33,26 +33,27 @@
 							th:classappend="${!user.active} ? 'disabled-row table-secondary' : ''">
 
 							<td sec:authorize="hasAnyRole('ADMIN','SUPERVISOR')">
-								<a class="btn btn-primary btn-sm" th:href="@{'/user/view/' + ${user.id}}"
-									th:text="${user.id}"></a>
+								<a class="btn btn-primary btn-sm" th:href="@{'/user/view/' + ${user.idLabel}}"
+									th:text="${user.idLabel}"></a>
 							</td>
 
 							<td th:text="${user.firstNameLabel}+' ' +${user.lastNameLabel}"></td>							
 							<td th:text="${user.roleLabel}"></td>
-							<td th:text="${user.createAtLabel}"></td>							
+							<td th:text="${user.createAtLabel}"></td>
+
 							<td>
-								<a class="btn btn-success btn-sm" th:href="@{'/request/form/' + ${user.id}}">Create
+								<a class="btn btn-success btn-sm" th:href="@{'/request/form/' + ${user.idLabel}}">Create
 									Request</a>
 							</td>
 
 							<td sec:authorize="hasRole('ROLE_ADMIN')">
 								<a class="btn btn-outline-info btn-sm"
-									th:href="@{'/user/form/' + ${user.id}}">Edit</a>
+									th:href="@{'/user/form/' + ${user.idLabel}}">Edit</a>
 							</td>
 
 							<!-- Toggle -->
 							<td sec:authorize="hasRole('ROLE_ADMIN')" class="keep-enabled">
-								<form th:action="@{/user/toggle/{id}(id=${user.id})}" method="post">
+								<form th:action="@{/user/toggle/{id}(id=${user.idLabel})}" method="post">
 									<!--Security Token-->
 									<div th:replace="~{layout/_security :: csrf}"></div>
 									<label class="switch"><!--Antes isActiveLabel-->

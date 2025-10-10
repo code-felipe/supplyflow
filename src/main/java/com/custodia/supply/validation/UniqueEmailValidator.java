@@ -9,21 +9,21 @@ import com.custodia.supply.user.dao.IUserDao;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class UniqueEmailValidator  implements ConstraintValidator<UniqueEmail, Object>{
-	
+public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, Object> {
+
 	@Autowired
 	private IUserDao userDao;
-	
-	 private String emailField;
-	    private String idField;
 
-	    @Override
-	    public void initialize(UniqueEmail anno) {
-	        this.emailField = anno.emailField();
-	        this.idField = anno.idField();
-	    }
-	    
-	    // Does not shows error message below the input
+	private String emailField;
+	private String idField;
+
+	@Override
+	public void initialize(UniqueEmail anno) {
+		this.emailField = anno.emailField();
+		this.idField = anno.idField();
+	}
+
+	// Does not shows error message below the input
 //		@Override
 //		public boolean isValid(Object value, ConstraintValidatorContext target) {
 //			BeanWrapper  wrapper = new BeanWrapperImpl(value);
@@ -42,37 +42,32 @@ public class UniqueEmailValidator  implements ConstraintValidator<UniqueEmail, O
 //	        // UPDATE: excluir mi propio id
 //	        return !userDao.existsByEmailIgnoreCaseAndIdNot(normalized, id);
 //		}
-		
-		// Shows error below the input
-		
-	    @Override
-	    public boolean isValid(Object value, ConstraintValidatorContext context) {
-	        BeanWrapper wrapper = new BeanWrapperImpl(value);
-	        String email = (String) wrapper.getPropertyValue(emailField);
-	        Long id = (Long) wrapper.getPropertyValue(idField);
 
-	        if (email == null || email.isBlank()) return true; // deja que @Email/@Size manejen vacíos
+	// Shows error below the input
 
-	        String normalized = email.trim().toLowerCase();
+	@Override
+	public boolean isValid(Object value, ConstraintValidatorContext context) {
+		BeanWrapper wrapper = new BeanWrapperImpl(value);
+		String email = (String) wrapper.getPropertyValue(emailField);
+		Long id = (Long) wrapper.getPropertyValue(idField);
 
-	        boolean unique = (id == null)
-	                ? !userDao.existsByEmailIgnoreCase(normalized)
-	                : !userDao.existsByEmailIgnoreCaseAndIdNot(normalized, id);
+		if (email == null || email.isBlank())
+			return true; // deja que @Email/@Size manejen vacíos
 
-	        if (!unique) {
-	            // Enlaza el error al campo "email" en vez de global
-	            context.disableDefaultConstraintViolation();
-	            context.buildConstraintViolationWithTemplate(
-	                        context.getDefaultConstraintMessageTemplate()
-	                   )
-	                   .addPropertyNode(emailField)   // <- clave: liga al input email
-	                   .addConstraintViolation();
-	        }
+		String normalized = email.trim().toLowerCase();
 
-	        return unique;
-	    }	
-		
+		boolean unique = (id == null) ? !userDao.existsByEmailIgnoreCase(normalized)
+				: !userDao.existsByEmailIgnoreCaseAndIdNot(normalized, id);
 
-	    
+		if (!unique) {
+			// Enlaza el error al campo "email" en vez de global
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate())
+					.addPropertyNode(emailField) // <- clave: liga al input email
+					.addConstraintViolation();
+		}
+
+		return unique;
+	}
 
 }

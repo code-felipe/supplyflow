@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 
 import com.custodia.supply.invitation.entity.InvitationCode;
-import com.custodia.supply.user.dto.UserForm;
+import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.entity.User;
 
 public interface IInvitationCodeService {

@@ -3,6 +3,7 @@ package com.custodia.supply.user.entity;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +82,7 @@ public class User implements Serializable {
 	 */
 //	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Optimal for historicals.
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Request> requests;// bidireccional
+	private List<Request> requests = new ArrayList<Request>();// bidireccional
 
 	public User() {
 		requests = new ArrayList<Request>();
@@ -166,14 +167,13 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
-	public List<Request> getRequests() {
-		return requests;
-	}
+	 public List<Request> getRequests() {
+	        return requests == null ? Collections.emptyList() : requests;
+	    }
 
-	public void setRequests(List<Request> requests) {
-		this.requests = requests;
-	}
-
+	 public void setRequests(List<Request> requests) {
+	        this.requests = (requests == null) ? new ArrayList<>() : requests;
+	    }
 	public void addRequest(Request request) {
 		requests.add(request);
 	}

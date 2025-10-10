@@ -11,7 +11,7 @@ INSERT INTO supply_items (product_id, packaging_code, unit_of_measure, specifica
 INSERT INTO supply_items (product_id, packaging_code, unit_of_measure, specification, create_at) VALUES(2, '4/Carton','Carton','1600mL', NOW());
 
 /* Customer Accounts*/
-INSERT INTO customer_accounts (external_code, name, email) VALUES('000001', 'First Class CC', 'supplyflow.firstclass@gmail.com');
+INSERT INTO customer_accounts (external_code, name, email) VALUES('000001', 'First Class CC', 'felipephez@gmail.com');
 /* Customer Site */
 INSERT INTO customer_sites (external_code, address, customer_id) VALUES('00202001', '600 Hurtsbourne Ln pkwy', 1);
 INSERT INTO customer_sites (external_code, address, customer_id) VALUES('0004444', '700 Hurstbourne pkwy', 1);

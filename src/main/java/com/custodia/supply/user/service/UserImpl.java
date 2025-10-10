@@ -24,11 +24,10 @@ import com.custodia.supply.item.dao.ISupplyItemDao;
 import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.entity.SupplyItem;
 import com.custodia.supply.request.dao.IRequestDao;
-import com.custodia.supply.request.dto.RequestForm;
-import com.custodia.supply.request.dto.RequestRow;
+import com.custodia.supply.request.dto.RequestViewDTO;
 import com.custodia.supply.request.entity.Request;
 import com.custodia.supply.user.dao.IUserDao;
-import com.custodia.supply.user.dto.UserForm;
+import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.entity.User;
 import com.custodia.supply.util.paginator.IPageableService;
 
@@ -107,9 +106,85 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	/*
 	 * === NEEDS REFACTOR ===
 	 */
+	@Transactional
+	public Boolean save(UserFormDTO form) {
+
+	    User user = (form.getId() != null)
+	        ? userDao.findById(form.getId()).orElse(new User())
+	        : new User();
+
+	    if (user.getCreateAt() == null) user.setCreateAt(new Date());
+
+	    user.setFirstName(form.getFirstName());
+	    user.setLastName(form.getLastName());
+	    user.setEmail(form.getEmail());
+	    user.setPhone(form.getPhone());
+	    user.setIsActive(Boolean.TRUE.equals(form.getIsActive()));
+
+	    if (hasText(form.getPassword())) {
+	        user.setPassword(passwordEncoder.encode(form.getPassword()));
+	    }
+
+	    // Role por ID (o null)
+	    if (form.getRoleId() != null) {
+	        Role role = roleDao.findById(form.getRoleId())
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid roleId"));
+	        user.setRole(role);
+	    } else {
+	        user.setRole(null);
+	    }
+
+	    // --- SITE / CUSTOMER ---
+	    // A) Selección de site existente
+	    if (form.getAssignedSiteId() != null) {
+	        CustomerSite site = customerSiteDao.findById(form.getAssignedSiteId())
+	            .orElseThrow(() -> new IllegalArgumentException("Invalid siteId"));
+	        user.setAssignedSite(site);
+
+	    // B) Alta inline de CustomerAccount + CustomerSite
+	    } else if (allInlinePresent(form)) {
+	        // Normaliza/recorta
+	        String custCode    = trimOrNull(form.getAssignedCustomerCode());
+	        String custName    = trimOrNull(form.getAssignedCustomerName());
+	        String custEmail   = trimOrNull(form.getAssignedCustomerEmail()); // asegúrate que el DTO NO tenga el typo
+	        String siteCode    = trimOrNull(form.getAssignedSiteCode());
+	        String siteAddress = trimOrNull(form.getAssignedSiteAddress());
+
+	        // 1) Buscar o crear CustomerAccount por externalCode (único)
+	        CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElseGet(() -> {
+	            CustomerAccount n = new CustomerAccount();
+	            n.setExternalCode(custCode);
+	            n.setName(custName);
+	            n.setEmail(custEmail);
+	            return customerAccountDao.save(n);   // guarda primero la cuenta
+	        });
+
+	        // 2) Buscar o crear CustomerSite por (customer, externalCode)
+	        CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElseGet(() -> {
+	            CustomerSite s = new CustomerSite();
+	            s.setCustomer(acc);                  // vincula al account
+	            s.setExternalCode(siteCode);
+	            s.setAddress(siteAddress);
+	            return customerSiteDao.save(s);      // guarda el site
+	        });
+
+	        // 3) Asignar el site recién obtenido/creado al user
+	        user.setAssignedSite(site);
+
+	    // C) Nada seleccionado y sin inline completo: desasignar
+	    } else {
+	        user.setAssignedSite(null);
+	    }
+
+	    userDao.save(user);
+	    return true;
+	}
+
+
+	/*
 	@Override
 	@Transactional
-	public Boolean save(UserForm form) {
+	public Boolean save(UserFormDTO form) {
 		User user;
 
 		if (form.getId() != null) {
@@ -185,7 +260,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		userDao.save(user);
 		return true;
 	}
-
+*/
 	@Override
 	@Transactional
 	public Boolean delete(Long id) {
@@ -194,9 +269,15 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	}
 	//==== USER AND REQUESTS ===
 	// all requests from the user mapped to the user detail supply items
+//	@Override
+//	@Transactional(readOnly = true)
+//	public Page<RequestRow> findRequestsByUserId(Long id, Pageable page) {
+//		return requestDao.findRowsByUserId(id, page);
+//	}
+//	
 	@Override
 	@Transactional(readOnly = true)
-	public Page<RequestRow> findRequestsByUserId(Long id, Pageable page) {
+	public Page<RequestViewDTO> findRequestsByUserId(Long id, Pageable page) {
 		return requestDao.findRowsByUserId(id, page);
 	}
 	
@@ -263,7 +344,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	
 	@Override
 	@Transactional
-	public User registerWithInvitation(UserForm form) {
+	public User registerWithInvitation(UserFormDTO form) {
 		String raw = form.getInvitationCode();
 	    if (raw == null || raw.isBlank()) {
 	        throw new IllegalArgumentException("Invitation code is required");
@@ -303,7 +384,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	
 	@Override
 	@Transactional
-	public User updateUser(UserForm form) {
+	public User updateUser(UserFormDTO form) {
 		 User u = userDao.findById(form.getId())
 		            .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -320,7 +401,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	
 	//====Helpers
 
-	private boolean allInlinePresent(UserForm f) {
+	private boolean allInlinePresent(UserFormDTO f) {
 		return notBlank(f.getAssignedCustomerCode()) && notBlank(f.getAssignedCustomerName())
 				&& notBlank(f.getAssignedSiteCode()) && notBlank(f.getAssignedSiteAddress());
 	}

@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.custodia.supply.request.dto.RequestRow;
+import com.custodia.supply.request.dto.RequestViewDTO;
 import com.custodia.supply.request.entity.Request;
 //Request: filas para la tabla del detalle
 public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, CrudRepository<Request, Long> {
@@ -17,7 +17,7 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 	 * Helps to have no assigned attributes from CustomerAccount when User first register.
 	 */
 	 @Query(value = """
-			      select new com.custodia.supply.request.dto.RequestRow(
+			      select new com.custodia.supply.request.dto.RequestViewDTO(
 			        r.id,
 			        r.description,
 			        r.additionalItems,             
@@ -40,7 +40,7 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 			      where r.user.id = :userId
 			    """
 			  )
-			  Page<RequestRow> findRowsByUserId(@Param("userId") Long userId, Pageable pageable);
+			  Page<RequestViewDTO> findRowsByUserId(@Param("userId") Long userId, Pageable pageable);
 	 
 	 // No use lazy on request view - request/view/userId - Only one consult
 //	 @Query("select r from Request r join fetch r.user u join fetch r.requests l join fetch l.supplyItem where r.id=?1")

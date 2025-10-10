@@ -8,6 +8,7 @@ import com.custodia.supply.user.entity.User;
 import com.custodia.supply.user.util.OnRegister;
 import com.custodia.supply.validation.UniqueEmail;
 import com.custodia.supply.validation.ValidPhone;
+import com.custodia.supply.validation.customer.UniqueCustomerAccountEmail;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,8 +18,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-@UniqueEmail // Valida a nivel clase
-public class UserForm {
+@UniqueEmail(emailField="email", idField="id")// user.email único // Valida a nivel clase
+@UniqueCustomerAccountEmail                                      // assignedCustomerEmail vs users
+public class UserFormDTO {
 
 	private Long id;
 
@@ -58,11 +60,11 @@ public class UserForm {
 	/** Solo lectura para mostrar en pantalla (opcionales) ---- */
 	private String assignedCustomerName; // derivado vía site.customer.name
 	private String assignedCustomerCode;
-	private String assginedCustomerEmail;
+	private String assignedCustomerEmail;
 
 	private String assignedSiteAddress; // site.name (ShipTo name)
 	private String assignedSiteCode; // site.externalCode (ShipTo code)
-	
+
 	private String invitationCode;
 
 	public Long getId() {
@@ -132,7 +134,7 @@ public class UserForm {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+
 	public Long getRoleId() {
 		return roleId;
 	}
@@ -168,12 +170,13 @@ public class UserForm {
 	public void setAssignedCustomerCode(String assignedCustomerCode) {
 		this.assignedCustomerCode = assignedCustomerCode;
 	}
-	
+
 	public String getAssignedCustomerEmail() {
-		return assginedCustomerEmail;
+		return assignedCustomerEmail;
 	}
-	public void setAssignedCustomerEmail(String assignedCustomerEmail) {
-		this.assginedCustomerEmail = assignedCustomerEmail;
+
+	public void setAssignedCustomerEmail(String email) {
+		this.assignedCustomerEmail = email;
 	}
 
 	public String getAssignedSiteAddress() {
@@ -191,7 +194,7 @@ public class UserForm {
 	public void setAssignedSiteCode(String assignedSiteCode) {
 		this.assignedSiteCode = assignedSiteCode;
 	}
-	
+
 	public String getInvitationCode() {
 		return invitationCode;
 	}
@@ -201,39 +204,74 @@ public class UserForm {
 	}
 
 	// In case I need to map.
-	public static UserForm of(User u) {
-		UserForm form = new UserForm();
-		form.id = u.getId();
-		form.firstName = u.getFirstName();
-		form.lastName = u.getLastName();
-		form.email = u.getEmail();
-		form.phone = u.getPhone();
-		form.password = null;
-		form.createAt = u.getCreateAt();
-		form.isActive = u.getIsActive();
-		
-		form.setInvitationCode(null);
+//	public static UserFormDTO of(User u) {
+//		UserFormDTO form = new UserFormDTO();
+//		form.id = u.getId();
+//		form.firstName = u.getFirstName();
+//		form.lastName = u.getLastName();
+//		form.email = u.getEmail();
+//		form.phone = u.getPhone();
+//		form.password = null;
+//		form.createAt = u.getCreateAt();
+//		form.isActive = u.getIsActive();
+//		
+//		form.setInvitationCode(null);
+//
+//		if (u.getAssignedSite() != null) {
+//			CustomerSite c = u.getAssignedSite();
+//			form.setAssignedSiteId(c.getId());
+//			form.setAssignedSiteAddress(c.getAddress());
+//			form.setAssignedSiteCode(c.getExternalCode());
+//			// ← derivado: assignedCustomer
+//			if (u.getAssignedSite().getCustomer() != null) {
+//				form.setAssignedCustomerCode(c.getCustomer().getExternalCode());
+//				form.setAssignedCustomerName(c.getCustomer().getName());
+//			}
+//		}
+//		
+//		if(u.getRole() != null) {
+//			Role r = u.getRole();
+//			form.setRoleId(r.getId());
+//			form.setRole(r.getAuthority());
+//			
+//		}
+//		return form;
+//	}
 
-		if (u.getAssignedSite() != null) {
-			CustomerSite c = u.getAssignedSite();
-			form.setAssignedSiteId(c.getId());
-			form.setAssignedSiteAddress(c.getAddress());
-			form.setAssignedSiteCode(c.getExternalCode());
-			// ← derivado: assignedCustomer
-			if (u.getAssignedSite().getCustomer() != null) {
-				form.setAssignedCustomerCode(c.getCustomer().getExternalCode());
-				form.setAssignedCustomerName(c.getCustomer().getName());
-				form.setAssignedCustomerEmail(c.getCustomer().getEmail());
-			}
-		}
-		
-		if(u.getRole() != null) {
-			Role r = u.getRole();
-			form.setRoleId(r.getId());
-			form.setRole(r.getAuthority());
-			
-		}
-		return form;
-	}
+// misma  implementacion, pero agrego sets e customer email
+//	public static UserFormDTO of(User u) {
+//		UserFormDTO form = new UserFormDTO();
+//			form.setId(u.getId()); 
+//			form.setFirstName(u.getFirstName());
+//			form.setLastName(u.getLastName()); 
+//			form.setEmail(u.getEmail());
+//			form.setPhone(u.getPhone());
+//			form.setPassword(null);
+//			form.setCreateAt(u.getCreateAt());
+//			form.setIsActive(u.getIsActive());
+//		
+//			form.setInvitationCode(null);
+//
+//		if (u.getAssignedSite() != null) {
+//			CustomerSite c = u.getAssignedSite();
+//			form.setAssignedSiteId(c.getId());
+//			form.setAssignedSiteAddress(c.getAddress());
+//			form.setAssignedSiteCode(c.getExternalCode());
+//			// ← derivado: assignedCustomer
+//			if (u.getAssignedSite().getCustomer() != null) {
+//				form.setAssignedCustomerCode(c.getCustomer().getExternalCode());
+//				form.setAssignedCustomerName(c.getCustomer().getName());
+//				form.setAssignedCustomerEmail(c.getCustomer().getEmail());
+//			}
+//		}
+//		
+//		if(u.getRole() != null) {
+//			Role r = u.getRole();
+//			form.setRoleId(r.getId());
+//			form.setRole(r.getAuthority());
+//			
+//		}
+//		return form;
+//	}
 
 }

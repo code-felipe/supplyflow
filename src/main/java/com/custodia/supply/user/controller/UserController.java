@@ -32,24 +32,29 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.authority.service.IRoleService;
 import com.custodia.supply.customer.dao.ICustomerSiteDao;
-import com.custodia.supply.request.dao.IRequestDao;
-import com.custodia.supply.request.dto.RequestRow;
-import com.custodia.supply.user.dto.UserDetailView;
-import com.custodia.supply.user.dto.UserForm;
+
+import com.custodia.supply.request.dto.RequestMapper;
+
+import com.custodia.supply.request.dto.RequestViewDTO;
+import com.custodia.supply.request.entity.Request;
+
+import com.custodia.supply.user.dto.UserFormDTO;
+import com.custodia.supply.user.dto.UserMapper;
+import com.custodia.supply.user.dto.UserViewDTO;
 import com.custodia.supply.user.entity.User;
 import com.custodia.supply.user.service.IUserService;
-import com.custodia.supply.util.country.CountryPhone;
-import com.custodia.supply.util.enums.Role;
+
+
 import com.custodia.supply.util.paginator.IPageableService;
 import com.custodia.supply.util.paginator.PageRender;
-import com.custodia.supply.util.phone.ICountryPhone;
-import com.custodia.supply.web.util.FlashGuardsUser;
 
-import org.springframework.security.access.annotation.Secured;
+
+
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -127,13 +132,15 @@ public class UserController {
 		Pageable pageRequest = PageRequest.of(page, 5, Sort.by("createAt").descending());
 
 		Page<User> users = pageableEmployee.findAll(pageRequest);
-		// Map to handle nulls in the list
-		Page<UserDetailView> rows = users.map(UserDetailView::of);
+		// Map to handle nulls in the list - works good!
+		//Page<UserDetailView> usersDTO = users.map(UserDetailView::of);
+		// new implementation
+		Page<UserViewDTO> usersDTO = users.map(UserMapper::toDTO);
 
-		PageRender<UserDetailView> pageRender = new PageRender<>("/user/list", rows);
+		PageRender<UserViewDTO> pageRender = new PageRender<>("/user/list", usersDTO);
 
 		model.addAttribute("title", "Users");
-		model.addAttribute("users", rows);
+		model.addAttribute("users", usersDTO);
 		model.addAttribute("page", pageRender);
 
 		return "user/list";
@@ -141,58 +148,42 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','SUPERVISOR') or (hasRole('CONCIERGE') and @userSecurity.isSelf(#id, principal.username))")
-	@GetMapping(value = "/view/{id}")
-	public String view(@RequestParam(name = "page", defaultValue = "0") int page, @PathVariable(value = "id") Long id,
-			Map<String, Object> model,
-			RedirectAttributes flash) {
+	@GetMapping("/view/{id}")
+	public String view(@RequestParam(name = "page", defaultValue = "0") int page,
+	                   @PathVariable Long id,
+	                   Model model, RedirectAttributes flash) {
 
-		// Requests from the user
-		Pageable pageRequest = PageRequest.of(page, 5, Sort.by("createAt").descending());
-//		User user = userService.findOne(id);
-		Page<RequestRow> rows = userService.findRequestsByUserId(id, pageRequest);
-		PageRender<RequestRow> pageRender = new PageRender<>("/user/view/" + id, rows);
+	    User u = userService.findOne(id);
+	    if (u == null) {
+	        flash.addFlashAttribute("error", "The user does not exists in the data base");
+	        return "redirect:/user/list";
+	    }
+	    if (!Boolean.TRUE.equals(u.getIsActive())) {
+	        flash.addFlashAttribute("error", "Sorry the user is not active");
+	        return "redirect:/user/list";
+	    }
+	    
 
-		// Single consult brings all requests that match user id - Optimized with Left
-		// join!.
-		User u = userService.fetchByIdWithRequests(id);
+	    UserViewDTO user = UserMapper.toDTO(u);
 
-		if (u == null) {
-			flash.addFlashAttribute("error", "The user does not exists in the data base");
-			return "redirect:/user/list";
-		}
+	    Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
+	    Page<RequestViewDTO> requests = userService.findRequestsByUserId(id, pageable);
+	    PageRender<RequestViewDTO> pageRender = new PageRender<>("/user/view/" + id, requests);
+//	    Page<RequestViewDTO> requests = rx.map(RequestMapper::toDTO);
 
-		if (!u.getIsActive()) {
-			flash.addFlashAttribute("error", "Sorry the user is not active");
-			return "redirect:/user/list";
-		}
-		UserDetailView user = UserDetailView.of(u); // Validates empties fields and set to No assigned.
-
-		model.put("user", user);
-		model.put("requests", rows);
-		model.put("page", pageRender);
-		model.put("title", "User Detail " + user.getFirstNameLabel());
-
-		return "user/view";
-
-		// Double consult, brings user and with getRequests brings requests
-//		Optional<User> userOpt = userService.findById(id);
-
-//		if (!userOpt.isPresent()) {
-//			flash.addFlashAttribute("error", "The user does not exists in the data base");
-//			return "redirect:/user/list";
-//		}
-//
-//		if (!userOpt.get().getIsActive()) {
-//			flash.addFlashAttribute("error", "Sorry the user is not active");
-//			return "redirect:/user/list";
-//		}
+	    model.addAttribute("user", user);// Only user is send
+	    model.addAttribute("requests", requests);// Only request that match user id is send
+	    model.addAttribute("page", pageRender);
+	    model.addAttribute("title", "User Detail " + user.getFirstNameLabel());
+	    return "user/view";
 	}
+
 
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value = "/form")
 	public String createForm(Map<String, Object> model) {
 
-		model.put("user", new UserForm());
+		model.put("user", new UserFormDTO());
 		model.put("roles", roleService.findAll());// <---No longer using Role.values()
 		model.put("sites", customerDao.findAllForSelect());
 		model.put("title", "User form");
@@ -204,7 +195,7 @@ public class UserController {
 	// More robust than Secured
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("user") UserForm user, BindingResult result, Model model,
+	public String save(@Valid @ModelAttribute("user") UserFormDTO user, BindingResult result, Model model,
 			RedirectAttributes flash) {
 
 
@@ -242,7 +233,7 @@ public class UserController {
 			return "redirect:/user/list";
 		}
 
-		UserForm user = UserForm.of(u);
+		UserFormDTO user = UserMapper.of(u);
 
 		model.put("user", user);
 		model.put("roles", roleService.findAll());// not longer using enumerate

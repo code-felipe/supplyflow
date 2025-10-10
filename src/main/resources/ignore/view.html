@@ -13,7 +13,7 @@
 			<a sec:authorize="hasAnyRole('ADMIN','SUPERVISOR')" class="btn btn-outline-secondary btn-sm"
 				th:href="@{/user/list}">← Back to Users</a>
 			<div class="btn-group">
-				<a class="btn btn-primary btn-sm" th:href="@{'/request/form/' + ${user.id}}">Create Request</a>
+				<a class="btn btn-primary btn-sm" th:href="@{'/request/form/' + ${user.idLabel}}">Create Request</a>
 				<button class="btn btn-outline-primary btn-sm" onclick="window.print()">Print</button>
 			</div>
 		</div>
@@ -54,7 +54,7 @@
 								</div>
 								<div class="col-sm-3 mb-2">
 									<div class="small text-muted">Rol</div>
-									<span class="badge badge-secondary" th:text="${user.roleAuthority.roleLabel}">—</span>
+									<span class="badge badge-secondary" th:text="${user.roleLabel}">—</span>
 								</div>
 								<div class="col-sm-3 mb-2">
 									<div class="small text-muted">Create</div>
@@ -71,8 +71,8 @@
 						<div class="border rounded p-3 mb-3">
 							<div class="small text-muted">Client</div>
 							<div class="d-flex justify-content-between">
-								<div class="font-weight-semibold" th:text="${user.customerAccount.nameLabel}"></div>
-								<span class="badge badge-info" th:text="${user.customerAccount.codeLabel}">—</span>
+								<div class="font-weight-semibold" th:text="${user.assignedCustomerNameLabel}"></div>
+								<span class="badge badge-info" th:text="${user.assignedCustomerCodeLabel}">—</span>
 							</div>
 							<div class="small text-muted">Email</div>
 							<div class="d-flex justify-content-between">
@@ -83,20 +83,20 @@
 						<div class="border rounded p-3">
 							<div class="small text-muted">Ship To (Location)</div>
 							<div class="d-flex justify-content-between">
-								<div class="font-weight-semibold" th:text="${user.customerSite.addressLabel}">
+								<div class="font-weight-semibold" th:text="${user.assignedSiteAddressLabel}">
 								</div>
-								<span class="badge badge-info" th:text="${user.customerSite.codeLabel}">—</span>
+								<span class="badge badge-info" th:text="${user.assignedSiteCodeLabel}">—</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<!-- Request Table -->
-				<div th:if="${#lists.isEmpty(requests.content)}" class="alert alert-info my-3"
-				th:text="|There is no request for the user ${user.firstNameLabel} ${user.lastNameLabel}|">
+				<div th:if="${requests == null or requests.empty}" class="alert alert-info my-3"
+					th:text="'There is no request for the user ' + ${user.firstNameLabel} + ' ' + ${user.lastNameLabel}">
 				</div>
 
-				<div th:if="${not #lists.isEmpty(requests.content)}">
+				<div th:if="${requests != null and !requests.empty}">
 					<div class="d-flex justify-content-between align-items-center mb-2">
 						<h5 class="mb-0">Requests</h5>
 					</div>
@@ -118,7 +118,7 @@
 							<tr th:each="r : ${requests.content}">
 								<td th:text="${r.id}">—</td>
 								<td th:text="${r.description}">—</td>
-								<!--<td th:text="${#dates.format(r.createdAt,'yyyy-MM-dd')}">—</td>-->
+								<td th:text="${#dates.format(r.createAt,'yyyy-MM-dd')}">—</td>
 								<td><a class="btn btn-primary btn-sm" th:href="@{'/request/view/' + ${r.id}}"
 										th:text="'detail'"></a></td>
 								<td class="text-right" th:text="${r.totalQuantity}"></td>
@@ -137,9 +137,9 @@
 					<div class="border rounded p-3">
 						<div class="small text-muted">Requests Done</div>
 						<div class="d-flex justify-content-between">
-							<!--<div class="font-weight-semibold" th:text="${'Total requests'}">-->
+							<div class="font-weight-semibold" th:text="${'Total requests'}">
 							</div>
-							<!--<span class="badge badge-success" th:text="${requests.totalElements}">—</span>-->
+							<span class="badge badge-success" th:text="${requests.totalElements}">—</span>
 						</div>
 					</div>
 				</div>

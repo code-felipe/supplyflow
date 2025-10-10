@@ -18,7 +18,7 @@ import com.custodia.supply.authority.entity.Role;
 import com.custodia.supply.invitation.dao.IInvitationCodeDao;
 import com.custodia.supply.invitation.entity.InvitationCode;
 import com.custodia.supply.user.dao.IUserDao;
-import com.custodia.supply.user.dto.UserForm;
+import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.entity.User;
 import com.custodia.supply.util.paginator.IPageableService;
 

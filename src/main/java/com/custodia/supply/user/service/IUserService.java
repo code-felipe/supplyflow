@@ -9,8 +9,9 @@ import org.springframework.data.domain.Pageable;
 import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.entity.SupplyItem;
 import com.custodia.supply.request.dto.RequestRow;
+import com.custodia.supply.request.dto.RequestViewDTO;
 import com.custodia.supply.request.entity.Request;
-import com.custodia.supply.user.dto.UserForm;
+import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.entity.User;
 
 public interface IUserService {
@@ -22,7 +23,7 @@ public interface IUserService {
 	// Brings all requests that match user id.
 	public User fetchByIdWithRequests(Long id);
 	
-	public Boolean save(UserForm userForm);
+	public Boolean save(UserFormDTO userForm);
 	
 	public Boolean delete(Long id);
 	
@@ -32,8 +33,9 @@ public interface IUserService {
 	/*=== Uses Custom query RequestDao ===
 	 * Brings only the requestItems based on user Id -> helps to validate with UserRow DTO
 	 */
-	public Page<RequestRow> findRequestsByUserId(Long id, Pageable page);
-	
+//	public Page<RequestRow> findRequestsByUserId(Long id, Pageable page);
+	public Page<RequestViewDTO> findRequestsByUserId(Long id, Pageable page);
+
 	/*=== Uses Custom query UserDao ===
 	 *  Brings only the user attributes and CustomerSite -> helps to validate with UserDetailView DTO
 	 */
@@ -60,9 +62,9 @@ public interface IUserService {
 	public Boolean toggleUserActive(Long id);
 	
 	// == Register with invi ==
-	public User registerWithInvitation(UserForm form);
+	public User registerWithInvitation(UserFormDTO form);
 	
-	public User updateUser(UserForm form);
+	public User updateUser(UserFormDTO form);
 	
 	
 }

@@ -176,7 +176,7 @@ public class RequestForm {
             if (site.getCustomer() != null) {
                 r.setCustomerName(site.getCustomer().getName());
                 r.setCustomerCode(site.getCustomer().getExternalCode());
-                r.setCustomerEmail(site.getCustomer().getEmail());
+//                r.setCustomerEmail(site.getCustomer().getEmail());
             }
         }
 

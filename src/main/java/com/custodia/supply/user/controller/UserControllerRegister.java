@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.custodia.supply.user.dto.UserForm;
+import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.service.IUserService;
 
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class UserControllerRegister {
 	@RequestMapping(value = "/register")
 	public String createForm(Map<String, Object> model) {
 
-		model.put("user", new UserForm());
+		model.put("user", new UserFormDTO());
 		model.put("title", "User form");
 
 		return "register";
@@ -35,7 +35,7 @@ public class UserControllerRegister {
 
 	@PreAuthorize("permitAll()")
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String save(@Valid @ModelAttribute("user") UserForm user, BindingResult result, Model model,
+	public String save(@Valid @ModelAttribute("user") UserFormDTO user, BindingResult result, Model model,
 			RedirectAttributes flash) {
 
 		// 1) SOLO en registro público: exigir el código

@@ -209,8 +209,52 @@
 	</div>
 
 	<footer th:replace="~{layout/layout :: footer}"></footer>
-
 	<script>
+	(function () {
+	  const modeExisting = document.getElementById('modeExisting');
+	  const modeInline   = document.getElementById('modeInline');
+	  const secExisting  = document.getElementById('sectionExisting');
+	  const secInline    = document.getElementById('sectionInline');
+	  const selectSite   = document.getElementById('c_site');
+	  const inlineIds    = ['customerCode','customerName','customerEmail','siteCode','siteAddress'];
+	  const inlineInputs = inlineIds.map(id => document.getElementById(id));
+
+	  function setRequired(inline) {
+	    if (selectSite) selectSite.required = false;
+	    inlineInputs.forEach(i => { if (i) i.required = false; });
+	  }
+
+	  function showMode(inline) {
+	    secExisting.classList.toggle('d-none', inline);
+	    secInline.classList.toggle('d-none', !inline);
+	    setRequired(inline);
+	  }
+
+	  // INIT: decide modo según datos del form sin borrar nada
+	  const hasSiteSelected = !!(selectSite && selectSite.value); // si viene seleccionado por Thymeleaf
+	  if (modeExisting && modeInline) {
+	    modeExisting.checked = hasSiteSelected;
+	    modeInline.checked   = !hasSiteSelected;
+	  }
+	  showMode(!hasSiteSelected);
+
+	  // Al CAMBIAR de modo, ahí sí limpia el otro
+	  modeExisting?.addEventListener('change', e => {
+	    if (e.target.checked) {
+	      showMode(false);
+	      inlineInputs.forEach(i => { if (i) i.value = ''; }); 
+	    }
+	  });
+	  modeInline?.addEventListener('change', e => {
+	    if (e.target.checked) {
+	      showMode(true);
+	      if (selectSite) selectSite.selectedIndex = 0; 
+	    }
+	  });
+	})();
+	</script>
+
+	<!--<script>
 		(function () {
 			const modeExisting = document.getElementById('modeExisting');
 			const modeInline = document.getElementById('modeInline');
@@ -218,7 +262,7 @@
 			const secInline = document.getElementById('sectionInline');
 
 			const selectSite = document.getElementById('c_site');
-			const inlineIds = ['customerCode', 'customerName', 'siteCode', 'siteAddress'];
+			const inlineIds = ['customerCode', 'customerName','customerEmail', 'siteCode', 'siteAddress'];
 			const inlineInputs = inlineIds.map(id => document.getElementById(id));
 
 			function notEmpty(v) {return v && v.trim().length > 0;}
@@ -243,7 +287,7 @@
 			modeExisting.addEventListener('change', toggle);
 			modeInline.addEventListener('change', toggle);
 		})();
-	</script>
+	</script>-->
 </body>
 
 </html>
