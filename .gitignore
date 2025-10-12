@@ -35,3 +35,5 @@ application-local.yml
 import.sql
 import.sql
 /src/main/resources/ignore
+/src/main/resources/ignore/
+/src/main/resources/ignore/*.sql
