@@ -1,4 +1,4 @@
-package com.custodia.supply.user.dto;
+package com.custodia.supply.user.dto.suspended;
 
 import java.util.Collections;
 import java.util.Date;

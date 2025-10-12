@@ -4,18 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.custodia.supply.item.dto.ProductForm;
+import com.custodia.supply.item.dto.product.ProductFormDTO;
 import com.custodia.supply.item.service.IProductService;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Component
-public class UniqueProductCodeValidator implements ConstraintValidator<UniqueProductCode, ProductForm> {
+public class UniqueProductCodeValidator implements ConstraintValidator<UniqueProductCode, ProductFormDTO> {
 	@Autowired
     private IProductService productService;
 
 	@Override
-	public boolean isValid(ProductForm form, ConstraintValidatorContext context) {
+	public boolean isValid(ProductFormDTO form, ConstraintValidatorContext context) {
 		if (form == null) return true;
 
 	    String code = form.getCode();

@@ -6,6 +6,8 @@ public interface IProductService {
 	
 	public Product findByCode(String code);
 	
+	public Product findById(Long id);
+	
 	public void save(Product product);
 	
 	public boolean existsByCode(String code);

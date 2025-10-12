@@ -32,9 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.authority.service.IRoleService;
 import com.custodia.supply.customer.dao.ICustomerSiteDao;
-
 import com.custodia.supply.request.dto.RequestMapper;
-
 import com.custodia.supply.request.dto.RequestViewDTO;
 import com.custodia.supply.request.entity.Request;
 
@@ -88,46 +86,6 @@ public class UserController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
 			Authentication authentication, HttpServletRequest request) {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		// Manual way to implement this check using hasRole().
-		if (auth != null) {
-			logger.info(
-					"Using static way SecurityContextHolder.getContext().getAuthentication(); Hello user authenticated, your user name is: "
-							.concat(authentication.getName()));
-		}
-
-		if (hasRole("ROLE_ADMIN")) {
-			logger.info("Hello ".concat(auth.getName().concat(" have access")));
-		} else {
-			logger.info("Hello ".concat(auth.getName().concat(" do NOT have access")));
-		}
-
-		/*
-		 * Another way to authenticate by HttpServlet. Not need to implement private
-		 * hasRole()
-		 * 
-		 */
-
-		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request,
-				"ROLE_");// <--Prefix
-		if (securityContext.isUserInRole("ADMIN")) {
-			logger.info("Using SecurityContextHolderAwareRequestWrapper, Hello "
-					.concat(auth.getName().concat(" have access")));
-		} else {
-			logger.info("Using SecurityContextHolderAwareRequestWrapper, Hello "
-					.concat(auth.getName().concat(" do NOT have access")));
-
-		}
-
-		// Using request
-		if (request.isUserInRole("ROLE_ADMIN")) {// <--Prefix is must added.
-			logger.info("Using HttpServletRequest, Hello ".concat(auth.getName().concat(" have access")));
-		} else {
-			logger.info("Using HttpServletRequest, Hello ".concat(auth.getName().concat(" do NOT have access")));
-
-		}
 
 		Pageable pageRequest = PageRequest.of(page, 5, Sort.by("createAt").descending());
 

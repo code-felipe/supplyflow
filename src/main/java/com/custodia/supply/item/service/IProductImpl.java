@@ -38,6 +38,13 @@ public class IProductImpl implements IProductService {
 		// TODO Auto-generated method stub
 		return productDao.existsByCodeAndIdNot(code, id);
 	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Product findById(Long id) {
+		// TODO Auto-generated method stub
+		return productDao.findById(id).orElse(null);
+	}
 	
 	
 }

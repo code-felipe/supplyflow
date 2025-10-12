@@ -23,26 +23,6 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, Ob
 		this.idField = anno.idField();
 	}
 
-	// Does not shows error message below the input
-//		@Override
-//		public boolean isValid(Object value, ConstraintValidatorContext target) {
-//			BeanWrapper  wrapper = new BeanWrapperImpl(value);
-//	        String email = (String) wrapper.getPropertyValue(emailField);
-//	        Long id = (Long) wrapper.getPropertyValue(idField);
-//
-//	        if (email == null || email.isBlank()) return true; // opcional, no valida vacíos
-//
-//	        String normalized = email.trim().toLowerCase();
-//
-//	        // CREATE: id == null
-//	        if (id == null) {
-//	            return !userDao.existsByEmailIgnoreCase(normalized);
-//	        }
-//
-//	        // UPDATE: excluir mi propio id
-//	        return !userDao.existsByEmailIgnoreCaseAndIdNot(normalized, id);
-//		}
-
 	// Shows error below the input
 
 	@Override

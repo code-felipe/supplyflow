@@ -24,10 +24,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.customer.entity.CustomerSite;
 import com.custodia.supply.item.dto.SupplyItemForm;
+import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
+import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
 import com.custodia.supply.item.entity.SupplyItem;
-
+import com.custodia.supply.request.dto.UserRequestFormDTO;
+import com.custodia.supply.request.dto.UserRequestMapper;
 import com.custodia.supply.request.entity.Request;
 import com.custodia.supply.requestitem.entity.RequestItem;
+import com.custodia.supply.user.dto.UserFormDTO;
+import com.custodia.supply.user.dto.UserMapper;
 import com.custodia.supply.user.entity.User;
 import com.custodia.supply.user.service.IUserService;
 
@@ -47,19 +52,23 @@ public class RequestController {
 	public String make(@PathVariable(value = "userId") Long userId, Map<String, Object> model,
 			RedirectAttributes flash) {
 
-		User user = userService.findOne(userId);
-		if (user == null) {
+		User u = userService.findOne(userId);
+//		User u = userService.fetchByIdWithRequests(userId);
+		if (u == null) {
 			flash.addAttribute("error", "The user does not exists in the data base");
 			return "redirect:/list";
 		}
 
-		if (!user.getIsActive()) {
+		if (!u.getIsActive()) {
 			flash.addFlashAttribute("error", "Sorry the user is not active");
 			return "redirect:/user/list";
 		}
-
+		
+//		UserRequestFormDTO request = UserRequestMapper.toDTO(u);
+		
 		Request request = new Request();
-		request.setUser(user);
+		
+		request.setUser(u);
 
 		model.put("request", request);
 		model.put("title", "Create Request");

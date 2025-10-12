@@ -44,7 +44,7 @@ public class EmailController {
 			message.setText("Confirmation that the email it went throught");
 			mailSender.send(message);
 			// ResponseEntity help to check status?
-			System.out.println("request id: " + requestId);
+	
 			return "Sent";
 		} catch (Exception e) {
 			return "Error";
@@ -54,10 +54,11 @@ public class EmailController {
 	@PostMapping("/send-html-email")
     public String sendEmailWithHTML(@RequestParam Long requestId,
                                     RedirectAttributes flash) {
-
+		User user = userService.findOne(requestId);
+		
         boolean ok = emailServiceHtml.sendEmailWithHtml(
-                "felipephez@gmail.com",
-                "Java email with html",
+                user.getAssignedSite().getCustomer().getEmail(),
+                "Weekly Supply Items Request",
                 "email/email", // templates/email/email.html
                 requestId
         );

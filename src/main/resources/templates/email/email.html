@@ -1,43 +1,96 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="x-apple-disable-message-reformatting">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title th:text="${title}">Notificación</title>
+  <title th:text="${title}">Product Request</title>
 </head>
+
 <body style="margin:0;padding:0;background:#f8f9fa;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fa;">
     <tr>
       <td align="center" style="padding:24px;">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
                style="max-width:600px;background:#ffffff;border:1px solid #e9ecef;border-radius:12px;">
-          <!-- Header -->
+     
           <tr>
             <td align="center" style="padding:20px 24px;border-bottom:1px solid #e9ecef;">
               <img src="cid:logo" alt="Logo" width="120" style="display:block;border:0;">
             </td>
           </tr>
 
-          <!-- Body -->
+     
           <tr>
             <td style="padding:24px;">
               <h1 style="margin:0 0 8px 0;font:600 20px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#212529;"
-                  th:text="${title}">Actualización</h1>
+                  th:text="${title}">Product Request</h1>
 
-              <p style="margin:0 0 12px 0;font:400 14px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
-                Hola <span th:text="${request != null ? request.user.firstName : 'Cliente'}">Cliente</span>,
+              <p style="margin:0 0 12px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
+                <strong th:text="${'First Class Commercial Cleaning'}"></strong> respectfully requests pricing and availability for the items listed below, including bulk discounts and estimated lead times.
               </p>
 
+     
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                     style="border-collapse:collapse;border:1px solid #e9ecef;border-radius:8px;overflow:hidden;margin:12px 0;">
+                <thead>
+                  <tr style="background:#f1f3f5;">
+                    <th align="left" style="padding:10px 12px;font:600 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#212529;border-bottom:1px solid #e9ecef;">#</th>
+                    <th align="left" style="padding:10px 12px;font:600 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#212529;border-bottom:1px solid #e9ecef;">Description</th>
+                    <th align="left" style="padding:10px 12px;font:600 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#212529;border-bottom:1px solid #e9ecef;">Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="it, iStat: ${items}">
+                    <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
+                        th:text="${iStat.index + 1}">1</td>
+                    <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
+                        th:text="${it.supplyItem}">Product</td>
+                    <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
+                        th:text="${it.quantity}">Quantity</td>
+                  </tr>
+                </tbody>
+              </table>
+
+			  <h4>Additional Items</h4>
+              <div th:if="${requests != null}" style="margin:8px 0 16px 0;">
+                <div th:each="r : ${requests}">
+                  <p style="margin:0 0 6px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;"
+                     th:text="${r.additionalItems}">Additional items text</p>
+                </div>
+              </div>
+              <p th:if="${requests == null or #lists.isEmpty(requests)}"
+                 style="margin:0 0 16px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
+                No additional items.
+              </p>
+
+              <!-- Request details -->
+              <p style="margin:0 0 10px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
+                <strong>Requested delivery date:</strong>
+                <span th:text="${date}"></span>
+              </p>
+              <p style="margin:0 0 10px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
+                <strong>Ship to:</strong>
+                <span th:text="${shipTo}"></span>
+              </p>
               <p style="margin:0 0 16px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
-                Tu solicitud ha sido actualizada.
+                Please include unit prices, total before tax/freight, estimated ship date, and any suitable substitutes if an item is backordered.
               </p>
 
-              <span style="display:inline-block;background:#0d6efd;color:#fff;text-decoration:none;
-                           font:600 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-                           padding:12px 18px;border-radius:6px;">
-                Ver detalle
-              </span>
+              <!-- CTA -->
+              <a th:href="${'asdasd'}" style="display:inline-block;background:#0d6efd;color:#fff;text-decoration:none;
+                         font:600 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+                         padding:12px 18px;border-radius:6px;">
+                Submit quote
+              </a>
+
+              <!-- Signature -->
+              <p style="margin:16px 0 0 0;font:400 13px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
+                Thank you for your prompt response.<br>
+                <strong th:text="${'asdasd'}">[Your Company]</strong><br>
+                <span th:text="${'asdads'}">[contact@company.com | (###) ###-####]</span>
+              </p>
             </td>
           </tr>
 
@@ -45,13 +98,14 @@
           <tr>
             <td style="padding:16px 24px;border-top:1px solid #e9ecef;text-align:center;">
               <p style="margin:0;font:400 12px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
-                © <span th:text="${year}">2025</span> SupplyFlow
+                © <span th:text="${year}">2025</span> <span th:text="${'first class'}">SupplyFlow</span>
               </p>
             </td>
           </tr>
         </table>
       </td>
     </tr>
-  </table>
+  </table>  
 </body>
+
 </html>

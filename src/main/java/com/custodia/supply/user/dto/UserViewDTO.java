@@ -1,13 +1,12 @@
 package com.custodia.supply.user.dto;
 
-import java.util.Collections;
+
 import java.util.Date;
-import java.util.List;
 
 import com.custodia.supply.authority.dto.AuthorityViewDTO;
 import com.custodia.supply.customer.dto.CustomerAccountViewDTO;
 import com.custodia.supply.customer.dto.CustomerSiteViewDTO;
-import com.custodia.supply.request.dto.RequestViewDTO;
+
 
 
 public class UserViewDTO {
@@ -96,19 +95,25 @@ public class UserViewDTO {
 	}
 
 	public AuthorityViewDTO getRoleAuthority() {
-		return roleAuthority;
+		 if (this.roleAuthority == null) {
+		        this.roleAuthority = new AuthorityViewDTO(); // ← se guarda en el campo
+		    }
+		    return this.roleAuthority;
 	}
 
-	public String getRoleLabel() {
-		return (roleAuthority != null) ? roleAuthority.getRoleLabel() : "Not assigned";
-	}
+//	public String getRoleLabel() {
+//		return (roleAuthority.getRoleLabel() == null) ? roleAuthority.getRoleLabel() : "Not assigned";
+//	}
 
 	public void setAuthority(AuthorityViewDTO authority) {
 		this.roleAuthority = authority;
 	}
 
 	public CustomerAccountViewDTO getCustomerAccount() {
-		return customerAccount;
+		if (this.customerAccount == null) {
+	        this.customerAccount = new CustomerAccountViewDTO(); // ← se guarda en el campo
+	    }
+	    return this.customerAccount;
 	}
 
 	public void setCustomerAccount(CustomerAccountViewDTO customerAccount) {
@@ -116,7 +121,10 @@ public class UserViewDTO {
 	}
 
 	public CustomerSiteViewDTO getCustomerSite() {
-		return customerSite;
+		if (this.customerSite == null) {
+	        this.customerSite = new CustomerSiteViewDTO(); // ← se guarda en el campo
+	    }
+	    return this.customerSite;
 	}
 
 	public void setCustomerSite(CustomerSiteViewDTO customerSite) {

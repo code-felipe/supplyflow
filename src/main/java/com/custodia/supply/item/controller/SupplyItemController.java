@@ -20,6 +20,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.item.dto.ProductForm;
 import com.custodia.supply.item.dto.SupplyItemForm;
+import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
+import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
+import com.custodia.supply.item.dto.supply.SupplyMapper;
 import com.custodia.supply.item.entity.SupplyItem;
 import com.custodia.supply.item.service.ISupplyItemService;
 import com.custodia.supply.util.paginator.IPageableService;
@@ -45,11 +48,13 @@ public class SupplyItemController {
 		Pageable pageRequest = PageRequest.of(page, 5, Sort.by("createAt").descending());
 		
 		Page<SupplyItem> items = pageableSupplyItem.findAll(pageRequest);
-		PageRender<SupplyItem> pageRender = new PageRender<>("/supply_item/list", items);
+		
+		Page<SupplyItemViewDTO> supplies = items.map(SupplyMapper::toDTO);
+		PageRender<SupplyItemViewDTO> pageRender = new PageRender<>("/supply_item/list", supplies);
 		
 	
 		model.addAttribute("title", "Custodian Order Supply");
-		model.addAttribute("items", items);
+		model.addAttribute("items", supplies);
 		model.addAttribute("page", pageRender);
 		
 		return "supply_item/list";
@@ -59,11 +64,9 @@ public class SupplyItemController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/form")
 	public String viewForm(Map<String, Object> model) {
-		SupplyItemForm supplyItem = new SupplyItemForm();
-		supplyItem.setProduct(new ProductForm());
 		
 		model.put("title", "Supply Item form");
-		model.put("supplyItem", supplyItem);
+		model.put("supplyItem", new SupplyItemFormDTO());
 
 		return "supply_item/form";
 	}
@@ -71,15 +74,10 @@ public class SupplyItemController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
 	public String save(
-	        @Valid @ModelAttribute("supplyItem") SupplyItemForm item,
+	        @Valid @ModelAttribute("supplyItem") SupplyItemFormDTO item,
 	        BindingResult result,
 	        Model model,
 	        RedirectAttributes flash) {
-
-	    // Asegurar que product no sea null
-	    if (item.getProduct() == null) {
-	        item.setProduct(new ProductForm());
-	    }
 
 	    if (result.hasErrors()) {
 	        model.addAttribute("title", item.getId() != null ? "Edit Supply Item" : "Create Supply Item");
@@ -87,9 +85,9 @@ public class SupplyItemController {
 	    }
 
 	    try {
-	        Boolean saved = supplyItemService.save(item);
+	        SupplyItem saved = supplyItemService.save(item);
 
-	        if (saved) {
+	        if (saved != null) {
 	            flash.addFlashAttribute("success", "Supply Item saved successfully!");
 	        } else {
 	            flash.addFlashAttribute("error", "Could not save Supply Item.");
@@ -113,8 +111,9 @@ public class SupplyItemController {
 	        return "redirect:/supply_item/list";
 	    }
 	    
+	    SupplyItemFormDTO item = SupplyMapper.of(supplyItem);
 
-	    model.put("supplyItem", supplyItem);
+	    model.put("supplyItem", item);
 	    model.put("title", "Edit Supply Item");
 	    return "supply_item/form";
 	}

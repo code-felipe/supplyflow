@@ -21,7 +21,7 @@ import com.custodia.supply.invitation.dto.InvitationCodeView;
 import com.custodia.supply.invitation.entity.InvitationCode;
 import com.custodia.supply.invitation.service.IInvitationCodeService;
 import com.custodia.supply.item.entity.SupplyItem;
-import com.custodia.supply.user.dto.UserDetailView;
+import com.custodia.supply.user.dto.suspended.UserDetailView;
 import com.custodia.supply.util.paginator.IPageableService;
 import com.custodia.supply.util.paginator.PageRender;
 

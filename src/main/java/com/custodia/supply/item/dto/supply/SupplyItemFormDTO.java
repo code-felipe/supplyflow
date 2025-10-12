@@ -1,15 +1,17 @@
-package com.custodia.supply.item.dto;
+package com.custodia.supply.item.dto.supply;
 
 import java.util.Date;
 
+import com.custodia.supply.item.dto.ProductForm;
+import com.custodia.supply.item.dto.product.ProductFormDTO;
 import com.custodia.supply.item.entity.Product;
 import com.custodia.supply.item.entity.SupplyItem;
 
 import jakarta.validation.Valid;
 
-public class SupplyItemForm {
+public class SupplyItemFormDTO {
 	private Long id;
-
+	
 	private String packagingCode;
 
 	private String unitOfMeasure;
@@ -18,8 +20,8 @@ public class SupplyItemForm {
     
     private Date createAt;
     
-//    @Valid
-    private ProductForm product;
+    @Valid
+    private ProductFormDTO product;
 
 	public Long getId() {
 		return id;
@@ -61,29 +63,29 @@ public class SupplyItemForm {
 		this.createAt = createAt;
 	}
 
-	public ProductForm getProduct() {
+	public ProductFormDTO getProduct() {
 		return product;
 	}
 
-	public void setProduct(ProductForm product) {
+	public void setProduct(ProductFormDTO product) {
 		this.product = product;
 	}
     
-	public static SupplyItemForm to(SupplyItem e) {
-	    SupplyItemForm f = new SupplyItemForm();
-	    f.setId(e.getId());
-	    f.setPackagingCode(e.getPackagingCode());
-	    f.setUnitOfMeasure(e.getUnitOfMeasure());
-	    f.setSpecification(e.getSpecification());
-	    f.setCreateAt(e.getCreateAt());
-
-	    ProductForm pf = new ProductForm();
-	    pf.setId(e.getProduct().getId());
-	    pf.setCode(e.getProduct().getCode());
-	    pf.setName(e.getProduct().getName());
-	    
-	    f.setProduct(pf);
-	    return f;
-	}
+//	public static SupplyItemFormDTO to(SupplyItem e) {
+//	    SupplyItemFormDTO f = new SupplyItemFormDTO();
+//	    f.setId(e.getId());
+//	    f.setPackagingCode(e.getPackagingCode());
+//	    f.setUnitOfMeasure(e.getUnitOfMeasure());
+//	    f.setSpecification(e.getSpecification());
+//	    f.setCreateAt(e.getCreateAt());
+//
+//	    ProductForm pf = new ProductForm();
+//	    pf.setId(e.getProduct().getId());
+//	    pf.setCode(e.getProduct().getCode());
+//	    pf.setName(e.getProduct().getName());
+//	    
+//	    f.setProduct(pf);
+//	    return f;
+//	}
     
 }

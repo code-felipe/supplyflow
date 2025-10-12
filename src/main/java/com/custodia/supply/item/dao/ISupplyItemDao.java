@@ -2,6 +2,7 @@ package com.custodia.supply.item.dao;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,4 +17,6 @@ public interface ISupplyItemDao extends PagingAndSortingRepository<SupplyItem, L
 	
 	// Over the method
 	public List<SupplyItem> findByProduct_Name(String term);
+	
+	public Optional<SupplyItem> findByProductId(Long productId);
 }

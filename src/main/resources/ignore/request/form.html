@@ -13,9 +13,7 @@
 			<div class="card-header bg-info text-white" th:text="${title}"></div>
 			<div class="card-body">
 				<h4 class="card-title">
-					<!--Using DTO<a class="btn btn-success btn-xs" th:href="@{'/user/view/' + ${request.id}}"
-						th:text="'&laquo; Back'"></a>-->
-				<a class="btn btn-success btn-xs" th:href="@{'/user/view/' + ${request.user.id}}"
+					<a class="btn btn-success btn-xs" th:href="@{'/user/view/' + ${request.user.id}}"
 						th:text="'&laquo; Back'"></a>
 				</h4>
 				<form th:action="@{/request/form}" th:object="${request}" method="post">
