@@ -78,7 +78,7 @@ public class RequestController {
 
 	// Load supplyItems in user view - table
 	@GetMapping(value = "/load-items/{term}", produces = { "application/json" })
-	public @ResponseBody List<SupplyItemForm> loadSupplyItems(@PathVariable String term) {
+	public @ResponseBody List<SupplyItemFormDTO> loadSupplyItems(@PathVariable String term) {
 		return userService.findAllByName(term);
 	}
 

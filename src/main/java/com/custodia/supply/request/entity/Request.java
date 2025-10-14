@@ -42,7 +42,7 @@ public class Request implements Serializable {
 
 	@Column(name = "additional_items")
 	private String additionalItems;
-
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 

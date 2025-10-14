@@ -2,7 +2,7 @@ package com.custodia.supply.item.entity;
 
 import java.io.Serializable;
 
-import com.custodia.supply.validation.UniqueProductCode;
+import com.custodia.supply.validation.UniqueSupplyItemCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

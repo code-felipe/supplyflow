@@ -2,21 +2,19 @@ package com.custodia.supply.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.custodia.supply.item.dto.ProductForm;
-import com.custodia.supply.item.dto.product.ProductFormDTO;
-import com.custodia.supply.item.service.IProductService;
+import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
+import com.custodia.supply.item.service.ISupplyItemService;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @Component
-public class UniqueProductCodeValidator implements ConstraintValidator<UniqueProductCode, ProductFormDTO> {
+public class UniqueSupplyItemCodeValidator implements ConstraintValidator<UniqueSupplyItemCode, SupplyItemFormDTO> {
 	@Autowired
-    private IProductService productService;
+    private ISupplyItemService supplyService;
 
 	@Override
-	public boolean isValid(ProductFormDTO form, ConstraintValidatorContext context) {
+	public boolean isValid(SupplyItemFormDTO form, ConstraintValidatorContext context) {
 		if (form == null) return true;
 
 	    String code = form.getCode();
@@ -26,14 +24,14 @@ public class UniqueProductCodeValidator implements ConstraintValidator<UniquePro
 	    boolean ok;
 
 	    if (id == null) { // CREATE
-	        ok = !productService.existsByCode(code);
+	        ok = !supplyService.existsByCode(code);
 	    } else {          // UPDATE
-	        ok = !productService.existsByCodeAndIdNot(code, id);
+	        ok = !supplyService.existsByCodeAndIdNot(code, id);
 	    }
 
 	    if (!ok) {
 	        context.disableDefaultConstraintViolation();
-	        context.buildConstraintViolationWithTemplate("{product.code.unique}")
+	        context.buildConstraintViolationWithTemplate("{supplyItem.code.unique}")
 	               .addPropertyNode("code")   // ← apunta al campo de ProductForm
 	               .addConstraintViolation();
 	    }

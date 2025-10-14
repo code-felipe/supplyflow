@@ -62,6 +62,7 @@ public class EmailController {
                 "email/email", // templates/email/email.html
                 requestId
         );
+        
 
         flash.addFlashAttribute(ok ? "success" : "error",
                 ok ? "Email sent successfully" : "Fail to send email");

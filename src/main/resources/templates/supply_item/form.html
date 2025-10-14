@@ -1,105 +1,153 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
-<head th:replace="~{layout/layout :: head}">
-
-</head>
-
+<head th:replace="~{layout/layout :: head}"></head>
 <body>
-	<header th:replace="~{layout/layout :: header}"></header>
-	<div class="container my-4">
-		<div class="d-flex justify-content-between align-items-center mb-3">
-			<a class="btn btn-outline-secondary btn-sm" th:href="@{/supply_item/list}">← Back</a>
-			<h5 class="mb-0" th:text="${title}">Supply Item Form</h5>
-		</div>
-		<div class="card shadow-sm">
-			<div class="card-body p-4">
-				<!--Show all erros:
-			1. th:remove="tag" remueve el contenedor, porque no es necesario renderizarlo
-		-->
-				<div th:object="${supplyItem}" th:remove="tag">
-					<ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-4">
-						<li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
-					</ul>
-				</div>
-				<!--enctype: to upload any file-->
-				<form th:action="@{/supply_item/form}" th:object="${supplyItem}" method="post"
-					enctype="multipart/form-data">
-					<!--Security Token-->
-					<div th:replace="~{layout/_security :: csrf}"></div>
-					<!-- === Supply Items data === -->
-					<div class="mb-4">
-						<h6 class="text-muted text-uppercase mb-3">Product</h6>
+<header th:replace="~{layout/layout :: header}"></header>
 
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="code">Code</label>
-								<input type="text" id="code" th:field="*{product.code}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('product.code')}"
-									th:errors="*{product.code}"></small>
-								<small class="form-text text-muted">Product Unique Code</small>
-							</div>
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a class="btn btn-outline-secondary btn-sm" th:href="@{/supply_item/list}">← Back</a>
+    <h5 class="mb-0" th:text="${title}">Supply Item Form</h5>
+  </div>
 
-							<div class="form-group col-md-6">
-								<label for="name">Name</label>
-								<input type="text" id="name" th:field="*{product.name}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('product.name')}"
-									th:errors="*{product.name}"></small>
-								<small class="form-text text-muted">Product Full Name</small>
-							</div>
-						</div>
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
 
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="packagingCode">Packaging Code</label>
-								<input type="text" id="packagingCode" th:field="*{packagingCode}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('packagingCode')}"
-									th:errors="*{packagingCode}"></small>
-								<small class="form-text text-muted">Packaging Product Code</small>
-							</div>
-						</div>
+      <!-- Errores globales -->
+      <div th:object="${supplyItem}" th:remove="tag">
+        <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger mb-4">
+          <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+        </ul>
+      </div>
 
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label for="unitOfMeasure">Unit of Measure</label>
-								<input type="text" id="unitOfMeasure" th:field="*{unitOfMeasure}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('unitOfMeasure')}"
-									th:errors="*{unitOfMeasure}"></small>
-								<small class="form-text text-muted">Unite of Measure, e.g: 'Case', 'Bottle'</small>
-							</div>
+      <form th:action="@{/supply_item/form}" th:object="${supplyItem}" method="post" enctype="multipart/form-data">
+        <!-- CSRF -->
+        <div th:replace="~{layout/_security :: csrf}"></div>
 
-							<div class="form-group col-md-6">
-								<label for="specification">Specification</label>
-								<input type="text" id="specification" th:field="*{specification}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('specification')}"
-									th:errors="*{specification}"></small>
-								<small class="form-text text-muted">Product Specification</small>
-							</div>
-						</div>
-					</div>
+        <!-- ========== Datos básicos ========== -->
+        <h6 class="text-muted text-uppercase mb-3">Basic Info</h6>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="code">Code</label>
+            <input type="text" id="code" th:field="*{code}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></small>
+            <small class="form-text text-muted">Unique product code (e.g., TWL-002)</small>
+          </div>
+          <div class="form-group col-md-8">
+            <label for="name">Name</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+          </div>
+        </div>
 
-					<!-- Submit -->
-					<div class="d-flex justify-content-between align-items-center">
-						<input type="submit" class="btn btn-primary"
-							th:value="${supplyItem.id != null ? 'Update Product' : 'Create Product'}">
-						<small class="text-muted">Changes will save on Product.</small>
-					</div>
+        <div class="form-row">
+          <!-- Category dropdown (ManyToOne) -->
+          <div class="form-group col-md-6">
+            <label for="category">Category</label>
+            <!-- Si usas entidad directa, cambia a th:field="*{category.id}" -->
+            <select id="category" class="form-control" th:field="*{category.id}" th:errorClass="'form-control is-invalid'">
+              <option value="">— Select category —</option>
+              <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('category.id')}" th:errors="*{category.id}"></small>
+            <small class="form-text text-muted" th:if="*{category != null}">
+              <span th:if="${#lists.isEmpty(categories)}">No categories yet.</span>
+              <span th:if="${!#lists.isEmpty(categories)}">Loaded <span th:text="${#lists.size(categories)}"></span> categories.</span>
+            </small>
+          </div>
 
-					<!-- Hidden id -->
-					<input type="hidden" th:field="*{id}" />
-					<!-- Product ID -->
-					<input type="hidden" th:field="*{product.id}" />
-				</form>
-			</div>
-		</div>
-	</div>
-	</div>
-	<footer th:replace="~{layout/layout :: footer}"></footer>
+          <div class="form-group col-md-6">
+            <label for="specification">Specification</label>
+            <input type="text" id="specification" th:field="*{specification}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('specification')}" th:errors="*{specification}"></small>
+            <small class="form-text text-muted">Optional details (color, ply, grade…)</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" rows="2" th:field="*{description}" class="form-control" th:errorClass="'form-control is-invalid'"></textarea>
+          <small class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+        </div>
+
+        <!-- ========== Dimensions (Embedded) ========== -->
+        <h6 class="text-muted text-uppercase mt-4 mb-3">Dimensions</h6>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="dimLength">Length</label>
+            <input type="number" step="0.001" id="dimLength" th:field="*{dimensions.length}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.length')}" th:errors="*{dimensions.length}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="dimWidth">Width</label>
+            <input type="number" step="0.001" id="dimWidth" th:field="*{dimensions.width}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.width')}" th:errors="*{dimensions.width}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="dimHeight">Height</label>
+            <input type="number" step="0.001" id="dimHeight" th:field="*{dimensions.height}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.height')}" th:errors="*{dimensions.height}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="dimUom">UOM</label>
+            <select id="dimUom" class="form-control" th:field="*{dimensions.uom}" th:errorClass="'form-control is-invalid'">
+              <option value="" disabled th:selected="*{dimensions.uom == null}">— Select UOM —</option>
+              <option th:each="u : ${T(com.custodia.supply.item.enumerate.UnitOfMeasure).values()}" th:value="${u}" th:text="${u}"></option>
+            </select>
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.uom')}" th:errors="*{dimensions.uom}"></small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="dimWeight">Weight</label>
+            <input type="number" step="0.001" id="dimWeight" th:field="*{dimensions.weight}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.weight')}" th:errors="*{dimensions.weight}"></small>
+          </div>
+        </div>
+
+        <!-- ========== Packaging (Embedded) ========== -->
+        <h6 class="text-muted text-uppercase mt-4 mb-3">Packaging</h6>
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label for="unitsPerPack">Units / Pack</label>
+            <input type="number" id="unitsPerPack" th:field="*{packaging.unitsPerPack}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('packaging.unitsPerPack')}" th:errors="*{packaging.unitsPerPack}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="packsPerCase">Packs / Case</label>
+            <input type="number" id="packsPerCase" th:field="*{packaging.packsPerCase}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('packaging.packsPerCase')}" th:errors="*{packaging.packsPerCase}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="casesPerPallet">Cases / Pallet</label>
+            <input type="number" id="casesPerPallet" th:field="*{packaging.casesPerPallet}" class="form-control" th:errorClass="'form-control is-invalid'">
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('packaging.casesPerPallet')}" th:errors="*{packaging.casesPerPallet}"></small>
+          </div>
+          <div class="form-group col-md-3">
+            <label for="pkgUom">Packaging UOM</label>
+            <select id="pkgUom" class="form-control" th:field="*{packaging.uom}" th:errorClass="'form-control is-invalid'">
+              <option value="" disabled th:selected="*{packaging.uom == null}">— Select —</option>
+              <option th:each="pu : ${T(com.custodia.supply.item.enumerate.PackagingUom).values()}" th:value="${pu}" th:text="${pu}"></option>
+            </select>
+            <small class="invalid-feedback" th:if="${#fields.hasErrors('packaging.uom')}" th:errors="*{packaging.uom}"></small>
+          </div>
+        </div>
+
+        <!-- ========== Submit ========== -->
+        <div class="d-flex justify-content-between align-items-center mt-4">
+          <input type="submit" class="btn btn-primary"
+                 th:value="${supplyItem.id != null ? 'Update Item' : 'Create Item'}">
+          <small class="text-muted">Your changes will be saved.</small>
+        </div>
+
+        <!-- Hidden id -->
+        <input type="hidden" th:field="*{id}"/>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="~{layout/layout :: footer}"></footer>
 </body>
-
 </html>

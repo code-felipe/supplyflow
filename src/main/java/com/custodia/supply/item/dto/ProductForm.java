@@ -1,6 +1,6 @@
 package com.custodia.supply.item.dto;
 
-import com.custodia.supply.validation.UniqueProductCode;
+import com.custodia.supply.validation.UniqueSupplyItemCode;
 
 import jakarta.validation.constraints.NotEmpty;
 

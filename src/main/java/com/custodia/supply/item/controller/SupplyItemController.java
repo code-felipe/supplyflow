@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.custodia.supply.category.service.ICategoryService;
 import com.custodia.supply.item.dto.ProductForm;
 import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
@@ -35,12 +36,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/supply_item")
 public class SupplyItemController {
 	
-	
 	@Autowired
 	private IPageableService<SupplyItem> pageableSupplyItem;
 	
 	@Autowired
 	private ISupplyItemService supplyItemService;
+	
+	@Autowired
+	private ICategoryService categoryService;
 	
 	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -63,10 +66,11 @@ public class SupplyItemController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/form")
-	public String viewForm(Map<String, Object> model) {
+	public String createForm(Map<String, Object> model) {
 		
 		model.put("title", "Supply Item form");
 		model.put("supplyItem", new SupplyItemFormDTO());
+		model.put("categories", categoryService.findAll());
 
 		return "supply_item/form";
 	}
@@ -78,7 +82,7 @@ public class SupplyItemController {
 	        BindingResult result,
 	        Model model,
 	        RedirectAttributes flash) {
-
+	
 	    if (result.hasErrors()) {
 	        model.addAttribute("title", item.getId() != null ? "Edit Supply Item" : "Create Supply Item");
 	        return "supply_item/form"; // vuelve al form con errores
@@ -86,7 +90,7 @@ public class SupplyItemController {
 
 	    try {
 	        SupplyItem saved = supplyItemService.save(item);
-
+	     
 	        if (saved != null) {
 	            flash.addFlashAttribute("success", "Supply Item saved successfully!");
 	        } else {

@@ -44,15 +44,24 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 	 
 	 // No use lazy on request view - request/view/userId - Only one consult
 //	 @Query("select r from Request r join fetch r.user u join fetch r.requests l join fetch l.supplyItem where r.id=?1")
+//	 @Query("select distinct r from Request r"
+//	 		+ " join fetch r.user "
+//	 		+ "left join fetch r.requests ri "
+//	 		+ "left join fetch ri.supplyItem si "
+//	 		+ "left join fetch si.product p "
+//	 		+ "join fetch r.shipTo cs "
+//	 		+ "join fetch cs.customer ca "
+//	 		+ "where r.id = :id")
+//	 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
+	 
 	 @Query("select distinct r from Request r"
-	 		+ " join fetch r.user "
-	 		+ "left join fetch r.requests ri "
-	 		+ "left join fetch ri.supplyItem si "
-	 		+ "left join fetch si.product p "
-	 		+ "join fetch r.shipTo cs "
-	 		+ "join fetch cs.customer ca "
-	 		+ "where r.id = :id")
-	 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
+		 		+ " join fetch r.user "
+		 		+ "left join fetch r.requests ri "
+		 		+ "left join fetch ri.supplyItem si "
+		 		+ "join fetch r.shipTo cs "
+		 		+ "join fetch cs.customer ca "
+		 		+ "where r.id = :id")
+		 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
 	 
 
 	 		

@@ -1,15 +1,9 @@
 package com.custodia.supply.item.dto.supply;
-import com.custodia.supply.authority.entity.Role;
-import com.custodia.supply.customer.entity.CustomerAccount;
-import com.custodia.supply.customer.entity.CustomerSite;
-import com.custodia.supply.item.dto.product.ProductFormDTO;
-import com.custodia.supply.item.dto.product.ProductViewDTO;
-import com.custodia.supply.item.entity.Product;
+import com.custodia.supply.category.dto.CategoryDTO;
+import com.custodia.supply.item.dto.embed.DimensionsDTO;
+import com.custodia.supply.item.dto.embed.PackagingDTO;
 import com.custodia.supply.item.entity.SupplyItem;
-import com.custodia.supply.user.dto.UserFormDTO;
-import com.custodia.supply.user.entity.User;
 
-import jakarta.validation.constraints.NotEmpty;
 
 public class SupplyMapper {
 	
@@ -18,46 +12,83 @@ public class SupplyMapper {
 		
 		SupplyItemViewDTO dto = new SupplyItemViewDTO();
 		dto.setId(item.getId());
-		dto.setPackagingCode(item.getPackagingCode());
+		dto.setCode(item.getCode());
+		dto.setName(item.getName());
 		dto.setSpecification(item.getSpecification());
-		dto.setUnitOfMeasure(item.getUnitOfMeasure());
+		dto.setCategory(item.getCategory().getName());
 		dto.setCreateAt(item.getCreateAt());
 		
-		Product product = item.getProduct();
-		if(product != null) {
-			ProductViewDTO p = new ProductViewDTO();
-			p.setId(product.getId());
-			p.setCode(product.getCode());
-			p.setName(product.getName());
-			dto.setProduct(p);
-		}else {
-			dto.setProduct(null);
-		}
+		dto.setDimLength(item.getDimensions().getLenght());
+		dto.setDimWeight(item.getDimensions().getWeight());
+		dto.setDimHeight(item.getDimensions().getHeight());
+		dto.setDimUom(item.getDimensions().getUom().name());
+		
+		dto.setUnitsPerPack(item.getPackaging().getUnitsPerPack());
+		dto.setPacksPerCase(item.getPackaging().getPacksPerCase());
+		dto.setCasesPerPallet(item.getPackaging().getCasesPerPallet());
+		dto.setPkgUom(item.getPackaging().getUom().name());
+		
 		return dto;
 	}
 	
 	public static SupplyItemFormDTO of(SupplyItem item) {
 		if(item == null) return null;
+		
 		SupplyItemFormDTO dto = new SupplyItemFormDTO();
 		dto.setId(item.getId());
-		dto.setPackagingCode(item.getPackagingCode());
+		dto.setCode(item.getCode());
+		dto.setName(item.getName());
 		dto.setSpecification(item.getSpecification());
-		dto.setUnitOfMeasure(item.getUnitOfMeasure());
 		dto.setCreateAt(item.getCreateAt());
 		
+		CategoryDTO cat = new CategoryDTO();
+		cat.setId(item.getCategory().getId());
+		cat.setName(item.getCategory().getName());
+		cat.setDescription(item.getCategory().getDescription());
 		
-		Product product = item.getProduct();
-		if(product != null) {
-			ProductFormDTO p = new ProductFormDTO();
-			p.setId(product.getId());
-			p.setCode(product.getCode());
-			p.setName(product.getName());
-			dto.setProduct(p);
-		}else {
-			dto.setProduct(null);
-		}
+		DimensionsDTO dim = new DimensionsDTO();
+		dim.setHeight(item.getDimensions().getHeight());
+		dim.setLength(item.getDimensions().getLenght());
+		dim.setWeight(item.getDimensions().getWeight());
+		dim.setWidth(item.getDimensions().getWidth());
+		dim.setUom(item.getDimensions().getUom());
+		
+		PackagingDTO pkg = new PackagingDTO();
+		pkg.setCasesPerPallet(item.getPackaging().getCasesPerPallet());
+		pkg.setPacksPerCase(item.getPackaging().getPacksPerCase());
+		pkg.setUnitsPerPack(item.getPackaging().getUnitsPerPack());
+		pkg.setUom(item.getPackaging().getUom());
+		
+		dto.setCategory(cat);
+		dto.setDimensions(dim);
+		dto.setPackaging(pkg);
+		
 		return dto;
+		
 	}
+	
+//	public static SupplyItemFormDTO of(SupplyItem item) {
+//		if(item == null) return null;
+//		SupplyItemFormDTO dto = new SupplyItemFormDTO();
+//		dto.setId(item.getId());
+//		dto.setPackagingCode(item.getPackagingCode());
+//		dto.setSpecification(item.getSpecification());
+//		dto.setUnitOfMeasure(item.getUnitOfMeasure());
+//		dto.setCreateAt(item.getCreateAt());
+//		
+//		
+//		Product product = item.getProduct();
+//		if(product != null) {
+//			ProductFormDTO p = new ProductFormDTO();
+//			p.setId(product.getId());
+//			p.setCode(product.getCode());
+//			p.setName(product.getName());
+//			dto.setProduct(p);
+//		}else {
+//			dto.setProduct(null);
+//		}
+//		return dto;
+//	}
 	
 }
 	/*

@@ -1,5 +1,7 @@
 package com.custodia.supply.item.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,16 +10,16 @@ import com.custodia.supply.item.dao.IProductDao;
 import com.custodia.supply.item.entity.Product;
 
 @Service
-public class IProductImpl implements IProductService {
+public class ProductServiceImpl implements IProductService {
 	
 	@Autowired
 	private IProductDao productDao;
 	
 	@Override
 	@Transactional
-	public void save(Product product) {
+	public Product save(Product product) {
 		// TODO Auto-generated method stub
-		productDao.save(product);
+		return productDao.save(product);
 	}
 
 	@Override

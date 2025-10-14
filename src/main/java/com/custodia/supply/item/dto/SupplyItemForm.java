@@ -69,21 +69,21 @@ public class SupplyItemForm {
 		this.product = product;
 	}
     
-	public static SupplyItemForm to(SupplyItem e) {
-	    SupplyItemForm f = new SupplyItemForm();
-	    f.setId(e.getId());
-	    f.setPackagingCode(e.getPackagingCode());
-	    f.setUnitOfMeasure(e.getUnitOfMeasure());
-	    f.setSpecification(e.getSpecification());
-	    f.setCreateAt(e.getCreateAt());
-
-	    ProductForm pf = new ProductForm();
-	    pf.setId(e.getProduct().getId());
-	    pf.setCode(e.getProduct().getCode());
-	    pf.setName(e.getProduct().getName());
-	    
-	    f.setProduct(pf);
-	    return f;
-	}
+//	public static SupplyItemForm to(SupplyItem e) {
+//	    SupplyItemForm f = new SupplyItemForm();
+//	    f.setId(e.getId());
+//	    f.setPackagingCode(e.getPackagingCode());
+//	    f.setUnitOfMeasure(e.getUnitOfMeasure());
+//	    f.setSpecification(e.getSpecification());
+//	    f.setCreateAt(e.getCreateAt());
+//
+//	    ProductForm pf = new ProductForm();
+//	    pf.setId(e.getProduct().getId());
+//	    pf.setCode(e.getProduct().getCode());
+//	    pf.setName(e.getProduct().getName());
+//	    
+//	    f.setProduct(pf);
+//	    return f;
+//	}
     
 }

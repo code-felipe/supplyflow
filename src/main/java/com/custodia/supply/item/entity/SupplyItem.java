@@ -4,8 +4,13 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import com.custodia.supply.category.entity.Category;
+import com.custodia.supply.item.embed.Dimension;
+import com.custodia.supply.item.embed.Packaging;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,28 +32,40 @@ import jakarta.validation.constraints.NotNull;
 public class SupplyItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+//	@ManyToOne(optional = false, fetch = FetchType.LAZY)// Bad implemented, it should be oneToOne since is one unique product per SupplyItem
+	// Implementing embeded classes
+//	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "product_id")
+//	private Product product;
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-//	@ManyToOne(optional = false, cascade = CascadeType.ALL)// Bad implemented, it should be oneToOne since is one unique product per SupplyItem
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "product_id")
-	private Product product;
+	private String name; // Ultra towel
 	
-	@Column(name = "packaging_code")
-	private String packagingCode;
+	private String code; // ACM-123
 	
-	@Column(name = "unit_of_measure")
-	private String unitOfMeasure;
-
-	private String specification;
+    private String description; // Ultra towel scot 
+    
+    @Column(length = 255)
+    private String specification; // other details
 
 	@Column(name = "create_at")
 	@Temporal(TemporalType.DATE)
-	private Date createAt;
-
+	private Date createAt; 
+	
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "category_id")
+	private Category category; // TOWEL
+	
+    @Embedded
+    private Dimension dimensions = new Dimension();
+    
+    @Embedded
+    private Packaging packaging = new Packaging();
+    
 	@PrePersist
 	public void prePersist() {
 		createAt = new Date();
@@ -62,28 +79,36 @@ public class SupplyItem implements Serializable {
 		this.id = id;
 	}
 
-	public Product getProduct() {
-		return product;
+//	public Product getProduct() {
+//		return product;
+//	}
+//
+//	public void setProduct(Product product) {
+//		this.product = product;
+//	}
+
+	public String getName() {
+		return name;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getPackagingCode() {
-		return packagingCode;
+	public String getCode() {
+		return code;
 	}
 
-	public void setPackagingCode(String packagingCode) {
-		this.packagingCode = packagingCode;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	public String getUnitOfMeasure() {
-		return unitOfMeasure;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setUnitOfMeasure(String unitOfMeasure) {
-		this.unitOfMeasure = unitOfMeasure;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getSpecification() {
@@ -102,11 +127,29 @@ public class SupplyItem implements Serializable {
 		this.createAt = createAt;
 	}
 
-	@Override
-	public String toString() {
-		return product + " " + packagingCode + " " + unitOfMeasure + " " +
-				 specification;
+	public Category getCategory() {
+		return category;
 	}
-	
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public Dimension getDimensions() {
+		return dimensions;
+	}
+
+	public void setDimensions(Dimension dimensions) {
+		this.dimensions = dimensions;
+	}
+
+	public Packaging getPackaging() {
+		return packaging;
+	}
+
+	public void setPackaging(Packaging packaging) {
+		this.packaging = packaging;
+	}
+		
 	
 }

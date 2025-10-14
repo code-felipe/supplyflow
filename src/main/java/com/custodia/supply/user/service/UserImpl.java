@@ -22,6 +22,7 @@ import com.custodia.supply.invitation.dao.IInvitationCodeDao;
 import com.custodia.supply.invitation.entity.InvitationCode;
 import com.custodia.supply.item.dao.ISupplyItemDao;
 import com.custodia.supply.item.dto.SupplyItemForm;
+import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
 import com.custodia.supply.item.dto.supply.SupplyMapper;
 import com.custodia.supply.item.entity.SupplyItem;
@@ -100,9 +101,9 @@ public class UserImpl implements IUserService, IPageableService<User> {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<SupplyItemForm> findAllByName(String term) {
+	public List<SupplyItemFormDTO> findAllByName(String term) {
 		// TODO Auto-generated method stub
-		return supplyDao.findByProductName(term).stream().map(s -> SupplyItemForm.to(s)).toList();
+		return supplyDao.findAllByCodeLikeIgnoreCase(term).stream().map(s -> SupplyMapper.of(s)).toList();
 	}
 
 	/*

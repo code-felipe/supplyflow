@@ -46,7 +46,7 @@ public interface IUserService {
 	/*=== Find the SupplyItem by product name using jQuery and JPA
 	 */
 	
-	public List<SupplyItemForm> findAllByName(String term);
+	public List<SupplyItemFormDTO> findAllByName(String term);
 	
 	/*Save the request in the user*/
 	public Boolean saveRequest(Request request);

@@ -14,6 +14,10 @@ public interface ISupplyItemService {
 	
 	public SupplyItem save(SupplyItemFormDTO dto);
 	
+	public boolean existsByCode(String code);
+	public boolean existsByCodeAndIdNot(String code, Long id);
+	
+	
 //	Optional<SupplyItem> findByProductId(Long productId);
 /*
  * Is not necessary to delete a SupplyItem, it will be
