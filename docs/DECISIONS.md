@@ -306,7 +306,34 @@ I need a controlled public registration. Admins generate codes and share them wi
 - Do not expose code generation endpoints to the public.
 - Keep audit fields (`createdAt`, `usedAt`, `createdBy`, `usedBy`).
 
+# Mail Sending Module — JavaMail Integration
+## Overview
 
+This module implements email delivery using JavaMail within the SupplyFlow application.
+It allows sending structured, data-rich, and professional HTML emails directly from the system — leveraging user and entity data — without relying on manual document handling or external email clients.
+
+# Why This Implementation Was Needed
+
+Previously, users had to take photos of physical forms or handwritten notes and manually attach them to emails to communicate with clients or supervisors.
+This process was:
+
+ - ❌ Slow and error-prone
+
+ - ❌ Inconsistent in formatting and readability
+
+ - ❌ Dependent on external tools (camera, email client)
+
+With this new integration:
+
+- ✅ Emails are generated directly inside the app based on user and entity data.
+
+- ✅ HTML templates ensure a clean, uniform, and professional layout.
+
+- ✅ There’s no need for external attachments or manual image uploads.
+
+- ✅ Communication becomes traceable, consistent, and faster.
+
+In short, this feature eliminates friction in reporting and communication workflows, replacing a manual, photo-based process with an automated, reliable, and data-driven system.
 
 # Future Implementations
 
@@ -329,3 +356,6 @@ I need a controlled public registration. Admins generate codes and share them wi
 
 ## Complete a SupplyItem validation to all fields.
 - **Define** which attributes will be necessary for SupplyItem and validate each of one.
+
+## Implement email feature using JavaMail protocol - Partially implemented.
+- **Mail sender feature** Optimizes time and less work for sending email's in the same application. HTML is send through the end-point. Future PDF attachment will be need it.
