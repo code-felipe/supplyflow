@@ -120,7 +120,7 @@ flowchart TD
 
 **RequestItem** → links a Request with a SupplyItem.
 
-**SupplyItem** → has a one-to-one relationship with Product.
+**SupplyItem** → has a many to one relationship with Category.
 
 **Role** → defines user permissions and system access.
 
@@ -202,6 +202,11 @@ This project targets **Java 17+** and **Spring Boot 3.x**.
 - Email validation and activation using a unique validation code sent by admin.
 
 - Real-time notifications, consuming Gmail API
+
+# Links to other documents
+[Go to decisions document](docs/DECISIONS.md)
+
+[Go to architecture document](docs/README-ARCHITECTURE.md)
 
 # Author
 

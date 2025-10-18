@@ -95,6 +95,7 @@
               <option th:each="u : ${T(com.custodia.supply.item.enumerate.UnitOfMeasure).values()}" th:value="${u}" th:text="${u}"></option>
             </select>
             <small class="invalid-feedback" th:if="${#fields.hasErrors('dimensions.uom')}" th:errors="*{dimensions.uom}"></small>
+			<small class="text-muted">Unit Of Measure</small>
           </div>
         </div>
 
@@ -131,6 +132,7 @@
               <option th:each="pu : ${T(com.custodia.supply.item.enumerate.PackagingUom).values()}" th:value="${pu}" th:text="${pu}"></option>
             </select>
             <small class="invalid-feedback" th:if="${#fields.hasErrors('packaging.uom')}" th:errors="*{packaging.uom}"></small>
+			<small class="text-muted">Unit Of Measure</small>
           </div>
         </div>
 

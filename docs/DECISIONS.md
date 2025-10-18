@@ -7,11 +7,11 @@ This document exists to make our architectural and security decisions **explicit
 1. Persist only `users.site_id`; derive `CustomerAccount` from `CustomerSite`.
 2. Two assignment modes: select existing site OR inline create (upsert).
 3. DTO separation:
-   - `UserForm` for input/validation.
-   - `UserDetailView` for presentation (null-safe),
-   - `RequestRow` for table lists (projection).
-   - `ProductForm` for input/validation (unique code) and name.
-   - `SupplyItemForm` for input/validation.
+   - `UserFormDTO` for input/validation.
+   - `UserViewDTO` for presentation (null-safe),
+   - `RequestViewDTO` for table lists (projection).
+   - `SupplyItemFormDTO` for input/validation.
+   - `Mapper` a static class for each DTO that transform entity to DTO.
 4. Server-side validation (Bean Validation + groups); client-side only for UX.
 5. Query optimization:
    - `@EntityGraph` for `assignedSite.customer`,
@@ -20,21 +20,18 @@ This document exists to make our architectural and security decisions **explicit
 7. Password handling: encoded; update only if provided on edit.
 8. Migrations & constraints: UNIQUE codes; FKs; indices; repeatable Flyway/Liquibase migrations.
 
-# Validation: Product & User
-
-### Entity isolation and reuse
-- `Product` is **decoupled** from `SupplyItem`. This allows reusing `Product` across future product types (not only supply items) while keeping rules and persistence in one place.
+# Validation: SupplyItem & User
 
 ### Class-level uniqueness validation (`@UniqueProductCode`)
-- Applied at **DTO class level** (`ProductForm`) instead of field-level.
+- Applied at **DTO class level** (`SupplyItemFormDTO`) instead of field-level.
 - The validator receives **both `id` and `code`**, enabling correct behavior across flows:
   - **Create:** reject if `code` already exists (`existsByCode`).
   - **Edit:** allow keeping the same `code` for the same product; reject only if that `code` belongs to a **different** product (`existsByCodeAndIdNot`).
 - Error messages are **bound to `product.code`** via `addPropertyNode("code")`, only feedback shows directly under the view input.
 - Defense in depth:
-  - Bean Validation in DTO (`@UniqueProductCode`),
+  - Bean Validation in DTO (`@UniqueSupplyCode`),
   - Repository checks (`existsByCode`, `existsByCodeAndIdNot`),
-  - **Database unique constraint** on `product.code` (last line of defense vs. race conditions).
+  - **Database unique constraint** on `supply.code` (last line of defense vs. race conditions).
 
 **Benefits**
 - Avoid false positives when editing (if you don't change the code).
@@ -51,7 +48,7 @@ This document exists to make our architectural and security decisions **explicit
 - **Unique index/constraint** in the DB on `users.email`.
 - Result: Consistent, collision-free user identity, with the same defense-in-depth strategy.
 
-# Decision: Use jQuery UI Autocomplete for Product Search and Quantity Updates
+# Decision: Use jQuery UI Autocomplete for SupplyItem Search and Quantity Updates
 
 ## Context
 At this stage of the project, I needed a lightweight and fast solution to allow housekeeping employees to search and add products efficiently.  
@@ -82,7 +79,7 @@ I implemented product search and dynamic quantity updates using **jQuery UI Auto
 - Must maintain server-side validation and consider rate limiting if traffic grows.  
 
 **Related Patterns**  
-- **Class-level uniqueness validation**: `@UniqueProductCode` in `ProductForm` (validates `code` considering `id` in create/update), with error messages bound to the field (`addPropertyNode("code")`) and a unique database constraint.  
+- **Class-level uniqueness validation**: `@UniqueSupplyCode` in `ProductForm` (validates `code` considering `id` in create/update), with error messages bound to the field (`addPropertyNode("code")`) and a unique database constraint.  
 - **Parity with user identity (`@UniqueEmail`)**: applies the same *defense in depth* strategy (DTO validation + repository checks + unique index) to enforce uniqueness of `User.email`.  
 
 **Rationale**  
@@ -329,3 +326,6 @@ I need a controlled public registration. Admins generate codes and share them wi
 
 ## Disable and Enable User ✔ DONE
 - **New User attribute** instead of remove an user, is best to disable an User that does not longer work in the company, to keep with historical records for Request and RequestItems due to cascade.
+
+## Complete a SupplyItem validation to all fields.
+- **Define** which attributes will be necessary for SupplyItem and validate each of one.

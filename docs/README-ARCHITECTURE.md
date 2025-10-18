@@ -7,7 +7,8 @@
 - **Request** — a supply order placed by a User to a specific CustomerSite and CustomerAccount as its derivative.
 - **RequestItem** — a list of items  within a Request; references a SupplyItem and a quantity.
 - **Role** — a list roles to authenticate during log phase and authorize end points based on role - active - email and password.
-
+- **SupplyItem** — Products that feeds the Data Base to make a request.
+- **Category** — A specific category that a product belows to.
 
 **Key relations (ER sketch)**
 
@@ -35,12 +36,17 @@ User 1 ── * Role   →   (UNI-DIRECTIONAL from User)
   • In User: @OneToMany(cascade=ALL, orphanRemoval=true) @JoinColumn("user_id")
   • In Role: (no User field)
 
+SupplyItem * ── 1 Category   →   (UNI-DIRECTIONAL from SupplyItem)
+  • In SupplyItem:@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "category_id")
+  
+
 
 # Inventory / catalog
 
-SupplyItem 1 ── 1 Product   →   (UNI-DIRECTIONAL from SupplyItem)
-  • In SupplyItem: @OneToOne(cascade=ALL, orphanRemoval=true) @JoinColumn("product_id")
-  • In Product:    (no back-reference)
+SupplyItem * ── 1 Category   →   (UNI-DIRECTIONAL from SupplyItem)
+  • In SupplyItem: @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "category_id")
 
 RequestItem * ── 1 SupplyItem   →   (UNI-DIRECTIONAL from RequestItem)
   • In RequestItem: @ManyToOne(fetch=LAZY) @JoinColumn("supply_item_id")

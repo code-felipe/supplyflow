@@ -93,7 +93,7 @@ public class UserController {
 		// Map to handle nulls in the list - works good!
 		//Page<UserDetailView> usersDTO = users.map(UserDetailView::of);
 		// new implementation
-		Page<UserViewDTO> usersDTO = users.map(UserMapper::toDTO);
+		Page<UserViewDTO> usersDTO = users.map(UserMapper::toView);
 
 		PageRender<UserViewDTO> pageRender = new PageRender<>("/user/list", usersDTO);
 
@@ -122,7 +122,7 @@ public class UserController {
 	    }
 	    
 
-	    UserViewDTO user = UserMapper.toDTO(u);
+	    UserViewDTO user = UserMapper.toView(u);
 
 	    Pageable pageable = PageRequest.of(page, 5, Sort.by("createAt").descending());
 	    Page<RequestViewDTO> requests = userService.findRequestsByUserId(id, pageable);
@@ -191,7 +191,7 @@ public class UserController {
 			return "redirect:/user/list";
 		}
 
-		UserFormDTO user = UserMapper.of(u);
+		UserFormDTO user = UserMapper.toForm(u);
 
 		model.put("user", user);
 		model.put("roles", roleService.findAll());// not longer using enumerate

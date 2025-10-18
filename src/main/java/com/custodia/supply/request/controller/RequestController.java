@@ -22,14 +22,20 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.custodia.supply.customer.dto.CustomerSiteFormDTO;
+import com.custodia.supply.customer.dto.CustomerSiteMapper;
 import com.custodia.supply.customer.entity.CustomerSite;
-import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
+import com.custodia.supply.item.dto.supply.SupplyMapper;
 import com.custodia.supply.item.entity.SupplyItem;
 import com.custodia.supply.request.dto.UserRequestFormDTO;
 import com.custodia.supply.request.dto.UserRequestMapper;
+import com.custodia.supply.request.dto.rdto.RequestDTO;
+import com.custodia.supply.request.dto.rdto.RequestFormDTO;
+import com.custodia.supply.request.dto.rdto.RequestMapper;
 import com.custodia.supply.request.entity.Request;
+import com.custodia.supply.requestitem.dto.RequestItemFormDTO;
 import com.custodia.supply.requestitem.entity.RequestItem;
 import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.dto.UserMapper;
@@ -47,7 +53,7 @@ public class RequestController {
 	private IUserService userService;
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
+	
 	@GetMapping("/form/{userId}")
 	public String make(@PathVariable(value = "userId") Long userId, Map<String, Object> model,
 			RedirectAttributes flash) {
@@ -64,12 +70,11 @@ public class RequestController {
 			return "redirect:/user/list";
 		}
 		
-//		UserRequestFormDTO request = UserRequestMapper.toDTO(u);
-		
+//		RequestFormDTO request = RequestMapper.of(u);
+//		System.out.println("customerSite" + request.getShipTo().getCode() + "user " + request.getUser().getFirstName());
 		Request request = new Request();
 		
 		request.setUser(u);
-
 		model.put("request", request);
 		model.put("title", "Create Request");
 
@@ -78,15 +83,15 @@ public class RequestController {
 
 	// Load supplyItems in user view - table
 	@GetMapping(value = "/load-items/{term}", produces = { "application/json" })
-	public @ResponseBody List<SupplyItemFormDTO> loadSupplyItems(@PathVariable String term) {
+	public @ResponseBody List<SupplyItemViewDTO> loadSupplyItems(@PathVariable String term) {
 		return userService.findAllByName(term);
 	}
 
 	@GetMapping("/view/{id}")
 	public String view(@PathVariable(value = "id") Long id, Map<String, Object> model, RedirectAttributes flash) {
-//		Request request = userService.findRequestById(id);
-		Request request = userService.fetchRequestByIdWithUserWithRequestItemWithSupplyItem(id);
 
+		Request request = userService.fetchRequestByIdWithUserWithRequestItemWithSupplyItem(id);
+		
 		if (request == null) {
 			flash.addFlashAttribute("error", "The request does not exists on the data base!");
 			return "redirect:/user/list";
@@ -96,14 +101,15 @@ public class RequestController {
 			flash.addFlashAttribute("error", "Sorry the user is not active");
 			return "redirect:/user/list";
 		}
-
-		model.put("request", request);
+		
+		RequestDTO dto = RequestMapper.toView(request); //Brings all user with all requests
+		model.put("request", dto);
 		model.put("title", "Request: ".concat(request.getDescription()));
 
 		return "request/view";
 	}
-
-	@PostMapping("/form")
+	
+	@PostMapping("/form") // Entities no work because in the form im passing a RequestFormDTO
 	public String save(@Valid Request request, BindingResult result, Map<String, Object> model,
 			@RequestParam(name = "item_id[]", required = false) Long[] itemId,
 			@RequestParam(name = "quantity[]", required = false) Integer[] quantity, RedirectAttributes flash,
@@ -173,5 +179,79 @@ public class RequestController {
 	}
 
 
-
+//	@PostMapping("/form") // Entities no work because in the form im passing a RequestFormDTO
+//	public String save(
+//			@Valid RequestFormDTO request, BindingResult result, Map<String, Object> model,
+//			@RequestParam(name = "item_id[]", required = false) Long[] itemId,
+//			@RequestParam(name = "quantity[]", required = false) Integer[] quantity, RedirectAttributes flash,
+//			SessionStatus status) {
+//
+//		if (result.hasErrors()) {
+//			model.put("title", "Create Request");
+//			return "request/form";
+//		}
+//
+//		if (itemId == null || itemId.length == 0) {
+//
+//			model.put("title", "Create Request");
+//			model.put("error", "Error: The request NEEDS to have items!");
+//			return "request/form";
+//		}
+//		
+//		  // request.getUser() NO debería ser null si vienes del GET con @SessionAttributes
+//        Long userId = (request.getUser() != null) ? request.getUser().getId() : null;
+//        System.out.println(request.getDescription());
+//        if (userId == null) {
+//            flash.addFlashAttribute("warning", "No user bound to the request.");
+//            return "redirect:/user/list";
+//        }
+//        if (request.getUser().getAssignedSiteId() == null) {
+//            flash.addFlashAttribute("warning", "You must to assign a customer to the request");
+//            return "redirect:/user/view/" + userId;
+//        }
+////		if (request == null || request.getUser().getId() == null) {
+////			flash.addFlashAttribute("warning", "No user bound to the request.");
+////			return "redirect:/user/view/" + request.getUser().getId();
+////		}
+////
+////		if (request.getUser().getAssignedSiteId() == null) {
+////			flash.addFlashAttribute("warning", "You must to assign a customer to the request");
+////			return "redirect:/user/view/" + request.getUser().getId();
+////		}
+//
+////		CustomerSite site = new CustomerSite();
+////		site.setId(request.getUser().getAssignedSite().getId());
+////		CustomerSiteFormDTO site = new CustomerSiteFormDTO();
+////		site.setId(request.getUser().getAssignedSiteId());
+//
+//		for (int i = 0; i < itemId.length; i++) {
+//			SupplyItem item = userService.findSupplyItemById(itemId[i]);
+//			SupplyItemFormDTO itemDTO = SupplyMapper.of(item);
+//			
+////			RequestItem line = new RequestItem();
+////			line.setQuantity(quantity[i]);
+////			line.setSupplyItem(item);
+//			RequestItemFormDTO line = new RequestItemFormDTO();
+//			line.setQuantity(quantity[i]);
+//			line.setSupplyItem(itemDTO);
+//
+//			request.addRequestItem(line);
+//
+//			log.info("ID: " + itemId[i].toString() + ", quantity: " + quantity[i].toString());
+//		}
+//		  // si tu Request necesita shipTo:
+//        CustomerSiteFormDTO site = new CustomerSiteFormDTO();
+//        site.setId(request.getUser().getAssignedSiteId());
+//        request.setShipTo(site); // si tu DTO lo tiene
+//
+////		request.setShipTo(site);
+//		
+//		userService.saveRequest(request);
+//
+//		status.setComplete();
+//
+//		flash.addFlashAttribute("success", "Request created successfully!");
+//
+//		return "redirect:/user/view/" + request.getUser().getId();
+//	}
 }

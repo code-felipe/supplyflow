@@ -17,7 +17,7 @@ import com.custodia.supply.user.entity.User;
 
 public class UserMapper {
 	
-	public static UserViewDTO toDTO(User user) {
+	public static UserViewDTO toView(User user) {
 	    if (user == null) return null;
 
 	    UserViewDTO dto = new UserViewDTO();
@@ -73,7 +73,7 @@ public class UserMapper {
 	}
 
 	
-	public static UserFormDTO of(User u) {
+	public static UserFormDTO toForm(User u) {
 	    if (u == null) return null;
 	    UserFormDTO f = new UserFormDTO();
 
@@ -120,6 +120,7 @@ public class UserMapper {
 
 	    return f;
 	}
+	
 
 	
 //	public static UserFormDTO of(User u) {

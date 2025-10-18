@@ -38,7 +38,7 @@
 				      <div class="row">
 				        <div class="col-sm-12 mb-2">
 				          <div class="small text-muted">User</div>
-				          <div class="font-weight-bold" th:text="${request.user}">—</div>
+				          <div class="font-weight-bold" th:text="${request.user.fullName}">—</div>
 				        </div>
 						<!-- No importan to show email in the request order
 				        <div class="col-sm-12 mb-2">
@@ -57,17 +57,17 @@
 				      <div class="mb-3">
 				        <div class="small text-muted">From (Client)</div>
 				        <ul class="d-flex justify-content-between align-items-center list-unstyled">
-				          <li class="font-weight-bold" th:text="${request.user.assignedSite.customer.name}">—</li>
-						  <li class="text-muted" th:text="${request.user.assignedSite.customer.email}">—</li>
-				          <li class="badge badge-info" th:text="${request.user.assignedSite.customer.externalCode}">—</li>
+				          <li class="font-weight-bold" th:text="${request.user.customerAccount.nameLabel}">—</li>
+						  <li class="text-muted" th:text="${request.user.customerAccount.emailLabel}">—</li>
+				          <li class="badge badge-info" th:text="${request.user.customerAccount.codeLabel}">—</li>
 				        </ul>
 				      </div>
 
 				      <div>
 				        <div class="small text-muted">Ship To (Location)</div>
 				        <div class="d-flex justify-content-between align-items-center">
-				          <span class="font-weight-bold" th:text="${request.user.assignedSite.address}">—</span>
-				          <span class="badge badge-info" th:text="${request.user.assignedSite.externalCode}">—</span>
+				          <span class="font-weight-bold" th:text="${request.user.customerSite.addressLabel}">—</span>
+				          <span class="badge badge-info" th:text="${request.user.customerSite.codeLabel}">—</span>
 				        </div>
 				      </div>
 				    </div>
@@ -97,12 +97,12 @@
 				</div>
 
 				<!-- Mensaje si no hay líneas -->
-				<div class="alert alert-info my-4" th:if="${#lists.isEmpty(request.requests)}"
+				<div class="alert alert-info my-4" th:if="${#lists.isEmpty(request.items)}"
 					th:text="'There is not lines for the requests' + ${request.description}">
 				</div>
 
 				<!-- Tabla de líneas -->
-				<div th:if="${not #lists.isEmpty(request.requests)}" class="table-responsive">
+				<div th:if="${not #lists.isEmpty(request.items)}" class="table-responsive">
 					<table class="table table-sm table-striped table-bordered table-hover align-middle mb-2">
 						<thead class="thead-light">
 							<tr class="text-uppercase small text-muted">
@@ -112,9 +112,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="r: ${request.requests}">
+							<tr th:each="r: ${request.items}">
 								<td th:text="${r.supplyItem.id}">—</td>
-								<td th:text="${r.supplyItem}">—</td>
+								<td th:text="${r.supplyItem.name}">—</td>
 								<td class="text-right" th:text="${r.quantity}">0</td>
 							</tr>
 						</tbody>

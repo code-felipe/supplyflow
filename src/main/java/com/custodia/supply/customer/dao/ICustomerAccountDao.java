@@ -9,5 +9,8 @@ import com.custodia.supply.customer.entity.CustomerAccount;
 
 public interface ICustomerAccountDao extends JpaRepository<CustomerAccount, Long>{
 	Optional<CustomerAccount> findByExternalCode(String externalCode);
-	boolean existsByEmailIgnoreCase(String email);
+//	boolean existsByEmailIgnoreCase(String email);
+	public Boolean existsByEmailIgnoreCase(String value);
+	public Boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+	
 }

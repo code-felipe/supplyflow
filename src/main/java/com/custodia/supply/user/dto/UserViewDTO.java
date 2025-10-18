@@ -130,5 +130,9 @@ public class UserViewDTO {
 	public void setCustomerSite(CustomerSiteViewDTO customerSite) {
 		this.customerSite = customerSite;
 	}
+	
+	public String getFullName() {
+		return this.firstName + " " + this.lastName;
+	}
 
 }

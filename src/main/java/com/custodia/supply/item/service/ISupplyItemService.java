@@ -2,6 +2,8 @@ package com.custodia.supply.item.service;
 
 
 import java.util.List;
+import java.util.Optional;
+
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.entity.Product;
 import com.custodia.supply.item.entity.SupplyItem;
@@ -10,7 +12,7 @@ public interface ISupplyItemService {
 	
 	public List<SupplyItem> findAll();
 	
-	public SupplyItem findOne(Long id);
+	public Optional<SupplyItem> findOne(Long id);
 	
 	public SupplyItem save(SupplyItemFormDTO dto);
 	

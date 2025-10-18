@@ -7,6 +7,9 @@ public class SupplyItemViewDTO {
 	private Long id;
 	private String code;
 	private String name;
+	private String description;
+	private String specification;
+	private Date createAt;
 	private String category;
 
 	// Dimensions (flatten)
@@ -22,8 +25,7 @@ public class SupplyItemViewDTO {
 	private Integer casesPerPallet;
 	private String pkgUom; // Enum
 
-	private String specification;
-	private Date createAt;
+	
 
 	public Long getId() {
 		return id;
@@ -130,11 +132,19 @@ public class SupplyItemViewDTO {
 	}
 
 	public String getSpecification() {
-		return specification;
+		return (specification == null || specification.isBlank()) ? "No asigned" : specification;
 	}
 
 	public void setSpecification(String specification) {
 		this.specification = specification;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Date getCreateAt() {

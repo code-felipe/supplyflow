@@ -19,9 +19,9 @@ public interface ISupplyItemDao extends PagingAndSortingRepository<SupplyItem, L
 	@Query("""
 			  SELECT s
 			  FROM SupplyItem s
-			  WHERE LOWER(s.code) LIKE LOWER(CONCAT('%', :term, '%'))
+			  WHERE LOWER(s.name) LIKE LOWER(CONCAT('%', :term, '%'))
 			""")
-	List<SupplyItem> findAllByCodeLikeIgnoreCase(@Param("term") String term);
+	List<SupplyItem> findAllByNameLikeIgnoreCase(@Param("term") String term);
 	
 	boolean existsByCode(String code);
 	boolean existsByCodeAndIdNot(String code, Long id);

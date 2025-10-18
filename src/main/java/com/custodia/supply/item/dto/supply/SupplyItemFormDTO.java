@@ -13,23 +13,22 @@ import jakarta.validation.constraints.NotNull;
 
 @UniqueSupplyItemCode
 public class SupplyItemFormDTO {
-	
+
 	private Long id;
 
 	private String code;
 
 	@NotBlank
 	private String name;
+	
+	private String description;
+	
+	private String specification;
 
 	@NotNull
 	private CategoryDTO category = new CategoryDTO();
 
-
-	private String specification;
-	
-	private String description;
-	
-	private Date createAt; 
+	private Date createAt;
 
 	@Valid
 	@NotNull
@@ -110,8 +109,6 @@ public class SupplyItemFormDTO {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
-	
 
 //	public static SupplyItemFormDTO to(SupplyItem e) {
 //	    SupplyItemFormDTO f = new SupplyItemFormDTO();

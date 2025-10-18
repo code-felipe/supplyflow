@@ -1,6 +1,7 @@
 package com.custodia.supply.item.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.category.service.ICategoryService;
-import com.custodia.supply.item.dto.ProductForm;
-import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
 import com.custodia.supply.item.dto.supply.SupplyMapper;
@@ -52,7 +51,7 @@ public class SupplyItemController {
 		
 		Page<SupplyItem> items = pageableSupplyItem.findAll(pageRequest);
 		
-		Page<SupplyItemViewDTO> supplies = items.map(SupplyMapper::toDTO);
+		Page<SupplyItemViewDTO> supplies = items.map(SupplyMapper::toView);
 		PageRender<SupplyItemViewDTO> pageRender = new PageRender<>("/supply_item/list", supplies);
 		
 	
@@ -85,6 +84,7 @@ public class SupplyItemController {
 	
 	    if (result.hasErrors()) {
 	        model.addAttribute("title", item.getId() != null ? "Edit Supply Item" : "Create Supply Item");
+	        model.addAttribute("categories", categoryService.findAll());
 	        return "supply_item/form"; // vuelve al form con errores
 	    }
 
@@ -108,16 +108,17 @@ public class SupplyItemController {
 	@RequestMapping(value = "/form/{id}")
 	public String edit(@PathVariable(value = "id") Long id,
 			Map<String, Object> model, RedirectAttributes flash) {
-		SupplyItem supplyItem = supplyItemService.findOne(id);
+		Optional<SupplyItem> supplyItem = supplyItemService.findOne(id);
 
-	    if (supplyItem == null) {
+	    if (!supplyItem.isPresent()) {
 	        flash.addFlashAttribute("error", "The item does not exists");
 	        return "redirect:/supply_item/list";
 	    }
 	    
-	    SupplyItemFormDTO item = SupplyMapper.of(supplyItem);
+	    SupplyItemFormDTO item = SupplyMapper.toForm(supplyItem.get());
 
 	    model.put("supplyItem", item);
+		model.put("categories", categoryService.findAll());
 	    model.put("title", "Edit Supply Item");
 	    return "supply_item/form";
 	}

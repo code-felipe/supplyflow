@@ -10,8 +10,8 @@ import com.custodia.supply.item.dto.SupplyItemForm;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
 import com.custodia.supply.item.entity.SupplyItem;
-import com.custodia.supply.request.dto.RequestRow;
 import com.custodia.supply.request.dto.RequestViewDTO;
+import com.custodia.supply.request.dto.rdto.RequestFormDTO;
 import com.custodia.supply.request.entity.Request;
 import com.custodia.supply.user.dto.UserFormDTO;
 import com.custodia.supply.user.entity.User;
@@ -46,7 +46,7 @@ public interface IUserService {
 	/*=== Find the SupplyItem by product name using jQuery and JPA
 	 */
 	
-	public List<SupplyItemFormDTO> findAllByName(String term);
+	public List<SupplyItemViewDTO> findAllByName(String term);
 	
 	/*Save the request in the user*/
 	public Boolean saveRequest(Request request);
@@ -66,7 +66,7 @@ public interface IUserService {
 	// == Register with invi ==
 	public User registerWithInvitation(UserFormDTO form);
 	
-	public User updateUser(UserFormDTO form);
+//	public User updateUser(UserFormDTO form);
 	
 	
 }
