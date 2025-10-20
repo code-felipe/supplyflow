@@ -43,6 +43,8 @@ public class Request implements Serializable {
 	@Column(name = "additional_items")
 	private String additionalItems;
 	
+	private Boolean status;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
@@ -98,6 +100,15 @@ public class Request implements Serializable {
 
 	public Date getCreateAt() {
 		return createAt;
+	}
+	
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 	public void setCreateAt(Date createAt) {

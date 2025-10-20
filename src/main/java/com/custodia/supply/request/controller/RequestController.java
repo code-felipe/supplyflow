@@ -152,6 +152,7 @@ public class RequestController {
 			log.info("ID: " + itemId[i].toString() + ", quantity: " + quantity[i].toString());
 		}
 		request.setShipTo(site);
+		request.setStatus(false);// new implementation.
 
 		userService.saveRequest(request);
 

@@ -9,6 +9,7 @@ public class RequestViewDTO {
 	private Long id;
 	private String description;
 	private String additionalItems;
+	private Boolean status;
 	private Date createAt;
 	
     private String siteAddress;     
@@ -25,12 +26,13 @@ public class RequestViewDTO {
 	}
 
 	
-	public RequestViewDTO(Long id, String description, String additionalItems, Date createAt, String siteAddress,
+	public RequestViewDTO(Long id, String description, String additionalItems, Boolean status, Date createAt, String siteAddress,
 			String siteCode, Long itemsCount, Long totalQuantity) {
 		
 		this.id = id;
 		this.description = description;
 		this.additionalItems = additionalItems;
+		this.status = status;
 		this.createAt = createAt;
 		this.siteAddress = siteAddress;
 		this.siteCode = siteCode;
@@ -82,6 +84,19 @@ public class RequestViewDTO {
 	public void setAdditionalItems(String additionalItems) {
 		this.additionalItems = additionalItems;
 	}
+	
+	public String getStatus() {
+		if(status == true) {
+			return "Sent";
+		}else {
+			return "Pending";
+		}
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
 
 	public Date getCreateAt() {
 		return createAt;

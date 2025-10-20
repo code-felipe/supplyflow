@@ -20,7 +20,8 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 			      select new com.custodia.supply.request.dto.RequestViewDTO(
 			        r.id,
 			        r.description,
-			        r.additionalItems,             
+			        r.additionalItems,
+			        r.status,             
 			        r.createAt,
 			        s.address,
 			        s.externalCode,
@@ -31,7 +32,7 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 			      left join r.shipTo s
 			      left join r.requests ri      
 			      where r.user.id = :userId
-			      group by r.id, r.description, r.additionalItems, r.createAt, s.address, s.externalCode
+			      group by r.id, r.description, r.additionalItems, r.status, r.createAt, s.address, s.externalCode
 			      order by r.createAt desc
 			    """,
 			    countQuery = """
@@ -41,6 +42,18 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 			    """
 			  )
 			  Page<RequestViewDTO> findRowsByUserId(@Param("userId") Long userId, Pageable pageable);
+	 
+	 
+	 // Brings all entities from request in user.
+	 @Query("select distinct r from Request r"
+		 		+ " join fetch r.user "
+		 		+ "left join fetch r.requests ri "
+		 		+ "left join fetch ri.supplyItem si "
+		 		+ "join fetch r.shipTo cs "
+		 		+ "join fetch cs.customer ca "
+		 		+ "where r.id = :id")
+		 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
+	 
 	 
 	 // No use lazy on request view - request/view/userId - Only one consult
 //	 @Query("select r from Request r join fetch r.user u join fetch r.requests l join fetch l.supplyItem where r.id=?1")
@@ -53,15 +66,6 @@ public interface IRequestDao extends PagingAndSortingRepository<Request, Long>, 
 //	 		+ "join fetch cs.customer ca "
 //	 		+ "where r.id = :id")
 //	 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
-	 
-	 @Query("select distinct r from Request r"
-		 		+ " join fetch r.user "
-		 		+ "left join fetch r.requests ri "
-		 		+ "left join fetch ri.supplyItem si "
-		 		+ "join fetch r.shipTo cs "
-		 		+ "join fetch cs.customer ca "
-		 		+ "where r.id = :id")
-		 public Request fetchByIdWithUserWithRequestItemWithSupplyItem(Long id);
 	 
 
 	 		

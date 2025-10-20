@@ -28,7 +28,7 @@
                   th:text="${title}">Product Request</h1>
 
               <p style="margin:0 0 12px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
-                <strong th:text="${'First Class Commercial Cleaning'}"></strong> respectfully requests pricing and availability for the items listed below, including bulk discounts and estimated lead times.
+                <strong th:text="${'First Class Commercial Cleaning'}"></strong> respectfully requests availability for the items listed below.
               </p>
 
      
@@ -46,9 +46,9 @@
                     <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
                         th:text="${iStat.index + 1}">1</td>
                     <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
-                        th:text="${it.supplyItem}">Product</td>
+                        th:text="${it.supplyItem.name}"></td>
                     <td style="padding:10px 12px;font:400 13px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;border-top:1px solid #e9ecef;"
-                        th:text="${it.quantity}">Quantity</td>
+                        th:text="${it.quantity}"></td>
                   </tr>
                 </tbody>
               </table>
@@ -79,17 +79,17 @@
               </p>
 
               <!-- CTA -->
-              <a th:href="${'asdasd'}" style="display:inline-block;background:#0d6efd;color:#fff;text-decoration:none;
+              <a th:href="@{https://firstclasscc.com/}" style="display:inline-block;background:#0d6efd;color:#fff;text-decoration:none;
                          font:600 14px/1 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
                          padding:12px 18px;border-radius:6px;">
-                Submit quote
+                First Class
               </a>
 
               <!-- Signature -->
               <p style="margin:16px 0 0 0;font:400 13px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
                 Thank you for your prompt response.<br>
-                <strong th:text="${'asdasd'}">[Your Company]</strong><br>
-                <span th:text="${'asdads'}">[contact@company.com | (###) ###-####]</span>
+                <strong th:text="${'First Class Commercial Cleaning'}"></strong><br>
+                <span th:text="${'firstclass@first.com | (502)-434-23-23'}"></span>
               </p>
             </td>
           </tr>

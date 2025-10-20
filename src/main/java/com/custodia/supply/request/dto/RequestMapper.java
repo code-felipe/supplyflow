@@ -15,15 +15,12 @@ public class RequestMapper {
 	    RequestViewDTO dto = new RequestViewDTO();
 	    dto.setId(r.getId());
 	    dto.setAdditionalItems(r.getAdditionalItems());
-	    dto.setDescription(r.getDescription()); // no lo olvides
+	    dto.setDescription(r.getDescription());
 	    dto.setCreateAt(r.getCreateAt()); 
 	    dto.setSiteAddress(r.getShipTo().getAddress());
 	    dto.setSiteCode(r.getShipTo().getExternalCode());
-	    // <-- alinea nombres (o renombra getCreateAt a getCreatedAt en la entidad)
-	
-	    // dto.setTotalQuantity(r.getTotalQuantity()); // si existe en la entidad
+	    dto.setStatus(r.getStatus());// new impl
 
-	    // Site: preferir site propio del request si lo tiene
 	    CustomerSite site = (r.getShipTo() != null)
 	        ? r.getShipTo()
 	        : (r.getUser() != null ? r.getUser().getAssignedSite() : null);

@@ -15,6 +15,8 @@ public class RequestDTO {
 	
 	private String additionalItems;
 	
+	private Boolean status;//new impl
+	
 	private Date createAt;
 	
 	private UserViewDTO user;
@@ -45,6 +47,15 @@ public class RequestDTO {
 
 	public void setAdditionalItems(String additionalItems) {
 		this.additionalItems = additionalItems;
+	}
+	
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 	public Date getCreateAt() {

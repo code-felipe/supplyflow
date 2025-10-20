@@ -28,6 +28,7 @@ public class RequestMapper {
 		dto.setId(request.getId());
 		dto.setDescription(request.getDescription());
 		dto.setAdditionalItems(request.getAdditionalItems());
+		dto.setStatus(request.getStatus());
 		
 		
 		UserViewDTO user = UserMapper.toView(request.getUser());

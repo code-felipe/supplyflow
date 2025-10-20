@@ -16,14 +16,16 @@ public class RequestFormDTO {
 
 	private String additionalItems;
 
+	private Boolean status;
+
 	private Date createAt;
-	
+
 	private UserFormDTO user;
-	
+
 	private CustomerSiteFormDTO shipTo;
-	
+
 	private List<RequestItemFormDTO> items;
-	
+
 	public RequestFormDTO() {
 		this.items = new ArrayList<RequestItemFormDTO>();
 	}
@@ -52,6 +54,14 @@ public class RequestFormDTO {
 		this.additionalItems = additionalItems;
 	}
 
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
 	public Date getCreateAt() {
 		return createAt;
 	}
@@ -67,8 +77,7 @@ public class RequestFormDTO {
 	public void setUser(UserFormDTO user) {
 		this.user = user;
 	}
-	
-	
+
 	public CustomerSiteFormDTO getShipTo() {
 		return shipTo;
 	}
@@ -88,5 +97,5 @@ public class RequestFormDTO {
 	public void addRequestItem(RequestItemFormDTO requestItem) {
 		this.items.add(requestItem);
 	}
-	
+
 }

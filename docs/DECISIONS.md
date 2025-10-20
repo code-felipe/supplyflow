@@ -22,7 +22,7 @@ This document exists to make our architectural and security decisions **explicit
 
 # Validation: SupplyItem & User
 
-### Class-level uniqueness validation (`@UniqueProductCode`)
+### Class-level uniqueness validation (`@UniqueSupplyItemmCode`)
 - Applied at **DTO class level** (`SupplyItemFormDTO`) instead of field-level.
 - The validator receives **both `id` and `code`**, enabling correct behavior across flows:
   - **Create:** reject if `code` already exists (`existsByCode`).
@@ -149,7 +149,7 @@ Use **`LEFT JOIN FETCH`** on `u.requests` to:
 - **jpql**
 `select distinct u from User u left join fetch u.requests r where u.id = :id `
 
-# ADR: Role-Based Security with Annotations (Spring Security)
+# ADR-module: Role-Based Security with Annotations (Spring Security)
 
 
 ## 1) Decision
@@ -273,7 +273,7 @@ public class UserSecurity {
 - **Defense in depth**: even if someone crafts a URL, the UI doesn’t expose dangerous controls.  
 - Reduces **support noise** and user confusion around unavailable operations.
 
-# Single-use Invitation Codes for Public Registration
+# Single-use-module Invitation Codes for Public Registration
 
 ## Context
 I need a controlled public registration. Admins generate codes and share them with new users. Each code must be unique and single-use. When used, it must bind to the created user.
@@ -306,11 +306,26 @@ I need a controlled public registration. Admins generate codes and share them wi
 - Do not expose code generation endpoints to the public.
 - Keep audit fields (`createdAt`, `usedAt`, `createdBy`, `usedBy`).
 
-# Mail Sending Module — JavaMail Integration
-## Overview
 
-This module implements email delivery using JavaMail within the SupplyFlow application.
-It allows sending structured, data-rich, and professional HTML emails directly from the system — leveraging user and entity data — without relying on manual document handling or external email clients.
+# Mail Sending Module — JavaMail Integration
+
+## Overview: Email Delivery Implementation
+
+This module implements email delivery using **JavaMail** within the **SupplyFlow** application.  
+It allows sending structured, data-rich, and professional **HTML emails** directly from the system — leveraging user and entity data — without relying on manual document handling or external email clients.
+
+### Implementation Notes
+
+While JavaMail provides a reliable way to send emails, it offers **limited tracking capabilities**. Specifically, there is **no built-in mechanism** to monitor whether an email was successfully delivered, opened, or if it failed after leaving the SMTP server.
+
+Although a more robust solution could be achieved using the **Gmail API** — which supports message tracking, delivery reports, and error feedback — this implementation opts for a **simpler internal flag mechanism**.  
+A **boolean field (`status`)** is used to record the outcome of each email operation:
+
+- `true` → Email sent successfully.  
+- `false` → Email failed to send (due to SMTP or delivery issues).
+
+This approach omits advanced verification and delivery tracking features, but given the current system requirements, it provides **a sufficient and maintainable solution** for the time being.
+
 
 # Why This Implementation Was Needed
 

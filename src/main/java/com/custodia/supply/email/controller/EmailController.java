@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.custodia.supply.email.service.IEmailService;
+import com.custodia.supply.request.entity.Request;
 import com.custodia.supply.user.entity.User;
 import com.custodia.supply.user.service.IUserService;
 
@@ -27,6 +28,7 @@ public class EmailController {
 
 	@Autowired
 	private IEmailService emailServiceHtml;
+
 
 	public EmailController(JavaMailSender mailSender) {
 		this.mailSender = mailSender;
@@ -54,7 +56,9 @@ public class EmailController {
 	@PostMapping("/send-html-email")
     public String sendEmailWithHTML(@RequestParam Long requestId,
                                     RedirectAttributes flash) {
+		System.out.println("user id " + requestId);
 		User user = userService.findOne(requestId);
+		Request request = userService.fetchRequestByIdWithUserWithRequestItemWithSupplyItem(requestId);
 		
         boolean ok = emailServiceHtml.sendEmailWithHtml(
                 user.getAssignedSite().getCustomer().getEmail(),
@@ -63,11 +67,22 @@ public class EmailController {
                 requestId
         );
         
+        if(!ok) {
+        	flash.addFlashAttribute("error", "Fail to send email");
+        	request.setStatus(false);
+        	userService.saveRequest(request);
+        	return "redirect:/request/view/" + requestId;
+        }else {
+        	flash.addFlashAttribute("success", "Email sent successfully");
+            request.setStatus(true);
+            userService.saveRequest(request);
+            return "redirect:/request/view/" + requestId;
+        }
+        
+//        flash.addFlashAttribute(ok ? "success" : "error",
+//                ok ? "Email sent successfully" : "Fail to send email");
 
-        flash.addFlashAttribute(ok ? "success" : "error",
-                ok ? "Email sent successfully" : "Fail to send email");
-
-        return "redirect:/user/view/" + requestId;
+//        return "redirect:/user/view/" + requestId;
     }
 
 }
