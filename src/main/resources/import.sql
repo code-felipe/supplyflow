@@ -15,7 +15,7 @@ INSERT INTO supply_items(name, code, description, specification, create_at, cate
 INSERT INTO supply_items (name, code, description, specification, create_at, category_id, dim_length, dim_width, dim_height, dim_weight, dim_uom, pkg_units_per_pack, pkg_packs_per_case, pkg_cases_per_pallet, pkg_uom) VALUES('Blue Sea','REVO321103', 'Toilet cheap paper', 'No ideal for executive', NOW(), 3, 23.0, 25.0, 30.0, 3.2, 'CM', 200, 20, 60, 'CASE');
 
 /* Customer Accounts*/
-INSERT INTO customer_accounts (external_code, name, email) VALUES('000001', 'First Class CC', 'felipephez@gmail.com');
+INSERT INTO customer_accounts (external_code, name, email) VALUES('000001', 'First Class CC', 'felipephz@gmail.com');
 /* Customer Site */
 INSERT INTO customer_sites (external_code, address, customer_id) VALUES('00202001', '600 Hurtsbourne Ln pkwy', 1);
 INSERT INTO customer_sites (external_code, address, customer_id) VALUES('0004444', '700 Hurstbourne pkwy', 1);

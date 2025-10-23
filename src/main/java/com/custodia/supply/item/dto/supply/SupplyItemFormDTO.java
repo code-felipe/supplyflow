@@ -37,6 +37,7 @@ public class SupplyItemFormDTO {
 	@Valid
 	@NotNull
 	private PackagingDTO packaging = new PackagingDTO();
+	
 
 	public Long getId() {
 		return id;
@@ -109,22 +110,5 @@ public class SupplyItemFormDTO {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-
-//	public static SupplyItemFormDTO to(SupplyItem e) {
-//	    SupplyItemFormDTO f = new SupplyItemFormDTO();
-//	    f.setId(e.getId());
-//	    f.setPackagingCode(e.getPackagingCode());
-//	    f.setUnitOfMeasure(e.getUnitOfMeasure());
-//	    f.setSpecification(e.getSpecification());
-//	    f.setCreateAt(e.getCreateAt());
-//
-//	    ProductForm pf = new ProductForm();
-//	    pf.setId(e.getProduct().getId());
-//	    pf.setCode(e.getProduct().getCode());
-//	    pf.setName(e.getProduct().getName());
-//	    
-//	    f.setProduct(pf);
-//	    return f;
-//	}
 
 }

@@ -1,5 +1,8 @@
 package com.custodia.supply.requestitem.dto;
 
+import com.custodia.supply.category.dto.CategoryDTO;
+import com.custodia.supply.item.dto.embed.DimensionsDTO;
+import com.custodia.supply.item.dto.embed.PackagingDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyMapper;
 import com.custodia.supply.item.entity.SupplyItem;
@@ -36,6 +39,13 @@ public class RequestItemMapper {
 	    
 
 	        // Si el RequestItem tiene referencia a SupplyItem:
+	        // Using builder
+//	        SupplyItemFormDTO supply =  SupplyItemFormDTO.builder()
+//	        		.category(new CategoryDTO())
+//	        		.dimensions(new DimensionsDTO())
+//	        		.packaging(new PackagingDTO())
+//	        		.build();
+	        // Works without BUilder
 	        SupplyItemFormDTO supply = new SupplyItemFormDTO();
 	        if (supply != null) {
 	            // Reutiliza tu SupplyMapper para mantener consistencia

@@ -13,29 +13,48 @@ public class SupplyMapper {
 	public static SupplyItemViewDTO toView(SupplyItem item) {
 		if (item == null)
 			return null;
-
-		SupplyItemViewDTO dto = new SupplyItemViewDTO();
-		dto.setId(item.getId());
-		dto.setCode(item.getCode());
-		dto.setName(item.getName());
-		dto.setSpecification(item.getSpecification());
-		dto.setDescription(item.getDescription());
-		dto.setCategory(item.getCategory().getName());
-		dto.setCreateAt(item.getCreateAt());
-
-		dto.setDimLength(item.getDimensions().getLenght());
-		dto.setDimWeight(item.getDimensions().getWeight());
-		dto.setDimHeight(item.getDimensions().getHeight());
-		dto.setDimUom(item.getDimensions().getUom().name());
-
-		dto.setUnitsPerPack(item.getPackaging().getUnitsPerPack());
-		dto.setPacksPerCase(item.getPackaging().getPacksPerCase());
-		dto.setCasesPerPallet(item.getPackaging().getCasesPerPallet());
-		dto.setPkgUom(item.getPackaging().getUom().name());
-
+		
+		SupplyItemViewDTO dto = SupplyItemViewDTO.builder()
+				.id(item.getId())
+				.code(item.getCode())
+				.name(item.getName())
+				.specification(item.getSpecification())
+				.description(item.getDescription())
+				.category(item.getCategory().getName())
+				.createAt(item.getCreateAt())
+				.dimLength(item.getDimensions().getLenght())
+				.dimWeight(item.getDimensions().getWeight())
+				.dimHeight(item.getDimensions().getHeight())
+				.dimUom(item.getDimensions().getUom().name())
+				.unitsPerPack(item.getPackaging().getUnitsPerPack())
+				.packsPerCase(item.getPackaging().getPacksPerCase())
+				.casesPerPallet(item.getPackaging().getCasesPerPallet())
+				.pkgUom(item.getPackaging().getUom().name())
+				.build();
 		return dto;
-	}
 
+//		SupplyItemViewDTO dto = new SupplyItemViewDTO();
+//		dto.setId(item.getId());
+//		dto.setCode(item.getCode());
+//		dto.setName(item.getName());
+//		dto.setSpecification(item.getSpecification());
+//		dto.setDescription(item.getDescription());
+//		dto.setCategory(item.getCategory().getName());
+//		dto.setCreateAt(item.getCreateAt());
+//
+//		dto.setDimLength(item.getDimensions().getLenght());
+//		dto.setDimWeight(item.getDimensions().getWeight());
+//		dto.setDimHeight(item.getDimensions().getHeight());
+//		dto.setDimUom(item.getDimensions().getUom().name());
+//
+//		dto.setUnitsPerPack(item.getPackaging().getUnitsPerPack());
+//		dto.setPacksPerCase(item.getPackaging().getPacksPerCase());
+//		dto.setCasesPerPallet(item.getPackaging().getCasesPerPallet());
+//		dto.setPkgUom(item.getPackaging().getUom().name());
+
+
+	}
+	//=== Without Builder
 	public static SupplyItemFormDTO toForm(SupplyItem item) {
 		if (item == null)
 			return null;
@@ -46,6 +65,8 @@ public class SupplyMapper {
 		dto.setName(item.getName());
 		dto.setSpecification(item.getSpecification());
 		dto.setDescription(item.getDescription());
+		System.out.println("description " + item.getDescription());
+		System.out.println("specification " + item.getSpecification());
 		dto.setCreateAt(item.getCreateAt());
 
 		CategoryDTO cat = new CategoryDTO();

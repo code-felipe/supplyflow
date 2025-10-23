@@ -87,6 +87,7 @@ public class SupplyItemImpl implements ISupplyItemService, IPageableService<Supp
 	        if (dto.getCode() != null)          item.setCode(emptyToNull(dto.getCode()));
 	        if (dto.getName() != null)          item.setName(emptyToNull(dto.getName()));
 	        if (dto.getSpecification() != null) item.setSpecification(emptyToNull(dto.getSpecification()));
+	        if(dto.getDescription() != null) item.setDescription(emptyToNull(dto.getDescription()));
 
 	        // ---- ManyToOne Category (lookup por repo; SELECT explícito) ----
 	        if (dto.getCategory() != null && dto.getCategory().getId() != null) {

@@ -130,6 +130,9 @@ flowchart TD
 
 **InvitationCode** → unique code required for user self-registration (ensures controlled onboarding).
 
+# Design Patters Report
+[Go to Design Patterns](docs/PATTERNS.md)
+
 # Demonstration on Login based on role - Request items - Invitation code
 
 ## Admin Loggin

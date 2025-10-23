@@ -79,14 +79,6 @@ public class SupplyItem implements Serializable {
 		this.id = id;
 	}
 
-//	public Product getProduct() {
-//		return product;
-//	}
-//
-//	public void setProduct(Product product) {
-//		this.product = product;
-//	}
-
 	public String getName() {
 		return name;
 	}
@@ -150,6 +142,7 @@ public class SupplyItem implements Serializable {
 	public void setPackaging(Packaging packaging) {
 		this.packaging = packaging;
 	}
+	
 		
 	
 }
