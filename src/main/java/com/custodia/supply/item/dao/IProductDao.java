@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import com.custodia.supply.item.entity.Product;
 import com.custodia.supply.item.entity.SupplyItem;
 
+//=== Product is not longer in the App ===
 public interface IProductDao extends PagingAndSortingRepository<Product, Long>, CrudRepository<Product, Long> {
 	boolean existsByCode(String code);
 	boolean existsByCodeAndIdNot(String code, Long id);

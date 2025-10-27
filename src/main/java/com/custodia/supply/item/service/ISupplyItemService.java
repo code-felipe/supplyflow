@@ -14,6 +14,8 @@ public interface ISupplyItemService {
 	
 	public Optional<SupplyItem> findOne(Long id);
 	
+	public SupplyItem findById(Long id);// Using in new impl
+	
 	public SupplyItem save(SupplyItemFormDTO dto);
 	
 	public boolean existsByCode(String code);

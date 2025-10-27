@@ -107,7 +107,7 @@ public class SpringSecurityConfig {
 	          .loginPage("/login")
 	          .usernameParameter("email")      // <input name="email">
 	          .passwordParameter("password")
-	          .successHandler(successHandler)  // tu handler existente
+	          .successHandler(successHandler)  // handler existente
 	          .failureUrl("/login?error")
 	          .permitAll()
 	      )
@@ -142,35 +142,5 @@ public class SpringSecurityConfig {
 	    """);
 	    return uds;
 	}
-
-
-//	@Bean
-//	AuthenticationManager authManager(HttpSecurity http) throws Exception {
-//		  return http.getSharedObject(AuthenticationManagerBuilder.class)
-//			        .jdbcAuthentication()
-//			        .dataSource(dataSource)
-//			        .passwordEncoder(passwordEncoder)
-//			        // Autenticar por email
-//			        .usersByUsernameQuery("""
-//			            SELECT email AS username, password, is_active AS enabled
-//			            FROM users
-//			            WHERE email=?
-//			        """)
-//			        // Autoridad desde la FK role_id -> authorities.id
-//			        .authoritiesByUsernameQuery("""
-//			            SELECT u.email AS username, a.authority
-//			            FROM users u
-//			            JOIN authorities a ON u.role_id = a.id
-//			            WHERE u.email=?
-//			        """)
-//			        .and()
-//			        .build();
-////		return http.getSharedObject(AuthenticationManagerBuilder.class).jdbcAuthentication().dataSource(dataSource)
-////				.passwordEncoder(passwordEncoder)
-////				.usersByUsernameQuery("select username, password, enabled from users where email=?")
-////				.authoritiesByUsernameQuery(
-////						"select u.email, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.email=?")
-////				.and().build();
-//	}
 
 }

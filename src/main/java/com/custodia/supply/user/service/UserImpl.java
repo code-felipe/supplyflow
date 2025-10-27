@@ -49,16 +49,15 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	@Autowired
 	private ICustomerSiteDao customerSiteDao;
 
-
 	@Autowired
 	private ISupplyItemDao supplyDao;
 
 	@Autowired
 	private IRoleDao roleDao;
-	
+
 	@Autowired
 	private IInvitationCodeDao codeDao;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
@@ -80,14 +79,14 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	public User findOne(Long id) {
 		return userDao.findById(id).orElse(null);
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public User findByEmail(String email) {
 		// TODO Auto-generated method stub
 		return userDao.findByEmail(email);
 	}
-	
+
 	// Brings all user requests for the user id
 	@Override
 	@Transactional(readOnly = true)
@@ -104,84 +103,86 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	}
 
 	/*
-	 * === NEEDS REFACTOR ===
+	 * === NEEDS REFACTOR THIS MONSTER ===
 	 */
 	@Transactional
 	public Boolean save(UserFormDTO form) {
 
-	    // Cargar/crear usuario
-	    User user;
-	    if (form.getId() != null) {
-	        Optional<User> opt = userDao.findById(form.getId());
-	        user = opt.orElse(new User());
-	    } else {
-	        user = new User();
-	    }
+		// Cargar/crear usuario
+		User user;
+		if (form.getId() != null) {
+			Optional<User> opt = userDao.findById(form.getId());
+			user = opt.orElse(new User());
+		} else {
+			user = new User();
+		}
 
-	    if (user.getCreateAt() == null) user.setCreateAt(new Date());
+		if (user.getCreateAt() == null)
+			user.setCreateAt(new Date());
 
-	    user.setFirstName(form.getFirstName());
-	    user.setLastName(form.getLastName());
-	    user.setEmail(form.getEmail());
-	    user.setPhone(form.getPhone());
-	    user.setIsActive(Boolean.TRUE.equals(form.getIsActive()));
+		user.setFirstName(form.getFirstName());
+		user.setLastName(form.getLastName());
+		user.setEmail(form.getEmail());
+		user.setPhone(form.getPhone());
+		user.setIsActive(Boolean.TRUE.equals(form.getIsActive()));
 
-	    if (hasText(form.getPassword())) {
-	        user.setPassword(passwordEncoder.encode(form.getPassword()));
-	    }
+		if (hasText(form.getPassword())) {
+			user.setPassword(passwordEncoder.encode(form.getPassword()));
+		}
 
-	    // ----- ROLE (estricto) -----
-	    if (form.getRoleId() != null) {
-	        Role role = roleDao.findById(form.getRoleId()).orElse(null); // sin Supplier
-	        if (role == null) {
-	            throw new IllegalArgumentException("Invalid roleId: " + form.getRoleId());
-	        }
-	        user.setRole(role);
-	    } else {
-	        user.setRole(null);
-	    }
+		// ----- ROLE (estricto) -----
+		user = this.assignRoleFromForm(user, form);
+//		if (form.getRoleId() != null) {
+//			Role role = roleDao.findById(form.getRoleId()).orElse(null); // sin Supplier
+//			if (role == null) {
+//				throw new IllegalArgumentException("Invalid roleId: " + form.getRoleId());
+//			}
+//			user.setRole(role);
+//		} else {
+//			user.setRole(null);
+//		}
 
-	    // ----- SITE / CUSTOMER -----
-	    if (form.getAssignedSiteId() != null) {
-	        CustomerSite site = customerSiteDao.findById(form.getAssignedSiteId()).orElse(null);
-	        if (site == null) {
-	            throw new IllegalArgumentException("Invalid siteId: " + form.getAssignedSiteId());
-	        }
-	        user.setAssignedSite(site);
+		// ----- SITE / CUSTOMER -----
+		if (form.getAssignedSiteId() != null) {
+			CustomerSite site = customerSiteDao.findById(form.getAssignedSiteId()).orElse(null);
+			if (site == null) {
+				throw new IllegalArgumentException("Invalid siteId: " + form.getAssignedSiteId());
+			}
+			user.setAssignedSite(site);
 
-	    } else if (allInlinePresent(form)) {
-	        String custCode    = trimOrNull(form.getAssignedCustomerCode());
-	        String custName    = trimOrNull(form.getAssignedCustomerName());
-	        String custEmail   = trimOrNull(form.getAssignedCustomerEmail());
-	        String siteCode    = trimOrNull(form.getAssignedSiteCode());
-	        String siteAddress = trimOrNull(form.getAssignedSiteAddress());
+		} else if (allInlinePresent(form)) {
+			String custCode = trimOrNull(form.getAssignedCustomerCode());
+			String custName = trimOrNull(form.getAssignedCustomerName());
+			String custEmail = trimOrNull(form.getAssignedCustomerEmail());
+			String siteCode = trimOrNull(form.getAssignedSiteCode());
+			String siteAddress = trimOrNull(form.getAssignedSiteAddress());
 
-	        CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElse(null);
-	        if (acc == null) {
-	            CustomerAccount n = new CustomerAccount();
-	            n.setExternalCode(custCode);
-	            n.setName(custName);
-	            n.setEmail(custEmail);
-	            acc = customerAccountDao.save(n);
-	        }
+			CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElse(null);
+			if (acc == null) {
+				CustomerAccount n = new CustomerAccount();
+				n.setExternalCode(custCode);
+				n.setName(custName);
+				n.setEmail(custEmail);
+				acc = customerAccountDao.save(n);
+			}
 
-	        CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElse(null);
-	        if (site == null) {
-	            CustomerSite s = new CustomerSite();
-	            s.setCustomer(acc);
-	            s.setExternalCode(siteCode);
-	            s.setAddress(siteAddress);
-	            site = customerSiteDao.save(s);
-	        }
+			CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElse(null);
+			if (site == null) {
+				CustomerSite s = new CustomerSite();
+				s.setCustomer(acc);
+				s.setExternalCode(siteCode);
+				s.setAddress(siteAddress);
+				site = customerSiteDao.save(s);
+			}
 
-	        user.setAssignedSite(site);
+			user.setAssignedSite(site);
 
-	    } else {
-	        user.setAssignedSite(null);
-	    }
+		} else {
+			user.setAssignedSite(null);
+		}
 
-	    userDao.save(user);
-	    return true;
+		userDao.save(user);
+		return true;
 	}
 
 	@Override
@@ -190,7 +191,8 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		userDao.deleteById(id);
 		return true;
 	}
-	//==== USER AND REQUESTS ===
+
+	// ==== USER AND REQUESTS ===
 	// all requests from the user mapped to the user detail supply items
 //	@Override
 //	@Transactional(readOnly = true)
@@ -203,7 +205,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	public Page<RequestViewDTO> findRequestsByUserId(Long id, Pageable page) {
 		return requestDao.findRowsByUserId(id, page);
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public Request findRequestById(Long id) {
@@ -211,19 +213,18 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		return requestDao.findById(id).orElse(null);
 	}
 
-	
 	@Override
 	@Transactional
 	public Boolean saveRequest(Request request) {
 		// TODO Auto-generated method stub
-		Request r =  requestDao.save(request);
-		
-		if(r != null) {
+		Request r = requestDao.save(request);
+
+		if (r != null) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public SupplyItem findSupplyItemById(Long id) {
@@ -236,14 +237,14 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	public Optional<User> findById(Long id) {
 		return userDao.findById(id);
 	}
-	
+
 	@Override
 	@Transactional
 	public void deleteRequest(Long id) {
 		// TODO Auto-generated method stub
 		requestDao.deleteById(id);
 	}
-	
+
 	// Optimization on request/view/id
 	@Override
 	@Transactional(readOnly = true)
@@ -251,60 +252,64 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		// TODO Auto-generated method stub
 		return requestDao.fetchByIdWithUserWithRequestItemWithSupplyItem(id);
 	}
-	
+
 	@Override
 	@Transactional
 	public Boolean toggleUserActive(Long id) {
 		// TODO Auto-generated method stub
 		User user = userDao.findById(id).orElse(null);
-		if(user == null) return null;
-		
+		if (user == null)
+			return null;
+
 		boolean next = !Boolean.TRUE.equals(user.getIsActive());
 		user.setIsActive(next);
-		
+
 		return next;
 	}
-	
+
 	@Override
 	@Transactional
 	public User registerWithInvitation(UserFormDTO form) {
 		String raw = form.getInvitationCode();
-	    if (raw == null || raw.isBlank()) {
-	        throw new IllegalArgumentException("Invitation code is required");
-	    }
-	    String codeStr = raw.trim().toUpperCase();
+		if (raw == null || raw.isBlank()) {
+			throw new IllegalArgumentException("Invitation code is required");
+		}
+		String codeStr = raw.trim().toUpperCase();
 
-	    // 2) Buscar fila en invitation_code
-	    InvitationCode inv = codeDao.findByCode(codeStr);
-	    if (inv == null) throw new IllegalArgumentException("Invitation code not found");
-	    if (Boolean.TRUE.equals(inv.getIsUsed())) throw new IllegalStateException("Invitation code already used");
+		// 2) Buscar fila en invitation_code
+		InvitationCode inv = codeDao.findByCode(codeStr);
+		if (inv == null)
+			throw new IllegalArgumentException("Invitation code not found");
+		if (Boolean.TRUE.equals(inv.getIsUsed()))
+			throw new IllegalStateException("Invitation code already used");
 
-	    // 3) Crear user
-	    User u = new User();
-	    u.setFirstName(form.getFirstName());
-	    u.setLastName(form.getLastName());
-	    u.setEmail(form.getEmail());
-	    u.setPhone(form.getPhone());
-	    u.setIsActive(Boolean.TRUE);
-	    if (form.getPassword() != null && !form.getPassword().isBlank()) {
-	        u.setPassword(passwordEncoder.encode(form.getPassword()));
-	    }
-	    u.setCreateAt(u.getCreateAt() == null ? new Date() : u.getCreateAt());
+		// 3) Crear user
+		User u = new User();
+		u.setFirstName(form.getFirstName());
+		u.setLastName(form.getLastName());
+		u.setEmail(form.getEmail());
+		u.setPhone(form.getPhone());
+		u.setIsActive(Boolean.TRUE);
+		if (form.getPassword() != null && !form.getPassword().isBlank()) {
+			u.setPassword(passwordEncoder.encode(form.getPassword()));
+		}
+		u.setCreateAt(u.getCreateAt() == null ? new Date() : u.getCreateAt());
 
-	    // Rol por authority (o getReferenceById si prefieres)
-	    Role concierge = roleDao.findByAuthority("ROLE_CONCIERGE");
-	    if (concierge != null) u.setRole(concierge);
+		// Rol por authority (o getReferenceById si prefieres)
+		Role concierge = roleDao.findByAuthority("ROLE_CONCIERGE");
+		if (concierge != null)
+			u.setRole(concierge);
 
-	    u = userDao.save(u);
+		u = userDao.save(u);
 
-	    // 4) Consumir ese MISMO código
-	    inv.setIsUsed(true);
-	    inv.setIsUsedBy(u);
-	    codeDao.save(inv);
+		// 4) Consumir ese MISMO código
+		inv.setIsUsed(true);
+		inv.setIsUsedBy(u);
+		codeDao.save(inv);
 
-	    return u;
+		return u;
 	}
-	
+
 //	@Override
 //	@Transactional
 //	public User updateUser(UserFormDTO form) {
@@ -321,8 +326,20 @@ public class UserImpl implements IUserService, IPageableService<User> {
 //		    return userDao.save(u);
 //	}
 
-	
-	//====Helpers
+	// ====Helpers ====
+
+	private User assignRoleFromForm(User user, UserFormDTO form) {
+
+		Long roleId = form.getRoleId();
+		if (roleId == null) {
+			user.setRole(null);
+			return user;
+		}
+		Role role = roleDao.findById(roleId)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid roleId: " + roleId));
+		user.setRole(role);
+		return user;
+	}
 
 	private boolean allInlinePresent(UserFormDTO f) {
 		return notBlank(f.getAssignedCustomerCode()) && notBlank(f.getAssignedCustomerName())
@@ -336,11 +353,9 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	private String trimOrNull(String s) {
 		return s == null ? null : s.trim();
 	}
-	
+
 	private static boolean hasText(String s) {
-	    return s != null && !s.trim().isEmpty();
+		return s != null && !s.trim().isEmpty();
 	}
 
-	
-	
 }

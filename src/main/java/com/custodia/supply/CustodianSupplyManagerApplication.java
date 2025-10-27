@@ -34,7 +34,7 @@ public class CustodianSupplyManagerApplication implements CommandLineRunner {
 	    return source;
 	}
 	
-	// For upload files and generate passwords
+	// For upload files and generate passwords on the console
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub

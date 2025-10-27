@@ -1,0 +1,88 @@
+// package: com.yourapp.shared.error
+
+public abstract class DomainException extends RuntimeException {
+    protected DomainException(String message) { super(message); }
+    protected DomainException(String message, Throwable cause) { super(message, cause); }
+}
+
+public class BadRequestException extends DomainException {
+    public BadRequestException(String message) { super(message); }
+}
+
+public class NotFoundException extends DomainException {
+    private final String resource;
+    private final String identifier;
+
+    public NotFoundException(String resource, String identifier) {
+        super(resource + " not found: " + identifier);
+        this.resource = resource;
+        this.identifier = identifier;
+    }
+    public String getResource() { return resource; }
+    public String getIdentifier() { return identifier; }
+}
+
+public final class Exceptions {
+    private Exceptions() {}
+
+    public static BadRequestException badRequest(String message) {
+        return new BadRequestException(message);
+    }
+
+    public static NotFoundException notFound(Class<?> type, Object id) {
+        return new NotFoundException(type.getSimpleName(), "id=" + id);
+    }
+
+    public static NotFoundException notFound(Class<?> type, String key, Object value) {
+        return new NotFoundException(type.getSimpleName(), key + "=" + value);
+    }
+}
+
+
+// package: com.yourapp.user
+
+import com.yourapp.shared.error.Exceptions;
+
+@Service
+public class UserService {
+
+    private final RoleDao roleDao;
+    private final UserDao userDao;
+
+    public UserService(RoleDao roleDao, UserDao userDao) {
+        this.roleDao = roleDao;
+        this.userDao = userDao;
+    }
+
+    /**
+     * Assigns a required Role to the given User based on form.roleId.
+     * Throws:
+     *  - BadRequestException (400) if roleId is null
+     *  - NotFoundException (404) if roleId does not exist
+     */
+    User assignRoleFromForm(User user, UserFormDTO form) {
+        Long roleId = form.getRoleId();
+        if (roleId == null) {
+            throw Exceptions.badRequest("roleId is required");
+        }
+
+        Role role = roleDao.findById(roleId)
+            .orElseThrow(() -> Exceptions.notFound(Role.class, roleId));
+
+        user.setRole(role);
+        return user;
+    }
+
+    // ejemplo de save que reusa el método:
+    @Transactional
+    public User save(UserFormDTO form) {
+        User user = (form.getId() != null)
+            ? userDao.findById(form.getId()).orElse(new User())
+            : new User();
+
+        // ... mapear otros campos del form al user ...
+
+        assignRoleFromForm(user, form); // ← usa la lógica centralizada
+        return userDao.save(user);
+    }
+}

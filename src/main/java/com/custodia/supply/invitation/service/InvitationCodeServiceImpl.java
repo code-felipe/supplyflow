@@ -31,14 +31,10 @@ public class InvitationCodeServiceImpl implements IInvitationCodeService, IPagea
 	@Autowired
 	private IUserDao userDao;
 	
-	
-	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
-
-	
+	// Custom properties to generate a random code
 	private static final String ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-	  private static final int CODE_LENGTH = 10;
-	  private final SecureRandom random = new SecureRandom();
+	private static final int CODE_LENGTH = 10;
+	private final SecureRandom random = new SecureRandom();
 
 	@Override
 	@Transactional(readOnly = true)
@@ -71,15 +67,14 @@ public class InvitationCodeServiceImpl implements IInvitationCodeService, IPagea
 		}
 		return null;
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public InvitationCode findByCode(String code) {
 		// TODO Auto-generated method stub
 		return codeDao.findByCode(code);
 	}
-	
-	
+
 	@Override
 	@Transactional
 	public InvitationCode generateUniqueCode(Authentication auth) {
@@ -102,7 +97,7 @@ public class InvitationCodeServiceImpl implements IInvitationCodeService, IPagea
 			try {
 				return this.save(ic); // si el code es duplicado, saltará DataIntegrityViolation
 			} catch (DataIntegrityViolationException ex) {
-				// colisión por unique constraint → reintentar
+				// colisión por unique constraint - reintentar
 			}
 		}
 		throw new IllegalStateException("Could not generate a unique invitation code after several attempts");
@@ -116,9 +111,5 @@ public class InvitationCodeServiceImpl implements IInvitationCodeService, IPagea
 		}
 		return sb.toString();
 	}
-
-	
-
-	
 
 }

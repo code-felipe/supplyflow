@@ -20,9 +20,9 @@ public class SupplyItemFormDTO {
 
 	@NotBlank
 	private String name;
-	
+
 	private String description;
-	
+
 	private String specification;
 
 	@NotNull
@@ -37,11 +37,11 @@ public class SupplyItemFormDTO {
 	@Valid
 	@NotNull
 	private PackagingDTO packaging = new PackagingDTO();
-	
 
 	public Long getId() {
 		return id;
 	}
+
 
 	public void setId(Long id) {
 		this.id = id;

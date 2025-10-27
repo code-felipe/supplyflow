@@ -34,7 +34,7 @@ public class UniqueCustomerAccountEmailValidator implements ConstraintValidator<
 		if (siteId != null)
 			return true;
 
-		// Sin email → que lo validen @Email/@NotBlank si corresponde
+		// Sin email  que lo validen @Email/@NotBlank si corresponde
 		if (email == null || email.trim().isEmpty())
 			return true;
 

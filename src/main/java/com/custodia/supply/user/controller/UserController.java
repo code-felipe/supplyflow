@@ -234,7 +234,7 @@ public class UserController {
 		return (userId != null) ? "redirect:/user/view/" + userId : "redirect:/user/list";
 	}
 
-	// check for authentication based on security role default.
+	// check for authentication based on security role default. No in use in the App
 	private boolean hasRole(String role) {
 
 		SecurityContext context = SecurityContextHolder.getContext();

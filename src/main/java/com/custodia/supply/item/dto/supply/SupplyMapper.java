@@ -33,29 +33,9 @@ public class SupplyMapper {
 				.build();
 		return dto;
 
-//		SupplyItemViewDTO dto = new SupplyItemViewDTO();
-//		dto.setId(item.getId());
-//		dto.setCode(item.getCode());
-//		dto.setName(item.getName());
-//		dto.setSpecification(item.getSpecification());
-//		dto.setDescription(item.getDescription());
-//		dto.setCategory(item.getCategory().getName());
-//		dto.setCreateAt(item.getCreateAt());
-//
-//		dto.setDimLength(item.getDimensions().getLenght());
-//		dto.setDimWeight(item.getDimensions().getWeight());
-//		dto.setDimHeight(item.getDimensions().getHeight());
-//		dto.setDimUom(item.getDimensions().getUom().name());
-//
-//		dto.setUnitsPerPack(item.getPackaging().getUnitsPerPack());
-//		dto.setPacksPerCase(item.getPackaging().getPacksPerCase());
-//		dto.setCasesPerPallet(item.getPackaging().getCasesPerPallet());
-//		dto.setPkgUom(item.getPackaging().getUom().name());
-
 
 	}
-	//=== Without Builder
-	public static SupplyItemFormDTO toForm(SupplyItem item) {
+	public static SupplyItemFormDTO toCreate(SupplyItem item) {
 		if (item == null)
 			return null;
 
@@ -65,8 +45,6 @@ public class SupplyMapper {
 		dto.setName(item.getName());
 		dto.setSpecification(item.getSpecification());
 		dto.setDescription(item.getDescription());
-		System.out.println("description " + item.getDescription());
-		System.out.println("specification " + item.getSpecification());
 		dto.setCreateAt(item.getCreateAt());
 
 		CategoryDTO cat = new CategoryDTO();
@@ -94,7 +72,8 @@ public class SupplyMapper {
 		return dto;
 
 	}
-
+	
+	// Use on RequestItem
 	public static SupplyItem toEntity(SupplyItemFormDTO item) {
 		if (item == null)
 			return null;
@@ -132,5 +111,4 @@ public class SupplyMapper {
 		return entity;
 
 	}
-
 }

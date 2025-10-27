@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +27,14 @@ import com.custodia.supply.item.dto.embed.PackagingDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
 import com.custodia.supply.item.dto.supply.SupplyItemViewDTO;
 import com.custodia.supply.item.dto.supply.SupplyMapper;
+import com.custodia.supply.item.dto.supply.mapper.SupplyFormMapperImpl;
+import com.custodia.supply.item.dto.supply.mapper.SupplyViewMapperImpl;
 import com.custodia.supply.item.entity.SupplyItem;
 import com.custodia.supply.item.service.ISupplyItemService;
+import com.custodia.supply.util.mapper.IMapper;
 import com.custodia.supply.util.paginator.IPageableService;
 import com.custodia.supply.util.paginator.PageRender;
+import com.custodia.supply.validation.util.Exceptions;
 
 import jakarta.validation.Valid;
 
@@ -47,6 +52,12 @@ public class SupplyItemController {
 	@Autowired
 	private ICategoryService categoryService;
 	
+	@Autowired
+	private SupplyViewMapperImpl supplyView;
+	
+	@Autowired
+	private SupplyFormMapperImpl supplyForm;
+	
 	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(@RequestParam(name = "page", defaultValue = "0")int page, Model model) {
@@ -54,7 +65,7 @@ public class SupplyItemController {
 		
 		Page<SupplyItem> items = pageableSupplyItem.findAll(pageRequest);
 		
-		Page<SupplyItemViewDTO> supplies = items.map(SupplyMapper::toView);
+		Page<SupplyItemViewDTO> supplies = items.map(supplyView::toDTO);// New version of Mapper - before  (SupplyMapper)
 		PageRender<SupplyItemViewDTO> pageRender = new PageRender<>("/supply_item/list", supplies);
 		
 	
@@ -69,8 +80,6 @@ public class SupplyItemController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/form")
 	public String createForm(Map<String, Object> model) {
-		
-		
 		
 		model.put("title", "Supply Item form");
 		model.put("supplyItem", new SupplyItemFormDTO());
@@ -90,7 +99,7 @@ public class SupplyItemController {
 	    if (result.hasErrors()) {
 	        model.addAttribute("title", item.getId() != null ? "Edit Supply Item" : "Create Supply Item");
 	        model.addAttribute("categories", categoryService.findAll());
-	        return "supply_item/form"; // vuelve al form con errores
+	        return "supply_item/form"; // get back to form with errors.
 	    }
 
 	    try {
@@ -108,6 +117,7 @@ public class SupplyItemController {
 
 	    return "redirect:/supply_item/list";
 	}
+	
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/form/{id}")
@@ -119,9 +129,10 @@ public class SupplyItemController {
 	        flash.addFlashAttribute("error", "The item does not exists");
 	        return "redirect:/supply_item/list";
 	    }
+	    //==Old version of Mapper: No in use==
+//	    SupplyItemFormDTO item = SupplyMapper.toCreate(supplyItem.get());
+	    SupplyItemFormDTO item = supplyForm.toDTO(supplyItem.get());//Testing current Mapper.
 	    
-	    SupplyItemFormDTO item = SupplyMapper.toForm(supplyItem.get());
-
 	    model.put("supplyItem", item);
 		model.put("categories", categoryService.findAll());
 	    model.put("title", "Edit Supply Item");

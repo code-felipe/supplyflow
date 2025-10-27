@@ -38,10 +38,7 @@ public class InvitationController {
 	@PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String list(@RequestParam(name = "page", defaultValue = "0")int page, Model model) {
-		/*		Page<UserDetailView> rows = users.map(UserDetailView::of);
-
-		PageRender<UserDetailView> pageRender = new PageRender<>("/user/list", rows);
-		 */
+	
 		Pageable pageRequest = PageRequest.of(page, 5, Sort.by("createAt").descending());
 		
 		Page<InvitationCode> invitationCodes = codePageable.findAll(pageRequest);

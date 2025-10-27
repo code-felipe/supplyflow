@@ -39,32 +39,13 @@ public class RequestItemMapper {
 	    
 
 	        // Si el RequestItem tiene referencia a SupplyItem:
-	        // Using builder
-//	        SupplyItemFormDTO supply =  SupplyItemFormDTO.builder()
-//	        		.category(new CategoryDTO())
-//	        		.dimensions(new DimensionsDTO())
-//	        		.packaging(new PackagingDTO())
-//	        		.build();
-	        // Works without BUilder
 	        SupplyItemFormDTO supply = new SupplyItemFormDTO();
 	        if (supply != null) {
-	            // Reutiliza tu SupplyMapper para mantener consistencia
+	            // Reutiliza  SupplyMapper para mantener consistencia
 	            dto.setSupplyItem(SupplyMapper.toEntity(supply)); 
 	        }
 
 	        return dto;
 	    }
 	 
-//	 public static RequestItemFormDTO of(Request item) {
-//		 if(item == null) return null;
-//		 
-//		 RequestItemFormDTO dto = new RequestItemFormDTO();
-//		 dto.setId(item.getId());
-//		 dto.setQuantity(item.getQuantity());
-//		 
-//		 SupplyItemFormDTO supply = SupplyMapper.of(item.getSupplyItem());
-//		 UserFormDTO user = UserMapper.of(item.get)
-//		 
-//		 
-//	 }
 }

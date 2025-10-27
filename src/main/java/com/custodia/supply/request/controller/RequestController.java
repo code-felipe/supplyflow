@@ -71,7 +71,6 @@ public class RequestController {
 		}
 		
 //		RequestFormDTO request = RequestMapper.of(u);
-//		System.out.println("customerSite" + request.getShipTo().getCode() + "user " + request.getUser().getFirstName());
 		Request request = new Request();
 		
 		request.setUser(u);
@@ -102,6 +101,7 @@ public class RequestController {
 			return "redirect:/user/list";
 		}
 		
+		//=== !!!Needs to refactor this old Mapper ===
 		RequestDTO dto = RequestMapper.toView(request); //Brings all user with all requests
 		model.put("request", dto);
 		model.put("title", "Request: ".concat(request.getDescription()));
@@ -109,6 +109,8 @@ public class RequestController {
 		return "request/view";
 	}
 	
+	
+	//==== !!! Needs to refactor the whole Request and Move validation out of here !!! ====
 	@PostMapping("/form") // Entities no work because in the form im passing a RequestFormDTO
 	public String save(@Valid Request request, BindingResult result, Map<String, Object> model,
 			@RequestParam(name = "item_id[]", required = false) Long[] itemId,
@@ -179,7 +181,8 @@ public class RequestController {
 		return "redirect:/user/list";
 	}
 
-
+	
+// === !! Working on Mapper for request still not working === 
 //	@PostMapping("/form") // Entities no work because in the form im passing a RequestFormDTO
 //	public String save(
 //			@Valid RequestFormDTO request, BindingResult result, Map<String, Object> model,

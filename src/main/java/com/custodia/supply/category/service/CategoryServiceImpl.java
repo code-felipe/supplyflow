@@ -47,4 +47,11 @@ public class CategoryServiceImpl implements ICategoryService{
 		categoryDao.save(category);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Boolean existsById(Long id) {
+		return categoryDao.existsById(id);
+	}
+	
+	
 }

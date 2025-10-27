@@ -9,9 +9,11 @@ import com.custodia.supply.category.entity.Category;
 public interface ICategoryService {
 	
 	public Optional<Category> findOne(Long id);
-	
+
 	public List<Category> findAll();
 	
 	public void save(CategoryDTO dto);
+	
+	public Boolean existsById(Long id);
 	
 }
