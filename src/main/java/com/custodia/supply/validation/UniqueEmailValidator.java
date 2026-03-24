@@ -4,7 +4,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.custodia.supply.user.dao.IUserDao;
+import com.custodia.supply.models.dao.user.IUserDao;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

@@ -115,7 +115,7 @@
 						<h6 class="text-muted text-uppercase mb-3">Assignment (Customer · Site)</h6>
 
 						<!-- Radios de modo -->
-						<div class="form-group">
+						<div th:if="*{assignedSiteId == null}" class="form-group">
 							<div class="custom-control custom-radio custom-control-inline">
 								<input class="custom-control-input" type="radio" name="assignMode" id="modeExisting"
 									value="existing" th:checked="*{assignedSiteId} != null">

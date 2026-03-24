@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.support.SessionFlashMapManager;
 
-import com.custodia.supply.user.entity.User;
-import com.custodia.supply.user.service.IUserService;
+import com.custodia.supply.models.entity.user.User;
+import com.custodia.supply.service.user.IUserService;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

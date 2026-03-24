@@ -2,8 +2,9 @@ package com.custodia.supply.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.custodia.supply.item.dto.supply.SupplyItemFormDTO;
-import com.custodia.supply.item.service.ISupplyItemService;
+
+import com.custodia.supply.models.dto.item.SupplyItemFormDTO;
+import com.custodia.supply.service.item.ISupplyItemService;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

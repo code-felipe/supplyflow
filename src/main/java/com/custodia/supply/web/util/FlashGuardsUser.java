@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.custodia.supply.customer.entity.CustomerSite;
-import com.custodia.supply.request.entity.Request;
-import com.custodia.supply.user.entity.User;
+import com.custodia.supply.models.entity.customer.CustomerSite;
+import com.custodia.supply.models.entity.request.Request;
+import com.custodia.supply.models.entity.user.User;
 
 public class FlashGuardsUser implements IFlashGuards<User> {
 

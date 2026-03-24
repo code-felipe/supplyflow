@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <header th:replace="~{layout/layout :: header}"></header>
+
+  <main class="flex-grow-1">
+    <div class="container my-4">
+
+      <!-- Page header -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h4 class="mb-1">Categories</h4>
+          <small class="text-muted">Browse and pick a category to view its items.</small>
+        </div>
+
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-secondary" th:href="@{/supply_item/list}">
+            View All Items
+          </a>
+
+          <a sec:authorize="hasRole('ADMIN')"
+             class="btn btn-sm btn-outline-primary"
+             th:href="@{/categories/form}">
+            + New Category
+          </a>
+        </div>
+      </div>
+
+      <!-- IG-like chips (top quick filter) -->
+      <div class="ig-chip-row mb-3" th:if="${categories != null && !#lists.isEmpty(categories)}">
+        <a class="ig-chip ig-chip--active" th:href="@{/categories/list}">All</a>
+
+        <a class="ig-chip"
+           th:each="c : ${categories}"
+           th:text="${c.name}"
+           th:title="${c.description}"
+           th:href="@{/supply_item/list(categoryId=${c.id})}">
+        </a>
+      </div>
+
+      <!-- Empty -->
+      <div class="alert alert-light border" th:if="${categories == null || #lists.isEmpty(categories)}">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>No categories found.</span>
+          <a sec:authorize="hasRole('ADMIN')"
+             class="btn btn-sm btn-outline-primary"
+             th:href="@{/categories/form}">
+            Create one
+          </a>
+        </div>
+      </div>
+
+      <!-- Category cards -->
+      <div class="row" th:if="${categories != null && !#lists.isEmpty(categories)}">
+
+        <div class="col-12 col-md-6 col-lg-4 mb-3" th:each="c : ${categories}">
+          <div class="card h-100 shadow-sm cat-card">
+
+            <div class="card-body d-flex flex-column">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <span class="badge badge-pill badge-light border cat-badge"
+                        th:text="${c.name}">TOWEL</span>
+
+                  <div class="text-muted mt-2 small"
+                       th:text="${(c.description != null && !c.description.isBlank()) ? c.description : 'No description'}">
+                    No description
+                  </div>
+                </div>
+
+                <span class="text-muted small">#<span th:text="${c.id}">1</span></span>
+              </div>
+
+              <div class="mt-auto pt-3 d-flex gap-2">
+                <a class="btn btn-sm btn-dark"
+                   th:href="@{/supply_item/list(categoryId=${c.id})}">
+                  View Items
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   class="btn btn-sm btn-outline-secondary"
+                   th:href="@{/categories/edit/{id}(id=${c.id})}">
+                  Edit
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer th:replace="~{layout/layout :: footer}"></footer>
+
+  <!-- Page-only styles (you can move to user-list.css if you prefer) -->
+  <style>
+    .ig-chip-row{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      padding:6px 2px 10px 2px;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .ig-chip-row::-webkit-scrollbar{display:none;}
+    .ig-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.15);
+      background:#fff;
+      color:#212529;
+      font-weight:600;
+      font-size:13px;
+      text-decoration:none;
+      transition:transform .08s ease, box-shadow .08s ease;
+    }
+    .ig-chip:hover{
+      text-decoration:none;
+      transform:translateY(-1px);
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
+    .ig-chip--active{
+      background:#212529;
+      color:#fff;
+      border-color:#212529;
+    }
+    .cat-card{
+      border-radius:14px;
+    }
+    .cat-badge{
+      font-size:12px;
+      letter-spacing:.3px;
+    }
+  </style>
+
+</body>
+</html>

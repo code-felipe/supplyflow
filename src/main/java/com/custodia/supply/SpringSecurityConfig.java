@@ -95,6 +95,7 @@ public class SpringSecurityConfig {
 	          // públicos (incluye el inicio del flujo OAuth)
 	          .requestMatchers("/", "/login", "/error",
 	                           "/css/**", "/js/**", "/images/**",
+	                           "/list**", "/api/users/**",
 	                           "/webjars/**").permitAll()
 	          .requestMatchers(HttpMethod.GET,  "/register").permitAll()
 	          .requestMatchers(HttpMethod.POST, "/register").permitAll()

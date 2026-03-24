@@ -2,8 +2,8 @@ package com.custodia.supply;
 
 import org.springframework.stereotype.Component;
 
-import com.custodia.supply.user.entity.User;
-import com.custodia.supply.user.service.IUserService;
+import com.custodia.supply.models.entity.user.User;
+import com.custodia.supply.service.user.IUserService;
 
 @Component("userSecurity") 
 public class UserSecurity {
