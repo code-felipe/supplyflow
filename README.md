@@ -22,8 +22,6 @@ Designed as a monolithic MVC application using Spring Boot and Thymeleaf, simula
 
  **Product Inventory**
   - CRUD operations with role-based restrictions.
-  - Uniqueness validation for key fields (`productCode`, `email`, etc.).
-  - Historical stock management via relationship with `SupplyItem`.
 
  **Security**
   - **Defense in depth** approach:
@@ -33,7 +31,7 @@ Designed as a monolithic MVC application using Spring Boot and Thymeleaf, simula
 
  **User Interface**
   - Dynamic forms with **Thymeleaf + jQuery (AJAX)**.
-  - Product search with autocomplete.
+  - SupplyItem search with autocomplete.
   - Toggle buttons to activate/deactivate users with CSS validation support.
 
 ---
@@ -41,7 +39,7 @@ Designed as a monolithic MVC application using Spring Boot and Thymeleaf, simula
 ##  Architecture & Entity Relationships
 
 ```text
-User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Product
+User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem
 │
 ├── 1 Role (each user is assigned exactly one role)
 │
@@ -52,7 +50,7 @@ User 1 ── * Request 1 ── * RequestItem * ── 1 SupplyItem ── 1 Pr
 
 ## UML - Model Domain
 ## Domain Model
-![Domain model](docs/diagrams/domain-model.png)
+![Domain model](docs/diagrams/supply-flow-uml.svg)
 
 # Flowcharts
 
@@ -213,5 +211,5 @@ This project targets **Java 17+** and **Spring Boot 3.x**.
 
 # Author
 
-## Developed by Andre Hernan
+## Developed by Andres Felipe P.
 - CIT/CS student and aspiring software engineer, passionate about enterprise applications using Spring Boot.

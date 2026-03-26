@@ -26,21 +26,19 @@ This document exists to make our architectural and security decisions **explicit
 - Applied at **DTO class level** (`SupplyItemFormDTO`) instead of field-level.
 - The validator receives **both `id` and `code`**, enabling correct behavior across flows:
   - **Create:** reject if `code` already exists (`existsByCode`).
-  - **Edit:** allow keeping the same `code` for the same product; reject only if that `code` belongs to a **different** product (`existsByCodeAndIdNot`).
-- Error messages are **bound to `product.code`** via `addPropertyNode("code")`, only feedback shows directly under the view input.
+  - **Edit:** allow keeping the same `code` for the same product; reject only if that `code` belongs to a **different** product - supplyItem(`existsByCodeAndIdNot`).
+- Error messages are **bound to `supplyItem.code`** via `addPropertyNode("code")`, only feedback shows directly under the view input.
 - Defense in depth:
   - Bean Validation in DTO (`@UniqueSupplyCode`),
   - Repository checks (`existsByCode`, `existsByCodeAndIdNot`),
-  - **Database unique constraint** on `supply.code` (last line of defense vs. race conditions).
 
 **Benefits**
 - Avoid false positives when editing (if you don't change the code).
 - Clear error messages in the correct field.
-- Reusable when `Product` is used outside of `SupplyItem`.
 - Aligned with application logic: **unique and consistent** catalog identifiers.
 
 ### User Identity Parity ("@UniqueEmail");
-- `User.email` follows the **same conceptual pattern** as `Product.code`:
+- `User.email` follows the **same conceptual pattern** as `SupplyItem.code`:
 - Validation at the DTO level (ideally `UserForm`), with access to `id` and `email`.
 - **Create:** `existsByEmail(email)` must be **false**.
 - **Edit:** `existsByEmailAndIdNot(email, id)` must be **false** (allowing the user's email to remain the same).
@@ -55,7 +53,7 @@ At this stage of the project, I needed a lightweight and fast solution to allow 
 Implementing a modern SPA framework (e.g., React or Vue) would have added unnecessary complexity to the MVP.
 
 ## Decision
-I implemented product search and dynamic quantity updates using **jQuery UI Autocomplete** connected to the backend endpoint `/request/load-items`.
+I implemented SuppyItem search and dynamic quantity updates using **jQuery UI Autocomplete** connected to the backend endpoint `/request/load-items`.
 
 ## Rationale
 - Simple integration with existing backend.  
@@ -79,7 +77,7 @@ I implemented product search and dynamic quantity updates using **jQuery UI Auto
 - Must maintain server-side validation and consider rate limiting if traffic grows.  
 
 **Related Patterns**  
-- **Class-level uniqueness validation**: `@UniqueSupplyCode` in `ProductForm` (validates `code` considering `id` in create/update), with error messages bound to the field (`addPropertyNode("code")`) and a unique database constraint.  
+- **Class-level uniqueness validation**: `@UniqueSupplyCode` in `SupplyItemFormDTO` (validates `code` considering `id` in create/update), with error messages bound to the field (`addPropertyNode("code")`) and a unique database constraint.  
 - **Parity with user identity (`@UniqueEmail`)**: applies the same *defense in depth* strategy (DTO validation + repository checks + unique index) to enforce uniqueness of `User.email`.  
 
 **Rationale**  
