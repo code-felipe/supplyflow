@@ -52,15 +52,17 @@ public class EmailServiceImpl implements IEmailService {
 
 	@Override
     public Boolean sendEmailWithHtml(String to, String subject, String templateName, Long id) {
-			User u = userService.findOne(id);
+//			User u = userService.findOne(id);
 			Request r = userService.fetchRequestByIdWithUserWithRequestItemWithSupplyItem(id);
+			User u = r.getUser();
         try {
             // 1) Render Thymeleaf
             Context ctx = new Context();
             ctx.setVariable("title", "Weekly Supply Item Request");   // <h1 th:text="${title}">
             ctx.setVariable("year", Year.now().getValue());
             ctx.setVariable("shipTo", u.getAssignedSite().getAddress());
-            ctx.setVariable("items", r.getItems());
+            ctx.setVariable("items", r.getItems());;
+            ctx.setVariable("additionalItems", r.getAdditionalItems());
             ctx.setVariable("requests", u.getRequests());
             ctx.setVariable("date", this.dateFormater(currentDateTime));
             

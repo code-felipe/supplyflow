@@ -57,11 +57,12 @@ public class EmailController {
     public String sendEmailWithHTML(@RequestParam Long requestId,
                                     RedirectAttributes flash) {
 		System.out.println("user id " + requestId);
-		User user = userService.findOne(requestId);
+		
 		Request request = userService.fetchRequestByIdWithUserWithRequestItemWithSupplyItem(requestId);
+//		User user = request.getUser();
 		
         boolean ok = emailServiceHtml.sendEmailWithHtml(
-                user.getAssignedSite().getCustomer().getEmail(),
+                request.getUser().getAssignedSite().getCustomer().getEmail(),
                 "Weekly Supply Items Request",
                 "email/email", // templates/email/email.html
                 requestId

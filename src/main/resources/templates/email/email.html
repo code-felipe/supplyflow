@@ -54,17 +54,15 @@
               </table>
 
 			  <h4>Additional Items</h4>
-              <div th:if="${requests != null}" style="margin:8px 0 16px 0;">
-                <div th:each="r : ${requests}">
-                  <p style="margin:0 0 6px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;"
-                     th:text="${r.additionalItems}">Additional items text</p>
-                </div>
-              </div>
-              <p th:if="${requests == null or #lists.isEmpty(requests)}"
-                 style="margin:0 0 16px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
-                No additional items.
-              </p>
-
+			  <p th:if="${additionalItems != null and !#strings.isEmpty(additionalItems)}"
+			     style="margin:0 0 16px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;"
+			     th:text="${additionalItems}">
+			  </p>
+			  <p th:if="${additionalItems == null or #strings.isEmpty(additionalItems)}"
+			     style="margin:0 0 16px 0;font:400 13px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#6c757d;">
+			    No additional items.
+			  </p>
+             
               <!-- Request details -->
               <p style="margin:0 0 10px 0;font:400 14px/1.7 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#495057;">
                 <strong>Requested delivery date:</strong>

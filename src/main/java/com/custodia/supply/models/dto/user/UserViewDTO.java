@@ -106,10 +106,6 @@ public class UserViewDTO {
 		    return this.roleAuthority;
 	}
 
-//	public String getRoleLabel() {
-//		return (roleAuthority.getRoleLabel() == null) ? roleAuthority.getRoleLabel() : "Not assigned";
-//	}
-
 	public void setAuthority(AuthorityViewDTO authority) {
 		this.roleAuthority = authority;
 	}

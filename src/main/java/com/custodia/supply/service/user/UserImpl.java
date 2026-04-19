@@ -155,7 +155,6 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		userMapper.applyScalarFields(user, form);
 
 		assignedRole(user, form);
-		 // Rama exclusiva: primero intento por select; si no, por inline; si no, null
 	    if (form.getAssignedSiteId() != null) {
 	        assignBySelect(user, form);
 	    } else if (hasInlineSite(form)) {
@@ -335,14 +334,14 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		}
 		String codeStr = raw.trim().toUpperCase();
 
-		// 2) Buscar fila en invitation_code
+		// Searcg the row on invitation_code
 		InvitationCode inv = codeDao.findByCode(codeStr);
 		if (inv == null)
 			throw new IllegalArgumentException("Invitation code not found");
 		if (Boolean.TRUE.equals(inv.getIsUsed()))
 			throw new IllegalStateException("Invitation code already used");
 
-		// 3) Crear user
+		// Create user
 		User user = loadOrCreate(form);
 		userMapper.applyScalarFields(user, form);
 		assignedRole(user, form);
@@ -395,42 +394,74 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	        .orElseThrow(() -> new IllegalArgumentException("Invalid siteId: " + siteId));
 	    user.setAssignedSite(site);
 	}
-
 	private void assignByInline(User user, UserFormDTO form) {
-	    // No hagas nada si alguien ya asignó el site por select
 	    if (user.getAssignedSite() != null) return;
-
 	    if (!hasInlineSite(form)) {
-	        // Nada que crear/ligar; se deja en null
 	        user.setAssignedSite(null);
 	        return;
 	    }
 
-	    String custCode = trimOrNull(form.getAssignedCustomerCode());
-	    String custName = trimOrNull(form.getAssignedCustomerName());
+	    String custCode  = trimOrNull(form.getAssignedCustomerCode());
+	    String custName  = trimOrNull(form.getAssignedCustomerName());
 	    String custEmail = trimOrNull(form.getAssignedCustomerEmail());
-	    String siteCode = trimOrNull(form.getAssignedSiteCode());
-	    String siteAddr = trimOrNull(form.getAssignedSiteAddress()); // NOT NULL en BD
+	    String siteCode  = trimOrNull(form.getAssignedSiteCode());
+	    String siteAddr  = trimOrNull(form.getAssignedSiteAddress());
 
-	    // Por seguridad, evita queries con parámetros null
-	    CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElseGet(() -> {
-	        CustomerAccount n = new CustomerAccount();
-	        n.setExternalCode(custCode); // Asegúrate que esta columna permita NOT NULL o valida aquí
-	        n.setName(custName);
-	        n.setEmail(custEmail);
-	        return customerAccountDao.save(n);
-	    });
+	    // Search or create, but always update
+	    CustomerAccount acc = customerAccountDao.findByExternalCode(custCode)
+	            .orElseGet(CustomerAccount::new);
 
-	    CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElseGet(() -> {
-	        CustomerSite s = new CustomerSite();
-	        s.setCustomer(acc);
-	        s.setExternalCode(siteCode);
-	        s.setAddress(siteAddr); // ← ya garantizamos que no es null con hasInlineSite(...)
-	        return customerSiteDao.save(s);
-	    });
+	    acc.setExternalCode(custCode);
+	    acc.setName(custName);
+	    acc.setEmail(custEmail);         // persists email
+	    customerAccountDao.save(acc);    // insert o update
+
+	    CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode)
+	            .orElseGet(CustomerSite::new);
+
+	    site.setCustomer(acc);
+	    site.setExternalCode(siteCode);
+	    site.setAddress(siteAddr);
+	    customerSiteDao.save(site);      // insert or update
 
 	    user.setAssignedSite(site);
 	}
+//	private void assignByInline(User user, UserFormDTO form) {
+//	    // No hagas nada si alguien ya asignó el site por select
+//	    if (user.getAssignedSite() != null) return;
+//
+//	    if (!hasInlineSite(form)) {
+//	        // Nada que crear/ligar; se deja en null
+//	        user.setAssignedSite(null);
+//	        return;
+//	    }
+//
+//	    String custCode = trimOrNull(form.getAssignedCustomerCode());
+//	    String custName = trimOrNull(form.getAssignedCustomerName());
+//	    String custEmail = trimOrNull(form.getAssignedCustomerEmail());
+//	    String siteCode = trimOrNull(form.getAssignedSiteCode());
+//	    String siteAddr = trimOrNull(form.getAssignedSiteAddress()); // NOT NULL en BD
+//
+//	    // Por seguridad, evita queries con parámetros null
+//	    CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElseGet(() -> {
+//	        CustomerAccount n = new CustomerAccount();
+//	        n.setExternalCode(custCode); // Asegúrate que esta columna permita NOT NULL o valida aquí
+//	        n.setName(custName);
+//	        n.setEmail(custEmail);
+//	        return customerAccountDao.save(n);
+//	    });
+//
+//	    CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElseGet(() -> {
+//	        CustomerSite s = new CustomerSite();
+//	        s.setCustomer(acc);
+//	        s.setExternalCode(siteCode);
+//	        s.setAddress(siteAddr); // ← ya garantizamos que no es null con hasInlineSite(...)
+//	        return customerSiteDao.save(s);
+//	    });
+//
+//	    user.setAssignedSite(site);
+//	}
+	
 
 	private User loadOrCreate(UserFormDTO dto) {
 		if (dto.getId() == null) {
@@ -470,7 +501,6 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	}
 	
 	private boolean hasInlineSite(UserFormDTO f) {
-	    // Ajusta qué campos consideras mínimos para crear/upsert
 	    return trimOrNull(f.getAssignedCustomerEmail()) != null
 	    	&&trimOrNull(f.getAssignedCustomerName()) != null 
 	    	&& trimOrNull(f.getAssignedCustomerCode()) != null

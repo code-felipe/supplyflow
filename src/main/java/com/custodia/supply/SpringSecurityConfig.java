@@ -92,27 +92,27 @@ public class SpringSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http
 	      .authorizeHttpRequests(auth -> auth
-	          // públicos (incluye el inicio del flujo OAuth)
+	          // public
 	          .requestMatchers("/", "/login", "/error",
 	                           "/css/**", "/js/**", "/images/**",
 	                           "/list**", "/api/users/**",
 	                           "/webjars/**").permitAll()
 	          .requestMatchers(HttpMethod.GET,  "/register").permitAll()
 	          .requestMatchers(HttpMethod.POST, "/register").permitAll()
-	          // todo lo demás requiere auth
+	          // anything else requires auth.
 	          .anyRequest().authenticated()
 	      )
 
-	      // Login local (tu formulario)
+	      // Login local (My form)
 	      .formLogin(login -> login
 	          .loginPage("/login")
 	          .usernameParameter("email")      // <input name="email">
 	          .passwordParameter("password")
-	          .successHandler(successHandler)  // handler existente
+	          .successHandler(successHandler)  // existent handler
 	          .failureUrl("/login?error")
 	          .permitAll()
 	      )
-	      // Logout (una sola vez; quitamos el duplicado)
+	      // Logout
 	      .logout(logout -> logout
 	          .logoutUrl("/logout")
 	          .logoutSuccessUrl("/login?logout")

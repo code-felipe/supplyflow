@@ -174,6 +174,15 @@ public class UserController {
 			RedirectAttributes flash) {
 
 
+		  System.out.println("=== DEBUG ===");
+		    System.out.println("assignedSiteId: "       + user.getAssignedSiteId());
+		    System.out.println("assignedCustomerCode: " + user.getAssignedCustomerCode());
+		    System.out.println("assignedCustomerName: " + user.getAssignedCustomerName());
+		    System.out.println("assignedCustomerEmail: "+ user.getAssignedCustomerEmail());
+		    System.out.println("assignedSiteCode: "     + user.getAssignedSiteCode());
+		    System.out.println("assignedSiteAddress: "  + user.getAssignedSiteAddress());
+		    System.out.println("=============");
+		
 		if (result.hasErrors()) {
 			model.addAttribute("title", user.getId() != null ? "Edit User" : "Create User");
 			model.addAttribute("roles", roleService.findAll());// ensures display again in the select - not longer using
