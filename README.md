@@ -211,7 +211,7 @@ This project targets **Java 17+** and **Spring Boot 3.x**.
 
 ## Demo
 
-Live demo: [link de render aquí]
+[Go to Demo](https://custodian-supply-manager.onrender.com)
 
 **Login credentials:**
 | Role      | Email              | Password|
@@ -221,7 +221,7 @@ Live demo: [link de render aquí]
 | Concierge | juana@gmail.com    | 12345 |
 
 ### Email Feature
-[Go to Demo](https://custodian-supply-manager.onrender.com)
+
 1. Log in as Admin
 2. Go to Customer Accounts → edit "First Class CC"
 3. Enter a valid email address
