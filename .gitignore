@@ -37,3 +37,5 @@ import.sql
 /src/main/resources/ignore
 /src/main/resources/ignore/
 /src/main/resources/ignore/*.sql
+/src/main/resources/application.properties
+/src/main/resources/application-prod.yml
