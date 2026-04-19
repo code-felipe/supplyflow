@@ -28,66 +28,12 @@ public class SpringSecurityConfig {
 	private LoginSuccessHandler successHandler;
 	
 	
-	// El authenticationManager desde aca para ayudar al UserDetailsService
-	
+	// El authenticationManager desde aca para ayudar al UserDetailsService	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 	    return config.getAuthenticationManager();
 	}
 
-//	@Bean
-//	public UserDetailsService userDetailsService() throws Exception {
-//
-//		InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//
-//		manager.createUser(
-//				User.withUsername("user").password(this.passwordEncoder.encode("user")).roles("USER").build());
-//
-//		manager.createUser(User.withUsername("admin").password(this.passwordEncoder.encode("admin"))
-//				.roles("ADMIN", "USER").build());
-//
-//		return manager;
-//	}
-
-//	@Bean
-//    public AuthenticationSuccessHandler loginSuccessHandler(IUserService userService) {
-//        return (request, response, auth) -> {
-//            String email = auth.getName();
-//            Long userId = null;
-//            try {
-//                userId = userService.findByEmail(email).getId();
-//            } catch (Exception ignored) {}
-//
-//            response.sendRedirect(
-//                (userId != null) ? "/user/view/" + userId : "/user/list"
-//            );
-//        };
-//    }
-	// For later
-	// , AuthenticationSuccessHandler loginSuccessHandler
-	//==== Replaced by Anotations ===
-	// ADMIN-only primero (más estricto)
-//      .requestMatchers("/user/form/**", "/user/delete/**").hasRole("ADMIN")
-//      .requestMatchers("/user/toggle/**").hasRole("ADMIN")
-//      .requestMatchers("/request/delete/**").hasRole("ADMIN")
-//      .requestMatchers("/supply_item/form/**").hasRole("ADMIN")
-
-	// USER o ADMIN (más permisivo)
-//      .requestMatchers("/user/view/**", "/user/list").hasAnyRole("USER","ADMIN")
-//      .requestMatchers("/request/form/**").hasAnyRole("USER","ADMIN")
-//      .requestMatchers("/supply_item/list/**").hasAnyRole("USER","ADMIN")
-	//== Other Implementation ==
-	  // ADMIN-only (ejemplos típicos de escritura)
-//      .requestMatchers("/user/form/**", "/user/delete/**", "/user/toggle/**").hasRole("ADMIN")
-//      .requestMatchers("/request/delete/**", "/supply_item/form/**").hasRole("ADMIN")
-
-      // Vistas para USER/ADMIN/SUPERVISOR
-//      .requestMatchers("/user/view/**").hasAnyRole("ADMIN","SUPERVISOR","CONCIERGE")
-//      .requestMatchers("/user/list/**").hasAnyRole("ADMIN","SUPERVISOR")
-//      .requestMatchers("/supply_item/list/**", "/request/form/**").hasAnyRole("ADMIN","SUPERVISOR", "CONCIERGE")
-
-      // Concierge: restringe a SU vista (/user/view/{suId}) con chequeo adicional abajo o @PreAuthorize
-      // Si su vista tiene un patrón general, mantener autenticado y validar en el controlador.
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	    http
