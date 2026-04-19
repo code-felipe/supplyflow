@@ -209,6 +209,24 @@ This project targets **Java 17+** and **Spring Boot 3.x**.
 
 [Go to architecture document](docs/README-ARCHITECTURE.md)
 
+## Demo
+
+Live demo: [link de render aquí]
+
+**Login credentials:**
+| Role      | Email              | Password|
+|-----------|--------------------|---------|
+| Admin     | johndoe@gmail.com  | 12345 |
+| Supervisor| pepito@gmail.com   | 12345 |
+| Concierge | juana@gmail.com    | 12345 |
+
+### Email Feature
+To test the Java email functionality:
+1. Log in as Admin
+2. Go to Customer Accounts → edit "First Class CC"
+3. Enter a valid email address
+4. Submit a supply request
+
 # Author
 
 ## Developed by Andres Felipe P.
