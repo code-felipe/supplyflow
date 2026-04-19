@@ -221,7 +221,7 @@ Live demo: [link de render aquí]
 | Concierge | juana@gmail.com    | 12345 |
 
 ### Email Feature
-To test the Java email functionality:
+[Go to Demo](https://custodian-supply-manager.onrender.com)
 1. Log in as Admin
 2. Go to Customer Accounts → edit "First Class CC"
 3. Enter a valid email address

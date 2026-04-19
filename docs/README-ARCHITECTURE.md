@@ -57,9 +57,8 @@ RequestItem * ── 1 SupplyItem   →   (UNI-DIRECTIONAL from RequestItem)
 ## Implemented use cases
 - Create/Edit user.
 - Assign site to user:
-  - **Select existing** `CustomerSite`.
-  - **Inline create** `CustomerAccount` + `CustomerSite` (upsert by codes).
-  - **UI toggle**: a small JS script switches between modes via **radio buttons**, disabling hidden inputs to prevent mixing.
+  - **Inline create/edit** `CustomerAccount` + `CustomerSite` (upsert by codes).
+  - Fields always visible in both create and edit flows.
 - User detail with requests (paged, table projections).
 - List users:
   - Null-safe DTO labels show **“No assigned”** when fields are empty.

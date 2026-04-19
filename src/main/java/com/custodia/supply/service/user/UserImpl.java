@@ -61,9 +61,6 @@ public class UserImpl implements IUserService, IPageableService<User> {
 
 	@Autowired
 	private IInvitationCodeDao codeDao;
-//
-//	@Autowired
-//	private BCryptPasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserMapperFormImpl userMapper;
@@ -126,7 +123,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		return supplyDao.findAllByNameLikeIgnoreCase(term).stream().map(s -> SupplyMapper.toView(s)).toList();
 	}
 	
-	//== Not in use, is replaced by simple findAllRest
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserViewDTO> exportUsersTree() {
@@ -149,106 +146,21 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	 */
 	@Transactional
 	public Boolean save(UserFormDTO form) {
-
-		User user = this.loadOrCreate(form);
-
-		userMapper.applyScalarFields(user, form);
-
-		assignedRole(user, form);
-	    if (form.getAssignedSiteId() != null) {
-	        assignBySelect(user, form);
-	    } else if (hasInlineSite(form)) {
+	    User user = this.loadOrCreate(form);
+	    userMapper.applyScalarFields(user, form);
+	    assignedRole(user, form);
+	    
+	    // Ya no hay select, siempre usamos inline
+	    if (hasInlineSite(form)) {
 	        assignByInline(user, form);
 	    } else {
 	        user.setAssignedSite(null);
 	    }
 
-		userDao.save(user);
-		return true;
+	    userDao.save(user);
+	    return true;
 	}
 
-	/*
-	 * === REFACTOR THIS MONSTER ===
-	 */
-//	@Transactional
-//	public Boolean save(UserFormDTO form) {
-//
-//		// Cargar/crear usuario
-//		User user;
-//		if (form.getId() != null) {
-//			Optional<User> opt = userDao.findById(form.getId());
-//			user = opt.orElse(new User());
-//		} else {
-//			user = new User();
-//		}
-//
-//		if (user.getCreateAt() == null)
-//			user.setCreateAt(new Date());
-//
-//		user.setFirstName(form.getFirstName());
-//		user.setLastName(form.getLastName());
-//		user.setEmail(form.getEmail());
-//		user.setPhone(form.getPhone());
-//		user.setIsActive(Boolean.TRUE.equals(form.getIsActive()));
-//
-//		if (hasText(form.getPassword())) {
-//			user.setPassword(passwordEncoder.encode(form.getPassword()));
-//		}
-//
-//		// ----- ROLE (estricto) -----
-//		user = this.assignRoleFromForm(user, form);
-////		if (form.getRoleId() != null) {
-////			Role role = roleDao.findById(form.getRoleId()).orElse(null); // sin Supplier
-////			if (role == null) {
-////				throw new IllegalArgumentException("Invalid roleId: " + form.getRoleId());
-////			}
-////			user.setRole(role);
-////		} else {
-////			user.setRole(null);
-////		}
-//
-//		// ----- SITE / CUSTOMER -----
-//		if (form.getAssignedSiteId() != null) {
-//			CustomerSite site = customerSiteDao.findById(form.getAssignedSiteId()).orElse(null);
-//			if (site == null) {
-//				throw new IllegalArgumentException("Invalid siteId: " + form.getAssignedSiteId());
-//			}
-//			user.setAssignedSite(site);
-//
-//		} else if (allInlinePresent(form)) {
-//			String custCode = trimOrNull(form.getAssignedCustomerCode());
-//			String custName = trimOrNull(form.getAssignedCustomerName());
-//			String custEmail = trimOrNull(form.getAssignedCustomerEmail());
-//			String siteCode = trimOrNull(form.getAssignedSiteCode());
-//			String siteAddress = trimOrNull(form.getAssignedSiteAddress());
-//
-//			CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElse(null);
-//			if (acc == null) {
-//				CustomerAccount n = new CustomerAccount();
-//				n.setExternalCode(custCode);
-//				n.setName(custName);
-//				n.setEmail(custEmail);
-//				acc = customerAccountDao.save(n);
-//			}
-//
-//			CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElse(null);
-//			if (site == null) {
-//				CustomerSite s = new CustomerSite();
-//				s.setCustomer(acc);
-//				s.setExternalCode(siteCode);
-//				s.setAddress(siteAddress);
-//				site = customerSiteDao.save(s);
-//			}
-//
-//			user.setAssignedSite(site);
-//
-//		} else {
-//			user.setAssignedSite(null);
-//		}
-//
-//		userDao.save(user);
-//		return true;
-//	}
 
 	@Override
 	@Transactional
@@ -345,25 +257,10 @@ public class UserImpl implements IUserService, IPageableService<User> {
 		User user = loadOrCreate(form);
 		userMapper.applyScalarFields(user, form);
 		assignedRole(user, form);
-//		User u = new User();
-//		u.setFirstName(form.getFirstName());
-//		u.setLastName(form.getLastName());
-//		u.setEmail(form.getEmail());
-//		u.setPhone(form.getPhone());
-//		u.setIsActive(Boolean.TRUE);
-//		if (form.getPassword() != null && !form.getPassword().isBlank()) {
-//			u.setPassword(passwordEncoder.encode(form.getPassword()));
-//		}
-//		u.setCreateAt(u.getCreateAt() == null ? new Date() : u.getCreateAt());
-
-		// Rol por authority (o getReferenceById si prefieres)
-//		Role concierge = roleDao.findByAuthority("ROLE_CONCIERGE");
-//		if (concierge != null)
-//			u.setRole(concierge);
 
 		userDao.save(user);
 
-		// 4) Consumir ese MISMO código
+		// Consumir ese MISMO código
 		inv.setIsUsed(true);
 		inv.setIsUsedBy(user);
 		codeDao.save(inv);
@@ -395,7 +292,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 	    user.setAssignedSite(site);
 	}
 	private void assignByInline(User user, UserFormDTO form) {
-	    if (user.getAssignedSite() != null) return;
+//	    if (user.getAssignedSite() != null) return;// no longer using select
 	    if (!hasInlineSite(form)) {
 	        user.setAssignedSite(null);
 	        return;
@@ -426,41 +323,7 @@ public class UserImpl implements IUserService, IPageableService<User> {
 
 	    user.setAssignedSite(site);
 	}
-//	private void assignByInline(User user, UserFormDTO form) {
-//	    // No hagas nada si alguien ya asignó el site por select
-//	    if (user.getAssignedSite() != null) return;
-//
-//	    if (!hasInlineSite(form)) {
-//	        // Nada que crear/ligar; se deja en null
-//	        user.setAssignedSite(null);
-//	        return;
-//	    }
-//
-//	    String custCode = trimOrNull(form.getAssignedCustomerCode());
-//	    String custName = trimOrNull(form.getAssignedCustomerName());
-//	    String custEmail = trimOrNull(form.getAssignedCustomerEmail());
-//	    String siteCode = trimOrNull(form.getAssignedSiteCode());
-//	    String siteAddr = trimOrNull(form.getAssignedSiteAddress()); // NOT NULL en BD
-//
-//	    // Por seguridad, evita queries con parámetros null
-//	    CustomerAccount acc = customerAccountDao.findByExternalCode(custCode).orElseGet(() -> {
-//	        CustomerAccount n = new CustomerAccount();
-//	        n.setExternalCode(custCode); // Asegúrate que esta columna permita NOT NULL o valida aquí
-//	        n.setName(custName);
-//	        n.setEmail(custEmail);
-//	        return customerAccountDao.save(n);
-//	    });
-//
-//	    CustomerSite site = customerSiteDao.findByCustomerAndExternalCode(acc, siteCode).orElseGet(() -> {
-//	        CustomerSite s = new CustomerSite();
-//	        s.setCustomer(acc);
-//	        s.setExternalCode(siteCode);
-//	        s.setAddress(siteAddr); // ← ya garantizamos que no es null con hasInlineSite(...)
-//	        return customerSiteDao.save(s);
-//	    });
-//
-//	    user.setAssignedSite(site);
-//	}
+
 	
 
 	private User loadOrCreate(UserFormDTO dto) {
@@ -474,24 +337,6 @@ public class UserImpl implements IUserService, IPageableService<User> {
 				.orElseThrow(() -> new IllegalArgumentException("User not found id=" + dto.getId()));
 
 	}
-
-//	private void setAssigmentChaing(User user, UserFormDTO dto) {
-//		Handler<User, UserFormDTO> head = new ByIdSiteHandler(customerSiteDao);
-//		head.setNext(new ByCustomerAccountHandler(customerAccountDao, customerSiteDao))
-//				.setNext(new DefaultNullUserHandler());
-//
-//		head.handle(user, dto);
-//
-//	}
-
-//	private boolean allInlinePresent(UserFormDTO f) {
-//		return notBlank(f.getAssignedCustomerCode()) && notBlank(f.getAssignedCustomerName())
-//				&& notBlank(f.getAssignedSiteCode()) && notBlank(f.getAssignedSiteAddress());
-//	}
-
-//	private boolean notBlank(String s) {
-//		return s != null && !s.isBlank();
-//	}
 
 	private String trimOrNull(String s) {
 		if (s == null)

@@ -160,7 +160,7 @@ public class UserController {
 
 		model.put("user", new UserFormDTO());
 		model.put("roles", roleService.findAll());// <---No longer using Role.values()
-		model.put("sites", customerDao.findAllForSelect());
+//		model.put("sites", customerDao.findAllForSelect());// No longer using in-line
 		model.put("title", "User form");
 
 		return "user/form";

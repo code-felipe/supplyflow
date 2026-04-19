@@ -5,7 +5,8 @@ This document exists to make our architectural and security decisions **explicit
 # Key Decisions On User - CustomerAccount and CustomerSite
 
 1. Persist only `users.site_id`; derive `CustomerAccount` from `CustomerSite`.
-2. Two assignment modes: select existing site OR inline create (upsert).
+2. Single assignment mode: inline create/upsert for CustomerAccount and CustomerSite fields. 
+   Fields are always visible in both create and edit, allowing direct email updates on existing customers.
 3. DTO separation:
    - `UserFormDTO` for input/validation.
    - `UserViewDTO` for presentation (null-safe),

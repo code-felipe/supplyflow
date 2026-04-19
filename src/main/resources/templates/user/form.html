@@ -112,85 +112,48 @@
 
 					<!-- === Assignment (Customer · Site) === -->
 					<div class="mb-4">
-						<h6 class="text-muted text-uppercase mb-3">Assignment (Customer · Site)</h6>
+					    <h6 class="text-muted text-uppercase mb-3">Assignment (Customer · Site)</h6>
 
-						<!-- Radios de modo -->
-						<div th:if="*{assignedSiteId == null}" class="form-group">
-							<div class="custom-control custom-radio custom-control-inline">
-								<input class="custom-control-input" type="radio" name="assignMode" id="modeExisting"
-									value="existing" th:checked="*{assignedSiteId} != null">
-								<label class="custom-control-label" for="modeExisting">Select existing site</label>
-							</div>
-							<div class="custom-control custom-radio custom-control-inline">
-								<input class="custom-control-input" type="radio" name="assignMode" id="modeInline"
-									value="inline" th:checked="*{assignedSiteId} == null">
-								<label class="custom-control-label" for="modeInline">Create customer + site</label>
-							</div>
-							<small class="form-text text-muted">
-								Create customer + site: Creates a new record and assigns it to the user; or select an
-								existing site.
-							</small>
-						</div>
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label for="customerCode">Customer Code</label>
+					            <input type="text" id="customerCode" class="form-control"
+					                th:field="*{assignedCustomerCode}">
+					            <small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerCode')}"
+					                th:errors="*{assignedCustomerCode}"></small>
+					        </div>
+					        <div class="form-group col-md-6">
+					            <label for="customerName">Customer Name</label>
+					            <input type="text" id="customerName" class="form-control"
+					                th:field="*{assignedCustomerName}">
+					            <small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerName')}"
+					                th:errors="*{assignedCustomerName}"></small>
+					        </div>
+					        <div class="form-group col-md-6">
+					            <label for="customerEmail">Customer Email</label>
+					            <input type="text" id="customerEmail" class="form-control"
+					                th:field="*{assignedCustomerEmail}">
+					            <small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerEmail')}"
+					                th:errors="*{assignedCustomerEmail}"></small>
+					        </div>
+					    </div>
 
-						<!-- A) Select de Site existente -->
-						<div id="sectionExisting">
-							<div class="form-group">
-								<label for="c_site">Ship To</label>
-								<select id="c_site" th:field="*{assignedSiteId}" class="form-control"
-									th:errorClass="'form-control is-invalid'">
-									<option value="">-- Select site --</option>
-									<option th:each="s : ${sites}" th:value="${s.id}"
-										th:text="${(s.customer != null ? s.customer.name + ' · ' : '') + s.address + ' (' + s.externalCode + ')'}">
-									</option>
-								</select>
-								<small class="invalid-feedback" th:if="${#fields.hasErrors('assignedSiteId')}"
-									th:errors="*{assignedSiteId}"></small>
-							</div>
-						</div>
-
-						<!-- B) Alta inline de Customer + Site -->
-						<div id="sectionInline" class="d-none">
-							<div class="form-row">
-								<div class="form-group col-md-6">
-									<label for="customerCode">Customer Code</label>
-									<input type="text" id="customerCode" class="form-control"
-										th:field="*{assignedCustomerCode}">
-									<small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerCode')}"
-										th:errors="*{assignedCustomerCode}"></small>
-								</div>
-								<div class="form-group col-md-6">
-									<label for="customerName">Customer Name</label>
-									<input type="text" id="customerName" class="form-control"
-										th:field="*{assignedCustomerName}">
-									<small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerName')}"
-										th:errors="*{assignedCustomerName}"></small>
-								</div>
-								<div class="form-group col-md-6">
-									<label for="customerEmail">Customer Email</label>
-									<input type="text" id="customerEmail" class="form-control"
-										th:field="*{assignedCustomerEmail}">
-									<small class="text-danger" th:if="${#fields.hasErrors('assignedCustomerEmail')}"
-										th:errors="*{assignedCustomerEmail}"></small>
-								</div>
-							</div>
-
-							<div class="form-row">
-								<div class="form-group col-md-6">
-									<label for="siteCode">ShipTo Code</label>
-									<input type="text" id="siteCode" class="form-control"
-										th:field="*{assignedSiteCode}">
-									<small class="text-danger" th:if="${#fields.hasErrors('assignedSiteCode')}"
-										th:errors="*{assignedSiteCode}"></small>
-								</div>
-								<div class="form-group col-md-6">
-									<label for="siteAddress">ShipTo Address</label>
-									<input type="text" id="siteAddress" class="form-control"
-										th:field="*{assignedSiteAddress}">
-									<small class="text-danger" th:if="${#fields.hasErrors('assignedSiteAddress')}"
-										th:errors="*{assignedSiteAddress}"></small>
-								</div>
-							</div>
-						</div>
+					    <div class="form-row">
+					        <div class="form-group col-md-6">
+					            <label for="siteCode">ShipTo Code</label>
+					            <input type="text" id="siteCode" class="form-control"
+					                th:field="*{assignedSiteCode}">
+					            <small class="text-danger" th:if="${#fields.hasErrors('assignedSiteCode')}"
+					                th:errors="*{assignedSiteCode}"></small>
+					        </div>
+					        <div class="form-group col-md-6">
+					            <label for="siteAddress">ShipTo Address</label>
+					            <input type="text" id="siteAddress" class="form-control"
+					                th:field="*{assignedSiteAddress}">
+					            <small class="text-danger" th:if="${#fields.hasErrors('assignedSiteAddress')}"
+					                th:errors="*{assignedSiteAddress}"></small>
+					        </div>
+					    </div>
 					</div>
 
 					<!-- Submit -->
@@ -210,7 +173,7 @@
 
 	<footer th:replace="~{layout/layout :: footer}"></footer>
 	<script>
-	(function () {
+	/*(function () {
 	  const modeExisting = document.getElementById('modeExisting');
 	  const modeInline   = document.getElementById('modeInline');
 	  const secExisting  = document.getElementById('sectionExisting');
@@ -252,6 +215,7 @@
 	    }
 	  });
 	})();
+	*/
 	</script>
 
 	<!--<script>

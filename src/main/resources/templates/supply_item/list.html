@@ -13,7 +13,7 @@
 			<div class="card-header bg-success text-white" th:text="${title}"></div>
 			<div class="card-body">
 				<h4 class="card-title">
-					<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-sm" th:href="@{/supply_item/form}">Create Product</a>
+					<!--<a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-success btn-sm" th:href="@{/supply_item/form}">Create Product</a>-->
 				</h4>
 				<table class="table table-sm table-striped table-bordered table-hover">
 					<thead>
@@ -21,7 +21,7 @@
 							<th>Id</th>
 							<th>Code</th>
 							<th>Product Description</th>							
-							<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>
+							<!--<th sec:authorize="hasRole('ROLE_ADMIN')">Edit</th>-->
 							<!--<th>Is Active</th>-->
 						</tr>
 					</thead>
@@ -35,8 +35,8 @@
 							<td th:text="${item.product.nameLabel}"></td>-->
 						
 							<td th:text="${item.catalogString}"></td>														
-							<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-outline-info btn-sm" th:href="@{/supply_item/form/} + ${item.id}"
-									th:text="'Edit'"></a></td>
+							<!--<td sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-outline-info btn-sm" th:href="@{/supply_item/form/} + ${item.id}"
+									th:text="'Edit'"></a></td>-->
 							<!--<td><a class="btn btn-danger btn-xs" th:href="@{/supply_item/delete/} + ${item.id}"
 									th:text="'Delete'"
 									onclick="return confirm('Are you sure, you want to delete?');"></a></td>-->
